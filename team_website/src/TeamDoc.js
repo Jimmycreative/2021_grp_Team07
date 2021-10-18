@@ -55,7 +55,7 @@ class TeamDoc extends React.Component {
 						{/* <!-- Get Started --> */}
 							<section id="cta" class="main special">
 								<header class="major">
-									<h2>Job Scheduling Problem in OrTools</h2>
+									<h2>Job Scheduling Problem in ORTools</h2>
 									
 								</header>
 								<footer class="major">
