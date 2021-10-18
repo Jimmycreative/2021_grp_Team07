@@ -1,5 +1,5 @@
 import React from 'react';
-
+import ruibin from './images/ruibin-bai.jpg'
 class TeamDoc extends React.Component {
     render(){
         return (
@@ -12,8 +12,6 @@ class TeamDoc extends React.Component {
 						<span class="logo"><img src="images/logo.svg" alt="" /></span>
 						<h1>Team 202107</h1>
 					</header>
-
-			
 
 				{/* <!-- Main --> */}
 					<div id="main">
@@ -47,7 +45,8 @@ class TeamDoc extends React.Component {
 						{/* <!-- Second Section --> */}
 							<section id="second" class="main special">
 								<header class="major">
-									<h2>Supervisor Name</h2>
+									<h2>Supervisor</h2>
+									<span><img src={ruibin} alt='' /></span>
 									<h3>Ruibin Bai</h3>
 								</header>
 								
@@ -56,7 +55,7 @@ class TeamDoc extends React.Component {
 						{/* <!-- Get Started --> */}
 							<section id="cta" class="main special">
 								<header class="major">
-									<h2>Other Relevant Information</h2>
+									<h2>Job Scheduling Problem in ORTools</h2>
 									
 								</header>
 								<footer class="major">
@@ -71,8 +70,8 @@ class TeamDoc extends React.Component {
 				{/* <!-- Footer --> */}
 					<footer id="footer">
 						<section>
-							<h2>Citation</h2>
-							<p>(HTML5 UP, 2021)</p>
+							<h2>Reference</h2>
+							<p>https://html5up.net/stellar</p>
 							<ul class="actions">
 								<li><a href="https://html5up.net/stellar" class="button">Learn More</a></li>
 							</ul>
