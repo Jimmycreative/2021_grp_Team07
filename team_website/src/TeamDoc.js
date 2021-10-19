@@ -22,12 +22,12 @@ class TeamDoc extends React.Component {
 								<header class="major">
 									<h2>Member Information</h2>
 								</header>
-							    <p>CHO, In Jae (20212687) CS</p>
-                                <p>FANG, Yichu (20214756) CS</p>
-                                <p>LAU, Yik Lun Yelan (20217531) CS</p>
-                                <p>PARK, So-Young (20121536) CSAI</p>
-                                <p>YANG, Jiun-Chi (20215187) CSAI</p>
-                                <p>WON, Minhyeon (20314810) CSAI</p>
+							    <p>CHO, In Jae&emsp;<i>CS</i></p>
+                                <p>FANG, Yichu&emsp;<i>CS</i></p>
+                                <p>LAU, Yik Lun Yelan&emsp;<i>CS</i></p>
+                                <p>PARK, So-Young&emsp;<i>CSAI</i></p>
+                                <p>YANG, Jiun-Chi&emsp;<i>CSAI</i></p>
+                                <p>WON, Minhyeon&emsp;<i>CSAI</i></p>
 								
 									
 								
@@ -36,7 +36,7 @@ class TeamDoc extends React.Component {
 						{/* <!-- First Section --> */}
 							<section id="first" class="main special">
 								<header class="major">
-									<h2>Project Title <br/></h2>
+									<h2>Project Title</h2>
                                     <h3>Production Job Scheduling Software System</h3>
 								</header>
 								
@@ -55,7 +55,7 @@ class TeamDoc extends React.Component {
 						{/* <!-- Get Started --> */}
 							<section id="cta" class="main special">
 								<header class="major">
-									<h2>Job Scheduling Problem in ORTools</h2>
+									<h2>Job Scheduling Problems in OR-Tools</h2>
 									
 								</header>
 								<footer class="major">
@@ -71,7 +71,7 @@ class TeamDoc extends React.Component {
 					<footer id="footer">
 						<section>
 							<h2>Reference</h2>
-							<p>https://html5up.net/stellar</p>
+							<p><a herf="https://html5up.net/stellar">https://html5up.net/stellar</a></p>
 							<ul class="actions">
 								<li><a href="https://html5up.net/stellar" class="button">Learn More</a></li>
 							</ul>
