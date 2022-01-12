@@ -1,0 +1,31 @@
+.main-container {
+  height: 91vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.main-container > p > span {
+  color: rgb(0, 123, 255);
+}
+.main-container > p {
+  font-size: 25px;
+}
+
+.btn1 {
+  background-color: rgb(0, 123, 255);
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  font-size: 15px;
+  padding: 10px 10px;
+  position: relative;
+  top: -7px;
+  margin-left: 10px;
+}
+
+@media only screen and (max-width: 600px) {
+  .main-container > p {
+    display: none;
+  }
+}
