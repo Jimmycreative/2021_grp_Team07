@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Login</title>
+        <title>Registration</title>
         <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
     </head>
@@ -10,18 +10,33 @@
 
         {% if error is defined %}
         <div style="color: red;">
-            <h2>{{session['error']}}</h2>
+            <h2>{{msg}}</h2>
         </div>
         {% endif %}
         
         <div class="login">
-            <h1>Login</h1>
+            <h1>Registration</h1>
             <form action="{{url_for('login')}}" method="post">
+                <label for="token">
+                    <i class="fas fa-user"></i>
+                </label>
+                <input type="text" name="username" value="{{token}}" id="token" readonly>
+
                 <label for="username">
                     <i class="fas fa-user"></i>
                 </label>
-
                 <input type="text" name="username" placeholder="Username" id="username" required>
+
+                <label for="displayname">
+                    <i class="fas fa-user"></i>
+                </label>
+                <input type="text" name="displayname" placeholder="Display name" id="displayname" required>
+
+                <label for="displayname">
+                    <i class="fas fa-user"></i>
+                </label>
+                <input type="text" name="displayname" placeholder="Display name" id="displayname">
+                
                 <label for="password">
                     <i class="fas fa-lock"></i>
                 </label>
