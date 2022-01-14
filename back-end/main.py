@@ -39,8 +39,8 @@ def login():
         return render_template("index.html", msg=err, error=1)
     
     cur = database.cursor(dictionary=True)
-    #cur.execute("SELECT uid, displayname, rank, disabled FROM user WHERE username = %s AND password = %s;", (username, password,))
-    cur.execute("SELECT uid, displayname, rank, disabled FROM user WHERE username = %s AND password = AES_ENCRYPT(%s, UNHEX(SHA2('injaePleaseLearnFaster', 512)));", (username, password,))
+    cur.execute("SELECT uid, displayname, rank, disabled FROM user WHERE username = %s AND password = %s;", (username, password,))
+    #cur.execute("SELECT uid, displayname, rank, disabled FROM user WHERE username = %s AND password = AES_ENCRYPT(%s, UNHEX(SHA2('injaePleaseLearnFaster', 512)));", (username, password,))
     
     account = cur.fetchone()
 
@@ -134,10 +134,15 @@ def registrationpost():
     if uses:
         cur.execute("UPDATE tokens SET uses= (%s - 1) WHERE token = %s;", (uses, usertoken,))
         database.commit()
-
+        '''
         cur.execute("""
         INSERT INTO user (username, displayname, password)
         VALUES (%s, %s, AES_ENCRYPT(%s, UNHEX(SHA2('injaePleaseLearnFaster', 512))));
+        """, (username, displayname, password,))
+        '''
+        cur.execute("""
+        INSERT INTO user (username, displayname, password)
+        VALUES (%s, %s, %s);
         """, (username, displayname, password,))
         database.commit()
         
