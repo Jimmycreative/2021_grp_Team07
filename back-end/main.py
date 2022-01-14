@@ -108,10 +108,12 @@ def registrationpost():
     if 'username' in request.form and 'password' in request.form:
         # Create variables for easy access
         username = request.form['username']
+        #if displayname is not filled in, set displayname to username
         if 'displayname' in request.form:
             displayname = request.form['displayname']
         else:
             displayname = username
+        
         password = request.form['password']
         usertoken = request.form['token']
     else:
@@ -122,27 +124,28 @@ def registrationpost():
     #check if username already exists
     if checkusername(username):
         err = "Username already exists"
-        return render_template('registration/index.html', msg=err, error=1)
+        return render_template('registration/index.html', msg=err, error=1, token=usertoken)
 
     #else check token in db
 
     uses = checktoken(usertoken)
     cur = database.cursor()
+    #successful
     if uses:
-        cur.execute("""
-        UPDATE tokens
-        SET uses = %s-1
-        WHERE token = %s;
-        """, (uses, usertoken,))
+        cur.execute("UPDATE tokens SET uses= (%s - 1) WHERE token = %s;", (uses, usertoken,))
+        database.commit()
 
         cur.execute("""
         INSERT INTO user (username, displayname, password)
-        VALUES (%s, %s, AES_ENCRYPT(%s, UNHEX(SHA2('injaePleaseLearnFaster', 512))))
+        VALUES (%s, %s, AES_ENCRYPT(%s, UNHEX(SHA2('injaePleaseLearnFaster', 512))));
         """, (username, displayname, password,))
-
         database.commit()
         
+        
         return redirect(url_for('index'))
+    #token not found
+    else:
+        return render_template("token/index.html")
 
 
 
@@ -180,7 +183,7 @@ def checktoken(usertoken):
     WHERE token = %s
     AND disabled = 0
     AND (dateexpire IS NULL OR dateexpire > CURRENT_TIMESTAMP()) 
-    AND uses > 0;
+    AND uses <> 0;
     """, (usertoken,))
 
     tokendata = cur.fetchone()

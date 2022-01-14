@@ -16,12 +16,17 @@
         
         <div class="login">
             <h1>Registration</h1>
-            <form action="{{url_for('login')}}" method="post">
+            <form action="{{url_for('registrationform')}}" method="post">
                 <label for="token">
                     <i class="fas fa-user"></i>
                 </label>
-                <input type="text" name="username" value="{{request.args.get('token', None)}}" id="token" readonly>
-
+                {% if token is defined %}
+                <input type="text" name="token" value="{{token}}" id="token" readonly>
+                {% endif %}
+                {% if token is not defined %}
+                
+                <input type="text" name="token" value="{{request.args.get('token', None)}}" id="token" readonly>
+                {% endif %}
                 <label for="username">
                     <i class="fas fa-user"></i>
                 </label>
