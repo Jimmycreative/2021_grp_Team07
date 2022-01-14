@@ -38,8 +38,8 @@ def login():
         return render_template("index.html", msg=err, error=1)
     
     cur = database.cursor(dictionary=True)
-    cur.execute("SELECT uid, displayname, rank, disabled FROM user WHERE username = %s AND password = %s;", (username, password,))
-    #cur.execute("SELECT uid, displayname, rank, disabled FROM user WHERE username = '%s' AND password = AES_ENCRYPT('%s', UNHEX(SHA2('injaePleaseLearnFaster', 512)));", credentials)
+    #cur.execute("SELECT uid, displayname, rank, disabled FROM user WHERE username = %s AND password = %s;", (username, password,))
+    cur.execute("SELECT uid, displayname, rank, disabled FROM user WHERE username = %s AND password = AES_ENCRYPT(%s, UNHEX(SHA2('injaePleaseLearnFaster', 512)));", (username, password,))
     
     account = cur.fetchone()
 
@@ -72,8 +72,6 @@ def registration():
     else:
         #set local variable from get token
         usertoken = request.args.get('token', None)
-
-    print(usertoken)
 
     if usertoken is None:
         #if token is not defined in get, return page to ask token
@@ -121,12 +119,84 @@ def registrationpost():
     if 'username' in request.form and 'password' in request.form:
         # Create variables for easy access
         username = request.form['username']
+        if 'displayname' in request.form:
+            displayname = request.form['displayname']
+        else:
+            displayname = username
         password = request.form['password']
-        
+        usertoken = request.form['token']
         ipaddress = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
     else:
         err = "Error in processing your input."
         return render_template('registration/index.html', msg=err, error=1)
+
+
+    #check if username already exists
+    if checkusername(username):
+        err = "Username already exists"
+        return render_template('registration/index.html', msg=err, error=1)
+
+    #else check token in db
+    cur = database.cursor(dictionary=True)
+    cur.execute("""
+    SELECT uses
+    FROM tokens
+    WHERE token = %s
+    AND disabled = 0
+    AND (dateexpire IS NULL OR dateexpire > CURRENT_TIMESTAMP()) 
+    AND uses > 0;
+    """, (usertoken,))
+
+    tokendata = cur.fetchone()
+
+    if tokendata:
+        cur.execute("""
+        UPDATE tokens
+        SET uses = %s-1
+        WHERE token = %s;
+        """, (tokendata['uses'], usertoken,))
+
+        cur.execute("""
+        INSERT INTO user (username, displayname, password)
+        VALUES (%s, %s, AES_ENCRYPT(%s, UNHEX(SHA2('injaePleaseLearnFaster', 512))))
+        """, (username, displayname, password,))
+
+        database.commit()
+
+        cur.execute("""
+        INSERT INTO accesslog (uid, ip, action)
+        VALUES ((SELECT uid FROM user WHERE username = %s), ipaddress, 1);
+        """)
+        
+        return redirect(url_for('index'))
+
+
+# IMPORTANT!! FOR FRONTEND:
+## BELOW IS CODE TO CHECK IF USERNAME ALREADY EXISTS IN DATABASE!!\
+##PLEASE ADD A BUTTON TO CHECK IF USERNAME EXISTS NEXT TO THE TEXTBOX FOR USERNAME INPUT
+##PLEASE VERIFY WHETHER USERNAME IS VALID BEFORE USING THIS CODE!
+
+#username requriements before feeding to this program:
+# 3-16 characters, first must be A-Za-z, last must be A-Za-z0-9, middle [A-Za-z0-9_] 
+# regex is below
+# ^[A-Za-z][\w]{2,14}[A-Za-z0-9]$
+
+def checkusername(username):
+    cur = database.cursor()
+    cur.execute("""
+    SELECT username
+    FROM user
+    WHERE username = %s
+    """, (username,))
+
+    userexist = cur.fetchone()
+
+    if userexist:
+        return True
+    else:
+        return False
+
+
 
 
 @app.route('/home')

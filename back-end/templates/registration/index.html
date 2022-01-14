@@ -20,7 +20,7 @@
                 <label for="token">
                     <i class="fas fa-user"></i>
                 </label>
-                <input type="text" name="username" value="{{token}}" id="token" readonly>
+                <input type="text" name="username" value="{{request.args.get('token', None)}}" id="token" readonly>
 
                 <label for="username">
                     <i class="fas fa-user"></i>
@@ -32,11 +32,6 @@
                 </label>
                 <input type="text" name="displayname" placeholder="Display name" id="displayname" required>
 
-                <label for="displayname">
-                    <i class="fas fa-user"></i>
-                </label>
-                <input type="text" name="displayname" placeholder="Display name" id="displayname">
-                
                 <label for="password">
                     <i class="fas fa-lock"></i>
                 </label>
