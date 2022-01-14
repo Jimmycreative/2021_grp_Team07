@@ -32,7 +32,6 @@ def login():
         # Create variables for easy access
         username = request.form['username']
         password = request.form['password']
-        ipaddress = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
     else:
         err = "Error in processing your input."
         return render_template("index.html", msg=err, error=1)
@@ -57,8 +56,6 @@ def login():
     session['username']= username
     session['displayname'] = account['displayname']
 
-    cur.execute("INSERT INTO accesslog (uid, ip) VALUES (%s, %s);", (account['uid'], ipaddress))
-    database.commit()
 
     return redirect(url_for('home'))
 
@@ -125,7 +122,6 @@ def registrationpost():
             displayname = username
         password = request.form['password']
         usertoken = request.form['token']
-        ipaddress = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
     else:
         err = "Error in processing your input."
         return render_template('registration/index.html', msg=err, error=1)
@@ -162,11 +158,6 @@ def registrationpost():
         """, (username, displayname, password,))
 
         database.commit()
-
-        cur.execute("""
-        INSERT INTO accesslog (uid, ip, action)
-        VALUES ((SELECT uid FROM user WHERE username = %s), ipaddress, 1);
-        """)
         
         return redirect(url_for('index'))
 
