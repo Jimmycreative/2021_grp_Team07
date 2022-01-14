@@ -26,18 +26,6 @@ USE `unnc_team_2021-07-p16`;
 
 -- --------------------------------------------------------
 
---
--- Table structure for table `accesslog`
---
-
-CREATE TABLE `accesslog` (
-  `ID` int(11) NOT NULL,
-  `accesstime` datetime NOT NULL DEFAULT current_timestamp(),
-  `uid` int(11) NOT NULL,
-  `ip` varchar(15) COLLATE utf8_bin NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
--- --------------------------------------------------------
 
 --
 -- Table structure for table `jobs`
