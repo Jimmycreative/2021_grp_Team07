@@ -4,6 +4,8 @@
 from flask import Flask, render_template, request, redirect, session, url_for
 #from flask_session import Session
 import mysql.connector
+import secrets
+import string
 
 app = Flask(__name__)
 app.secret_key="OF97y32PdR6bTUsZn89i"
@@ -75,19 +77,9 @@ def registration():
         return render_template('token/index.html')
 
     #else check token in db
-    cur = database.cursor(dictionary=True)
-    cur.execute("""
-    SELECT token
-    FROM tokens
-    WHERE token = %s
-    AND disabled = 0
-    AND (dateexpire IS NULL OR dateexpire > CURRENT_TIMESTAMP()) 
-    AND uses > 0;
-    """, (usertoken,))
+    
 
-    tokendata = cur.fetchone()
-
-    if tokendata:
+    if checktoken(usertoken):
         #if valid token is found, return real registration page
         return redirect(url_for('registrationform', **request.args))
         
@@ -133,24 +125,15 @@ def registrationpost():
         return render_template('registration/index.html', msg=err, error=1)
 
     #else check token in db
-    cur = database.cursor(dictionary=True)
-    cur.execute("""
-    SELECT uses
-    FROM tokens
-    WHERE token = %s
-    AND disabled = 0
-    AND (dateexpire IS NULL OR dateexpire > CURRENT_TIMESTAMP()) 
-    AND uses > 0;
-    """, (usertoken,))
 
-    tokendata = cur.fetchone()
-
-    if tokendata:
+    uses = checktoken(usertoken)
+    cur = database.cursor()
+    if uses:
         cur.execute("""
         UPDATE tokens
         SET uses = %s-1
         WHERE token = %s;
-        """, (tokendata['uses'], usertoken,))
+        """, (uses, usertoken,))
 
         cur.execute("""
         INSERT INTO user (username, displayname, password)
@@ -160,6 +143,7 @@ def registrationpost():
         database.commit()
         
         return redirect(url_for('index'))
+
 
 
 # IMPORTANT!! FOR FRONTEND:
@@ -187,7 +171,30 @@ def checkusername(username):
     else:
         return False
 
+##for checking token exists
+def checktoken(usertoken):
+    cur = database.cursor(dictionary=True)
+    cur.execute("""
+    SELECT uses
+    FROM tokens
+    WHERE token = %s
+    AND disabled = 0
+    AND (dateexpire IS NULL OR dateexpire > CURRENT_TIMESTAMP()) 
+    AND uses > 0;
+    """, (usertoken,))
 
+    tokendata = cur.fetchone()
+
+    if tokendata:
+        return tokendata['uses']
+    else:
+        return False
+
+# For generating token
+'''
+def tokengen():
+    token = ''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(128))
+'''
 
 
 @app.route('/home')
