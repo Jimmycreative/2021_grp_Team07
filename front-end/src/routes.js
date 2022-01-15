@@ -21,7 +21,8 @@ import * as RiIcons from 'react-icons/ri';
 
 import Profile from "views/profile/Profile";
 import Home from "views/Home";
-import Invitation from "views/assignment/manager/Invitation"
+import UserManual from "views/userManual/UserManual";
+import Invitation from "views/assignment/manager/Invitation";
 import ManagerAssign from "views/assignment/manager/ManagerAssign";
 import PlannerAssign from "views/assignment/planner/PlannerAssign";
 import DefForm from "views/definition/DefForm";
@@ -56,6 +57,14 @@ var routes = [
     toView:true
   },
   {
+    path: "/usermanual",
+    name: "User Manual",
+    icon: "nc-icon nc-map-big",
+    component: UserManual,
+    layout: "/admin",
+    toView:true
+  },
+  {
     path: "/profile",
     name: "Profile",
     icon: "nc-icon nc-bank",
@@ -83,7 +92,7 @@ var routes = [
       },
       {
         path: "/invitation",
-        name: "Invatation",
+        name: "Invitation",
         icon: "nc-icon nc-badge",
         component: Invitation,
         layout: "/admin",
