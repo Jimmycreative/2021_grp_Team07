@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 14, 2022 at 11:29 AM
+-- Generation Time: Jan 15, 2022 at 05:37 AM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.3
 
@@ -27,11 +27,11 @@ USE `unnc_team_2021-07-p16`;
 -- --------------------------------------------------------
 
 --
--- Table structure for table `jobs`
+-- Table structure for table `job`
 --
 
-CREATE TABLE `jobs` (
-  `id` int(11) NOT NULL,
+CREATE TABLE `job` (
+  `jid` int(11) NOT NULL,
   `machine` int(11) NOT NULL,
   `name` varchar(128) COLLATE utf8_bin NOT NULL,
   `startdate` datetime NOT NULL DEFAULT current_timestamp(),
@@ -46,37 +46,36 @@ CREATE TABLE `jobs` (
 --
 
 CREATE TABLE `machine` (
-  `machineid` int(11) NOT NULL,
+  `mid` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `schedules`
+-- Table structure for table `schedule`
 --
 
-CREATE TABLE `schedules` (
-  `scheduleid` int(11) NOT NULL,
+CREATE TABLE `schedule` (
+  `sid` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
-  `uid` int(11) NOT NULL,
+  `owner` int(11) NOT NULL,
   `code` tinyint(4) NOT NULL,
-  `timelength` int(11) NOT NULL,
   `result` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-  `status` tinyint(1) NOT NULL,
-  `description` varchar(512) COLLATE utf8_bin NOT NULL,
   `startdate` datetime NOT NULL,
   `enddate` datetime NOT NULL,
-  `uuid` int(11) NOT NULL
+  `description` varchar(512) COLLATE utf8_bin NOT NULL,
+  `status` tinyint(1) NOT NULL,
+  `uuid` varchar(64) COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tokens`
+-- Table structure for table `token`
 --
 
-CREATE TABLE `tokens` (
+CREATE TABLE `token` (
   `token` varchar(128) COLLATE utf8_bin NOT NULL,
   `datecreated` timestamp NOT NULL DEFAULT current_timestamp(),
   `dateexpire` timestamp NULL DEFAULT NULL,
@@ -86,10 +85,10 @@ CREATE TABLE `tokens` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
--- Dumping data for table `tokens`
+-- Dumping data for table `token`
 --
 
-INSERT INTO `tokens` (`token`, `datecreated`, `dateexpire`, `rank`, `uses`, `disabled`) VALUES
+INSERT INTO `token` (`token`, `datecreated`, `dateexpire`, `rank`, `uses`, `disabled`) VALUES
 ('aaaaa', '2022-01-08 12:55:22', NULL, 0, 0, 0),
 ('aaaaaa', '2022-01-08 14:01:49', NULL, 0, 0, 0),
 ('abc', '2022-01-08 13:20:21', NULL, 0, 1, 0),
@@ -125,28 +124,28 @@ INSERT INTO `user` (`uid`, `username`, `displayname`, `password`, `datecreated`,
 --
 
 --
--- Indexes for table `jobs`
+-- Indexes for table `job`
 --
-ALTER TABLE `jobs`
-  ADD PRIMARY KEY (`id`);
+ALTER TABLE `job`
+  ADD PRIMARY KEY (`jid`);
 
 --
 -- Indexes for table `machine`
 --
 ALTER TABLE `machine`
-  ADD PRIMARY KEY (`machineid`);
+  ADD PRIMARY KEY (`mid`);
 
 --
--- Indexes for table `schedules`
+-- Indexes for table `schedule`
 --
-ALTER TABLE `schedules`
-  ADD PRIMARY KEY (`scheduleid`),
-  ADD KEY `uid` (`uid`);
+ALTER TABLE `schedule`
+  ADD PRIMARY KEY (`sid`),
+  ADD KEY `uid` (`owner`);
 
 --
--- Indexes for table `tokens`
+-- Indexes for table `token`
 --
-ALTER TABLE `tokens`
+ALTER TABLE `token`
   ADD PRIMARY KEY (`token`);
 
 --
@@ -162,22 +161,22 @@ ALTER TABLE `user`
 --
 
 --
--- AUTO_INCREMENT for table `jobs`
+-- AUTO_INCREMENT for table `job`
 --
-ALTER TABLE `jobs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `job`
+  MODIFY `jid` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `machine`
 --
 ALTER TABLE `machine`
-  MODIFY `machineid` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `mid` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `schedules`
+-- AUTO_INCREMENT for table `schedule`
 --
-ALTER TABLE `schedules`
-  MODIFY `scheduleid` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `schedule`
+  MODIFY `sid` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `user`
@@ -190,10 +189,10 @@ ALTER TABLE `user`
 --
 
 --
--- Constraints for table `schedules`
+-- Constraints for table `schedule`
 --
-ALTER TABLE `schedules`
-  ADD CONSTRAINT `schedules_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `user` (`uid`);
+ALTER TABLE `schedule`
+  ADD CONSTRAINT `schedule_ibfk_1` FOREIGN KEY (`owner`) REFERENCES `user` (`uid`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
