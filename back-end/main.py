@@ -129,9 +129,10 @@ def registrationpost():
 
     #else check token in db
     tokendata = checktoken(usertoken)
-    uses = tokendata['uses']
+    uses = tokendata['uses'] ##CHANGE2022-01-15
+    rank = tokendata['rank'] ##CHANGE2022-01-15
     #successful
-    if tokendata:
+    if tokendata: ##CHANGE2022-01-15
         cur = database.cursor()
         cur.execute("UPDATE token SET uses= (%s - 1) WHERE token = %s;", (uses, usertoken,))
         database.commit()
@@ -142,9 +143,9 @@ def registrationpost():
         """, (username, displayname, password,))
         '''
         cur.execute("""
-        INSERT INTO user (username, displayname, password)
-        VALUES (%s, %s, %s);
-        """, (username, displayname, password,))
+        INSERT INTO user (username, displayname, password, rank)
+        VALUES (%s, %s, %s, %s);
+        """, (username, displayname, password, rank,)) ##CHANGE2022-01-15
         database.commit()
         
         
@@ -191,11 +192,11 @@ def checktoken(token):
     AND disabled = 0
     AND (dateexpire IS NULL OR dateexpire > CURRENT_TIMESTAMP()) 
     AND uses <> 0;
-    """, (token,))
+    """, (token,)) ##CHANGE2022-01-15
 
     tokendata = cur.fetchone()
 
-    return tokendata
+    return tokendata ##CHANGE2022-01-15
 
 #for putting into database
 ## REQUIREMENTS
@@ -232,15 +233,10 @@ def puttoken(token, dateexpire, rank, uses):
 
 # For generating token
 def tokengen():
+    purgetoken()
     token = ''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(8))
-    flag=False
-
     while checktoken(token):
-        if flag:
-            purgetoken()
         token = ''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(8))
-        flag=True
-
     return token
 
 #for purging invalid tokens
