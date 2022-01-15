@@ -204,9 +204,8 @@ def checktoken(token):
 ## uses must be integer, if set to unlimited uses, put -1 or None
 
 ## rank guide
-### 0 = user
-### 1 = planner
-### 2 = manager
+### 0 = planner
+### 1 = manager
 def puttoken(token, dateexpire, rank, uses):
     cur = database.cursor()
     if token is None:
