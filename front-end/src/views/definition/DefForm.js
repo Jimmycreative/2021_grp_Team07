@@ -276,7 +276,7 @@ class DefForm extends React.Component {
                             <CardText>
                                 where the output goes
                             </CardText>
-                            <GanttDay />
+                            <GanttDay showBar={false} />
                             <Button>
                                 Accept
                             </Button>

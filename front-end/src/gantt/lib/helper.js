@@ -22,7 +22,7 @@ export function initTasks() {
         12,
         28
       ),
-      name: "Idea",
+      name: "- Idea",
       id: "Task 0",
       progress: 45,
       type: "task",

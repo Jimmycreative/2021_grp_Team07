@@ -10,7 +10,8 @@ class GanttDay extends React.Component {
       view : ViewMode.Day,
       tasks: initTasks(),
       isChecked: true,
-      columnWidth: 60
+      columnWidth: 60,
+      showBar: this.props.showBar
     };
   }
   
@@ -87,38 +88,35 @@ class GanttDay extends React.Component {
   render() {
     return (
       <div>
+        <div></div>
         <div className="view-container">
-
-        <button className="view-btn" onClick={()=>this.onViewModeChange(ViewMode.Day)}>
-          Day
-        </button>
-        <button
-          className="view-btn"
-          onClick={()=>this.onViewModeChange(ViewMode.Week)}
-        >
-          Week
-        </button>
-        <button
-          className="view-btn"
-          onClick={()=>this.onViewModeChange(ViewMode.Month)}
-        >
-          Month
-        </button>
-  
-        <div className="view-switch">
-          <label className="view-switch-toggle">
-            <input
-              type="checkbox"
-              defaultChecked={this.state.isChecked}
-              onClick={this.onViewListChange}
-            />
-            <span className="view-slider" />
-          </label>
-          Show Task List
-        </div>
+          <button className="view-btn" onClick={()=>this.onViewModeChange(ViewMode.Day)}>
+            Day
+          </button>
+          
+          <button className="view-btn" onClick={()=>this.onViewModeChange(ViewMode.Week)}>
+            Week
+          </button>
+          
+          <button className="view-btn" onClick={()=>this.onViewModeChange(ViewMode.Month)}>
+            Month
+          </button>
+          
+          <div className="view-switch">
+            <label className="view-switch-toggle">
+              <input
+                type="checkbox"
+                defaultChecked={this.state.isChecked}
+                onClick={this.onViewListChange}
+              />
+              <span className="view-slider" />
+            </label>
+            Show Task List
+          </div>
+          
       </div>
-        <h3>Gantt With Unlimited Height</h3>
         <Gantt
+          className="gantt-chart"
           tasks={this.state.tasks}
           viewMode={this.state.view}
           onDateChange={this.handleTaskChange}

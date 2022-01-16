@@ -4,8 +4,6 @@ import GanttDay from './day/GanttDay';
 function MyGantt() {
     return (
         <>
-        {/* <GanttDay /> */}
-        {/* <MyTest /> */}
         <GanttDay />
         </>
     )
