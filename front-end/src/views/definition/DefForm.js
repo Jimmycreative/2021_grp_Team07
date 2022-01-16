@@ -1,5 +1,5 @@
-import GanttDay from "../gantt/day/GanttDay"
 import React from 'react';
+import GanttDay from 'views/gantt/day/GanttDay';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { Form, FormGroup, Input, Label } from 'reactstrap';
 import {
