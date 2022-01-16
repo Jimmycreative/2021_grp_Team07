@@ -22,7 +22,14 @@ class DefForm extends React.Component {
             modal : false,
             selectedOption:"Basic Type",
             scheduleName:"New Schedule",
-            description:""
+            description:"",
+            script:"",
+            user_json:{
+                timelength:-1,
+                result:{}
+            },
+            uuid:""
+
         };
         this.toggle = this.toggle.bind(this);
     }
@@ -53,10 +60,39 @@ class DefForm extends React.Component {
         })
         console.log(this.state.description)
     };
-    
+  
+    //invoke /getuuid and /getres (轮询)
+    runModel() {}
 
-
-  runModel() {}
+    //invoke /saveSchedule
+    saveSchedule(){
+        var mydata={
+            name:this.state.scheduleName,
+            script:this.state.script,
+            timelength:this.state.user_json==null?-1:this.state.user_json.timelength,
+            result:this.state.user_json==null?"":this.state.user_json.result,
+            //0 for new, 1 for compelete, -1 for err
+            status:this.state.user_json==null?-1:0,
+            errlog:"",
+            description:this.state.description,
+            uuid:this.state.uuid,
+            //uid TODO
+            uid:this.state.uid
+        }
+        fetch('/saveSchedule',{
+          method:'POST',
+          data:mydata,
+          headers:{
+            'Content-Type':'application/json;charset=UTF-8'
+          },
+          mode:'cors',
+          cache:'default'
+        })
+         .then(res =>res.json())
+         .then((data) => {
+           console.log(data)
+         })
+      }
 
 
 

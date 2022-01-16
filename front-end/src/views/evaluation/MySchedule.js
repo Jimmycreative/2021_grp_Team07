@@ -27,7 +27,29 @@ class MySchedule extends Component {
           page: 0,
           pageSize: 20
         };
-      }
+    }
+    //invoke /getAllSchedules
+    //planner 0, manager 1
+    getAllSchedules () {
+        var mydata={
+            skip:this.state.pageSize*(this.state.page-1),
+            uid:this.state.script,
+            role: this.state.script
+        }
+        fetch('/getAllSchedules',{
+          method:'POST',
+          data:mydata,
+          headers:{
+            'Content-Type':'application/json;charset=UTF-8'
+          },
+          mode:'cors',
+          cache:'default'
+        })
+         .then(res =>res.json())
+         .then((data) => {
+           console.log(data)
+         })
+    }
 
     render() {
         // const { isLoaded, pageItems, items, page, pageSize } = this.state;
