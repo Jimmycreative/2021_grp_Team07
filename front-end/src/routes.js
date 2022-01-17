@@ -21,7 +21,9 @@ import * as RiIcons from 'react-icons/ri';
 
 import Profile from "views/profile/Profile";
 import Home from "views/Home";
-import Invitation from "views/assignment/manager/Invitation"
+import MyGantt from 'views/gantt/GanttChart';
+import UserManual from "views/userManual/UserManual";
+import Invitation from "views/assignment/manager/Invitation";
 import ManagerAssign from "views/assignment/manager/ManagerAssign";
 import PlannerAssign from "views/assignment/planner/PlannerAssign";
 import DefForm from "views/definition/DefForm";
@@ -51,7 +53,15 @@ var routes = [
     path: "/home",
     name: "Home",
     icon: "nc-icon nc-bank",
-    component: Home,
+    component: MyGantt,
+    layout: "/admin",
+    toView:true
+  },
+  {
+    path: "/usermanual",
+    name: "User Manual",
+    icon: "nc-icon nc-map-big",
+    component: UserManual,
     layout: "/admin",
     toView:true
   },
@@ -83,7 +93,7 @@ var routes = [
       },
       {
         path: "/invitation",
-        name: "Invatation",
+        name: "Invitation",
         icon: "nc-icon nc-badge",
         component: Invitation,
         layout: "/admin",

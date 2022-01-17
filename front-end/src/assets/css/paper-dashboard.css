@@ -1443,7 +1443,7 @@ h1, .h1 {
   margin-bottom: 30px; }
   h1 small, .h1 small {
     font-weight: 700;
-    text-transform: uppercase;
+    /* text-transform: uppercase; */
     opacity: .8; }
 
 h2, .h2 {
@@ -1473,7 +1473,8 @@ h5, .h5 {
 h6, .h6 {
   font-size: 1em;
   font-weight: 700;
-  text-transform: uppercase; }
+  /* text-transform: uppercase;  */
+}
 
 p.description {
   font-size: 1.14em; }
@@ -1538,7 +1539,8 @@ a.text-gray:focus, a.text-gray:hover {
   .blockquote small {
     color: #66615B;
     font-size: 0.8571em;
-    text-transform: uppercase; }
+    /* text-transform: uppercase;  */
+  }
   .blockquote.blockquote-primary {
     border-color: #51cbce;
     color: #51cbce; }
@@ -3030,7 +3032,7 @@ License - nucleoapp.com/license/
   font-size: 14px;
   font-weight: 700;
   padding-bottom: 0;
-  text-transform: uppercase;
+  /* text-transform: uppercase; */
   border: 0; }
 
 .table .radio,
@@ -3082,7 +3084,8 @@ License - nucleoapp.com/license/
 
 .table-shopping > thead > tr > th {
   font-size: 1em;
-  text-transform: uppercase; }
+  /* text-transform: uppercase;  */
+}
 
 .table-shopping > tbody > tr > td {
   font-size: 1em; }
@@ -3199,7 +3202,7 @@ License - nucleoapp.com/license/
       display: block;
       text-decoration: none;
       position: relative;
-      text-transform: uppercase;
+      /* text-transform: uppercase; */
       cursor: pointer;
       font-size: 12px;
       padding: 10px 8px;
@@ -3299,7 +3302,7 @@ License - nucleoapp.com/license/
       font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
     .sidebar .logo .simple-text,
     .off-canvas-sidebar .logo .simple-text {
-      text-transform: uppercase;
+      /* text-transform: uppercase; */
       padding: 0.5rem 0;
       display: block;
       white-space: nowrap;
@@ -3536,7 +3539,7 @@ License - nucleoapp.com/license/
         color: inherit;
         padding: 0.5rem;
         font-size: 0.8571em;
-        text-transform: uppercase;
+        /* text-transform: uppercase; */
         text-decoration: none; }
         .footer ul li a:hover {
           text-decoration: none; }
@@ -3654,7 +3657,8 @@ License - nucleoapp.com/license/
     font-size: 12px;
     font-weight: 600;
     text-align: center;
-    text-transform: uppercase; }
+    /* text-transform: uppercase;  */
+  }
   .fixed-plugin .adjustments-line p {
     float: left;
     display: inline-block;
