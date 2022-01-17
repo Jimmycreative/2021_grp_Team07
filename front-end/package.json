@@ -51,7 +51,6 @@
     "not ie <= 11",
     "not op_mini all"
   ],
-  "optionalDependencies": {},
   "devDependencies": {
     "gulp": "4.0.2",
     "gulp-append-prepend": "1.0.9"
