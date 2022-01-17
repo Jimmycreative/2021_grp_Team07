@@ -1,45 +1,47 @@
-import React, { useState, useEffect } from "react";
-import APIService from './ApiService'
-import { useHistory } from 'react-router-dom';
+import React, { useState} from "react";
+import { useHistory } from "react-router-dom";
 
 function Login (){
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const history = useHistory();
-    
-      useEffect(() => {
-        fetch("/login",{
-          headers : { 
-            
-            'Accept': 'application/json'
-           }
-        }).then(response=>{
-            if(response.ok){
-                return response.json()
-                }
-            }
-            
-        ).then(
-            data=>{
-                if(data["isLogin"]===1){
-                  console.log(data)
-                  history.push("/Main")
-                }
-                
+      const [username, setUsername] = useState('')
+      const [password, setPassword] = useState('')
+      const history = useHistory()
 
-            }
-        )
-      });
+      const insertData= (body)=>{
+        return fetch("/login",{
+              'method':'POST',
+              cache: "no-cache",
+              headers : { 
+                'Content-Type': 'application/json'
+          
+          },
+          body:JSON.stringify(body)
+        })
+      .then(response=>{
+        if(response.ok){
+          return response.json()
+          }
+        }
+        
+      ).then(
+        data=>{
+          if(data["code"]===1){
+            console.log(data)
+            history.push("/main")
+          }
+          
+        }
+      )
+      .catch(error => console.log(error))
+      }
       const handleSubmit = (e) => {
         e.preventDefault()
         console.log(username)
         console.log(password)
-        APIService.InsertData({username,password})
+        insertData({username,password})
         
         setUsername('')
         setPassword('')
        
-
       }
     
     return (
