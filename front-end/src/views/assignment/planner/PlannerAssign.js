@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React from 'react';
 import "./PlannerAssign.css";
 import "./GetMessage";
@@ -53,3 +54,16 @@ export default function PlannerAssign() {
     </>
   );
 }
+=======
+import React from 'react';
+
+function PlannerAssign() {
+    return (
+        <>
+        PlannerAssign
+        </>
+    )
+}
+
+export default PlannerAssign;
+>>>>>>> 054d76b2b31493bfd2d90549da3861cd9ac59c89

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React from 'react';
 import './ManagerAssign.css';
 import Plannerdata from "./infoPlanner.json";
@@ -132,3 +133,36 @@ function ManagerAssign() {
   
   export default ManagerAssign;
   
+=======
+import React from 'react';
+
+
+function ManagerAssign() {
+  return (
+    <>
+    <h1 style={{marginTop: "50px"}}>You can assgin schedules to planner!</h1>
+    
+    <div className ="container border" style={{marginTop: "50px", width:'50%'}} >
+      <form className='row' style={{margin:"25px 85px 75px 100px"}}>
+        <label>Title</label>
+        <input type= 'text' name="title"/>
+        
+        <label>E-mail</label>
+        <input type= 'text' name="email" className='form-control'/>
+        
+        <label>Message</label>
+        <textarea name = 'message form' rows='6' className='form-control'/>
+        <input
+          type ='submit'
+          value = 'Send'
+          class="btn btn-outline-primary"
+          style={{marginTop:'30px'}}/>
+          
+      </form>
+    </div>
+    </>
+  );
+}
+
+export default ManagerAssign;
+>>>>>>> 054d76b2b31493bfd2d90549da3861cd9ac59c89
