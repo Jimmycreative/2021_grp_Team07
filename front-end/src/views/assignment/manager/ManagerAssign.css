@@ -1,0 +1,85 @@
+.Assign{
+    height: 100%;
+    display: flex;
+    margin-top: 5%;
+}
+
+.content{
+    flex: 8;
+    margin-top: 5%;
+    margin-left: 10%;
+}
+
+.titleform{
+
+    margin-left: 28%;
+    font-weight: bold;
+    font-size: large;
+
+    
+
+}
+.SearchUser{
+    flex: 3.5;
+    border-right: 1px solid gray;
+    margin-left: 3%;
+    overflow: hidden;
+    overflow-y: scroll;
+}
+
+.FuncSearch{
+    padding: 10px 0;
+    border: none;
+    color: black;
+    width: 70%;
+    margin-left: 10%;
+   
+   
+   
+}
+
+.plannerName:hover{
+    background-color: aquamarine;
+    
+}
+
+.plannerName{
+    display: flex;
+    padding: 2%;
+    cursor: pointer;
+    padding: 10px 0;
+    width: 70%;
+    margin-left: 10%;
+    margin-top: 10px;
+    
+   
+}
+
+.UserName{
+    font-weight: bold;
+}
+
+.titleSearchBox{
+    margin-left: 10%;
+    font-weight: bold;
+    font-size: large;
+}
+
+.SearchUserBox, .content{
+    padding: 10px;
+
+}
+
+.button{
+    margin: auto;
+    display:block;
+}
+
+
+
+
+
+
+
+
+

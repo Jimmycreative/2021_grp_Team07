@@ -1,0 +1,50 @@
+.PlannerAssginform{
+    display: flex;
+    margin-top: 5%;
+    height:100%;
+   
+   
+}
+
+.FromManager{
+    flex:2.0;
+    border-right: 1px solid gray;
+    
+}
+
+
+.ViewMessage{
+    flex:4.5;
+   
+}
+
+.getMessageBox,.ViewMessageBox{
+    padding: 10px;
+    
+    
+}
+
+.ViewMessageBox{
+    font-weight: bold;
+    font-size: large;
+    margin-left: 40%;
+    margin-top: 5%;
+}
+
+.getMessageBox{
+    font-weight: bold;
+    font-size: large;
+    margin-left:30%;
+    margin-top: 9%;
+
+}
+
+.viewtitle{
+    font-size: medium;
+    margin-left: 30%;
+}
+
+
+
+
+
