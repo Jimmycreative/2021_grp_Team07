@@ -258,7 +258,11 @@
   margin-top: -320px;
   margin-right: 30px;
 }
+.gantt-chart{
 
+  margin-top: -150px;
+  
+}
 .required-field {
   display: flex;
   flex-direction: row;

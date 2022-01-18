@@ -53,7 +53,7 @@ var routes = [
     path: "/home",
     name: "Home",
     icon: "nc-icon nc-bank",
-    component: MyGantt,
+    component: Home,
     layout: "/admin",
     toView:true
   },

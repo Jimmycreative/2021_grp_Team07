@@ -9,7 +9,7 @@ class GanttDay extends React.Component {
     this.state = {
       view : ViewMode.Day,
       tasks: initTasks(),
-      isChecked: true,
+      isChecked: false,
       columnWidth: 60,
       showBar: this.props.showBar
     };
@@ -90,29 +90,35 @@ class GanttDay extends React.Component {
       <div>
         <div></div>
         <div className="view-container">
-          <button className="view-btn" onClick={()=>this.onViewModeChange(ViewMode.Day)}>
-            Day
-          </button>
-          
-          <button className="view-btn" onClick={()=>this.onViewModeChange(ViewMode.Week)}>
-            Week
-          </button>
-          
-          <button className="view-btn" onClick={()=>this.onViewModeChange(ViewMode.Month)}>
-            Month
-          </button>
-          
-          <div className="view-switch">
-            <label className="view-switch-toggle">
-              <input
-                type="checkbox"
-                defaultChecked={this.state.isChecked}
-                onClick={this.onViewListChange}
-              />
-              <span className="view-slider" />
-            </label>
-            Show Task List
-          </div>
+          {this.state.showBar &&
+            <button className="view-btn" onClick={()=>this.onViewModeChange(ViewMode.Day)}>
+              Day
+            </button>
+          }
+          {this.state.showBar &&
+            <button className="view-btn" onClick={()=>this.onViewModeChange(ViewMode.Week)}>
+              Week
+            </button>
+          }
+          {this.state.showBar &&
+            <button className="view-btn" onClick={()=>this.onViewModeChange(ViewMode.Month)}>
+              Month
+            </button>
+          }
+          {this.state.showBar &&
+            <div className="view-switch">
+              <label className="view-switch-toggle">
+                <input
+                  type="checkbox"
+                  defaultChecked={this.state.isChecked}
+                  onClick={this.onViewListChange}
+                />
+                <span className="view-slider" />
+                
+              </label>
+              Show Task List
+            </div>
+          }
           
       </div>
         <Gantt

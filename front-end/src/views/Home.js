@@ -1,11 +1,11 @@
 // Home Page
 import React from 'react';
+import GanttDay from 'views/gantt/day/GanttDay';
 
-function Home() {
+function Home(props) {
     return (
-        <>
-        Home
-        </>
+       
+        <GanttDay showBar = {true} />
     )
 }
 

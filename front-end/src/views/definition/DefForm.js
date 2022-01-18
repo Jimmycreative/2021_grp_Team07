@@ -1,7 +1,10 @@
 import React from 'react';
 import GanttDay from 'views/gantt/day/GanttDay';
+import CodeEditor from './controls/CodeEditor';
+
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { Form, FormGroup, Input, Label } from 'reactstrap';
+import { FormControl } from 'react-bootstrap';
 import {
     Card,
     CardHeader,
@@ -28,10 +31,22 @@ class DefForm extends React.Component {
                 timelength:-1,
                 result:{}
             },
-            uuid:""
+            uuid:"",
+            task: {
+                lang: 'javascript',
+                code: '',
+              },
+              response: {
+                status: '0',
+                message: '',
+              },
+
 
         };
         this.toggle = this.toggle.bind(this);
+        this.handleRun = this.handleRun.bind(this);
+        this.updateSolution = this.updateSolution.bind(this);
+        this.handleCodeChange = this.handleCodeChange.bind(this);
     }
 
     toggle() {
@@ -60,7 +75,81 @@ class DefForm extends React.Component {
         })
         console.log(this.state.description)
     };
-  
+    sendUuid(uuid) {
+        return fetch("/getres",{
+            'method':'POST',
+            cache: "no-cache",
+            headers : { 
+              'Content-Type': 'application/json'
+        
+        },
+        body:JSON.stringify(uuid)
+      }).then(response=>{
+
+            if(response.ok){
+            return response.json()
+        }
+      }
+      
+    ).then(
+      data=>{
+        if(data["code"]===1){
+          
+          
+        }
+        
+      }
+    )
+    .catch(error => console.log(error))
+    }
+    handleCodeChange(code) {
+        const { task } = this.state;
+        task.code = code;
+        console.log(code);
+        return this.setState({ task });
+      }
+    
+      handleRun(event) {
+        event.preventDefault();
+        return fetch("/getuuid",{
+            'method':'POST',
+            cache: "no-cache",
+            headers : { 
+              'Content-Type': 'application/json'
+        
+        },
+        body:JSON.stringify(this.state.task.code)
+      }).then(response=>{
+
+            if(response.ok){
+            return response.json()
+        }
+      }
+      
+    ).then(
+      data=>{
+        if(data["code"]===1){
+          this.sendUuid(data["data"])
+          
+        }
+        
+      }
+    )
+    .catch(error => console.log(error))
+    }
+    
+      updateSolution(event) {
+        // event.preventDefault();
+        console.log(this.state.task);
+        const field = event.target.name;
+        const { task } = this.state;
+        task[field] = event.target.value;
+        return this.setState({ task });
+      }
+    
+      
+      
+    
     //invoke /getuuid and /getres (轮询)
     runModel() {}
 
@@ -246,19 +335,25 @@ class DefForm extends React.Component {
                                 >
                                 Code Area
                             </CardSubtitle>
-                            <div>
-                                <Button
-                                    round
-                                    className="plain-btn"
-                                    onClick={this.runModel}
-                                    >
-                                    <i className="nc-icon nc-button-play"></i>
-                                </Button>
-                                <CardText>
-                                    where the code goes
-                                </CardText>
+                            <Form horizontal>
+                                <FormGroup>
+                                    
+                                    <Button round className="plain-btn" onClick={this.handleRun}>
+                                        Run
+                                        <i className="nc-icon nc-button-play"></i>
+                                    </Button>
+                                    
+                                </FormGroup>
+                                <FormGroup >
+                                    <Col sm={12}>
+                                    <CodeEditor onChange={this.handleCodeChange} code={this.state.task.code} />
+                                    </Col>
+                                </FormGroup>
                                 
-                            </div>
+                            
+                                
+                            </Form>
+                    
                         </CardBody>
                     </Card>
                     
@@ -276,7 +371,21 @@ class DefForm extends React.Component {
                             <CardText>
                                 where the output goes
                             </CardText>
-                            <GanttDay showBar={false} />
+                            
+                                <FormGroup >
+                                    
+                                    <FormControl
+                                    readOnly
+                                    type="text"
+                                    style={{height:"100px"}}
+                                    onChange={this.handleChange}
+                                    />
+                                    
+                                </FormGroup>
+                            <div className="gantt-chart">
+                                <GanttDay showBar={false} />
+                            </div>
+                            
                             <Button>
                                 Accept
                             </Button>
