@@ -20,11 +20,23 @@ function Profile() {
   const [click,setClick] =useState(true);
   const handleClick = () => setClick(!click);
   const [userName,setUserName] =useState(''); 
+  
+
+  const [change, setChange] = useState(false);
+  const handleChange = () => {
+    setChange(true);
+    setClick(!click);
+  }
+
+  //Window.localStorage.setItem('1',userName)
+  //getItem, removeItem, windowStorage.clear(); 
 
   const usNameHandler = (e) =>{
     setUserName(e.target.value)
   }
 
+  
+  
 
   
     //temporary
@@ -59,19 +71,20 @@ function Profile() {
               <p></p>
               <CardBody style={click ? {position: "relative", top:"15%"} : {position: "relative", top:"9.3%"}}>
                 <div className="author">
-                  <a href="#pablo" onClick={(e) => e.preventDefault()} style={{textDecoration:"none"}}>
+                  <a href="#pablo" 
+                  onClick={(e) => e.preventDefault()} style={{textDecoration:"none"}}>
                     <h4 className="title" ><span className="description" style={{fontSize:"1rem"}}>Name: </span>  {data.name} </h4> 
                      </a>
                    <h5 className="title" style={{color:"black"}}><span className="description" style={{fontSize:"1rem"}}>Role:</span> Planner </h5> 
                    {/* this will be changed to data.role or something */}
                  
-                  {click && <><p style={{color:"gray",fontSize:"1.3rem"}}><span className="description" style={{fontSize:"1rem"}}>Username:</span> {data.username} 
+                  {click && <><p style={{color:"gray",fontSize:"1.3rem"}}><span className="description" style={{fontSize:"1rem"}}>Username:</span> {change ? userName : data.username}
                   <i className="nc-icon nc-settings-gear-65" style={{position:'relative', textDecoration:"none",left:"1%",top:"2%"}} onClick={handleClick}/></p>
                  </> }
                    
                 {!click &&<>
-                  <p className="description" style={{fontSize:"1rem"}}>Change username: <input type="text" className="changeUsername" placeholder={data.username} onChange={usNameHandler}/></p>
-                  <Button  style={{backgroundColor:"rgb(82,203,206)" ,position:"relative"}} onClick={handleClick}>Change</Button>
+                  <p className="description" style={{fontSize:"1rem"}}>Change username: <input type="text" className="changeUsername" placeholder={change ? userName : data.username} onChange={usNameHandler}/></p>
+                  <Button  style={{backgroundColor:"rgb(82,203,206)" ,position:"relative"}} onClick={handleChange}>Change</Button>
                   <Button style={{backgroundColor:"rgb(164,108,87)",position:"relative"}} onClick={handleClick} >Cancel</Button>
                   </>}
 

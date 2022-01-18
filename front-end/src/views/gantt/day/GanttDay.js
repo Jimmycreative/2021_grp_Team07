@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { ViewMode, Gantt } from "gantt-task-react";
-import { getStartEndDateForProject, initTasks } from "../../../gantt/lib/helper";
+import React from "react";
+import { Task, ViewMode, Gantt } from "gantt-task-react";
+import { getStartEndDateForProject, initTasks } from "../../../gantt/helper";
 import "gantt-task-react/dist/index.css";
 
 class GanttDay extends React.Component {
@@ -19,7 +19,7 @@ class GanttDay extends React.Component {
   setTasks = (myTask) => {
     console.log(myTask)
     this.setState({
-      task:myTask
+      tasks:myTask
     })
   }
   onViewModeChange = (viewMode) => {
@@ -82,7 +82,7 @@ class GanttDay extends React.Component {
   };
   
   handleExpanderClick = (task) => {
-    console.log("On expander click Id:" + task.id);
+    this.setTasks(this.state.tasks.map(t => (t.id === task.id ? task : t)));
   };
 
   render() {
@@ -90,6 +90,7 @@ class GanttDay extends React.Component {
       <div>
         <div></div>
         <div className="view-container">
+
           {this.state.showBar &&
             <button className="view-btn" onClick={()=>this.onViewModeChange(ViewMode.Day)}>
               Day
@@ -119,6 +120,7 @@ class GanttDay extends React.Component {
               Show Task List
             </div>
           }
+
           
       </div>
         <Gantt

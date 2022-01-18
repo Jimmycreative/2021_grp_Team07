@@ -1,0 +1,25 @@
+.content{
+    margin-bottom: 40%;
+    margin-right: 5%;
+   
+}
+
+
+.author{
+    display: flex;
+    margin-top : 5%;
+    margin-left: 10%;
+    cursor: pointer;
+
+
+}
+
+.ManagerName:hover{
+    background-color: aquamarine;
+}
+
+.card-user{
+    margin-top: 50%;
+}
+
+

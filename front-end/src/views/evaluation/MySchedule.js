@@ -13,24 +13,42 @@ import {
   } from "reactstrap";
 import ScheduleTable from "./ScheduleTable";
 import sample_data from '../../variables/data/saved_data.json';
+import "./mySchedule.css"
 
 class MySchedule extends Component {
     constructor(props) {
         super(props);
+        this.dataSet = [...Array(Math.ceil(500 + Math.random() * 500))].map(
+            (a, i) => "Record " + (i + 1)
+          );
+        this.pageSize = 10;
+        this.pagesCount = Math.ceil(sample_data.length / this.pageSize);
+        
     
         this.domain = `http://127.0.0.1:8000`;
         this.state = {
-          isLoaded: false,
-    
-          items: sample_data, //Customer Debt Items,
-          pageItems: [],
-          page: 0,
-          pageSize: 20
+            currentPage: 0,
+            searchSchedule:""
         };
     }
-    //invoke /getAllSchedules
-    //planner 0, manager 1
-    getAllSchedules () {
+
+    handleClick(e, index) {
+        e.preventDefault();
+        this.setState({
+          currentPage: index
+        });
+        
+    }
+
+    setSearchSchedule(schedule) {
+        this.setState({
+            searchSchedule: schedule
+          }); 
+    }
+    
+      //invoke /getAllSchedules
+      //planner 0, manager 1
+      getAllSchedules () {
         var mydata={
             skip:this.state.pageSize*(this.state.page-1),
             uid:this.state.script,
@@ -52,32 +70,89 @@ class MySchedule extends Component {
     }
 
     render() {
-        // const { isLoaded, pageItems, items, page, pageSize } = this.state;
-        // const pages = Math.ceil(items.length / page);
-        // const paginationItems = Array(pages).fill('').map((i, index) => (
-        //     <PaginationItem active={page === index}>
-        //         <PaginationLink tag="button" onClick={() => this.setState({page: index })}>2</PaginationLink>
-        //     </PaginationItem>
-        //     ));
+        const { currentPage } = this.state;
         return (
                 <div>
-                    <ScheduleTable />
-                    <nav>
-                        {/* <Pagination>
-                            <PaginationItem onClick={() => this.setState(prev => ({page: prev.page -1}))}>
-                                <PaginationLink>
-                                    Back
-                                </PaginationLink>
-                            </PaginationItem>
+                    <React.Fragment>
+                        <h1 class = "text-center" style={{marginTop:100,marginBottom:40,width:"90%"}}>My Schedules</h1>
+                        <input
+                            type = "text"
+                            placeholder='Search'
+                            className='form-control'
+                            style={{marginTop:60,marginBottom:40,marginLeft:40,width:"90%"}}
+                            onChange={(e) => {
+                                this.setSearchSchedule(e.target.value)
+                        }}/>
+                        
+                        <Table>
+                            <thead className="text-primary">
+                                <tr>
+                                    <th>Schedule</th>
+                                    <th>Create Time</th>
+                                    <th>Status</th>
+                                    <th>End Time</th>
+                                    <th>Gantt Chart</th>
+                                </tr>
+                            </thead>
                             
-                            <PaginationItem onClick={() => this.setState(prev => ({page: prev.page + 1}))}>
-                                <PaginationLink next tag="button">
-                                    Next
-                                </PaginationLink>
-                            </PaginationItem>
-                            <PaginationItem></PaginationItem>
-                        </Pagination> */}
-                    </nav>
+                            <tbody>
+                                {sample_data.filter((val)=>{
+                                    if(this.state.searchSchedule === ""){
+                                        return val;
+                                    }
+                                    else if(
+                                        val.first_name.toLowerCase().includes(this.state.searchSchedule.toLowerCase())||
+                                        val.project.toLowerCase().includes(this.state.searchSchedule.toLowerCase())
+                                        )
+                                        {
+                                            console.log(val)
+                                            return val;
+                                        }
+                                    }).slice(currentPage * this.pageSize, (currentPage + 1) * this.pageSize)
+                                    .map((m)=>(
+                                        <tr>
+                                            <td>{m.first_name}</td>
+                                            <td>{m.project}</td>
+                                            <td>{m.status}</td>
+                                            <td>{m.endtime}</td>
+                                            <td>
+                                                <Button className="table-btn">Gantt Chart</Button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                            </tbody>
+                        </Table>
+                        <div className="pagination-wrapper">
+                            <Pagination aria-label="Page navigation example">
+                                <PaginationItem disabled={currentPage <= 0}>
+                                    <PaginationLink
+                                        onClick={e => this.handleClick(e, currentPage - 1)}
+                                        previous
+                                        href="#"
+                                    />
+                                </PaginationItem>
+                                
+                                {[...Array(this.pagesCount)].map((page, i) =>
+                                    <PaginationItem active={i === currentPage} key={i}>
+                                        <PaginationLink onClick={e => this.handleClick(e, i)} href="#">
+                                            {i + 1}
+                                        </PaginationLink>
+                                    </PaginationItem>
+                                )}
+                                
+                                <PaginationItem disabled={currentPage >= this.pagesCount - 1}>
+                                    
+                                    <PaginationLink
+                                        onClick={e => this.handleClick(e, currentPage + 1)}
+                                        next
+                                        href="#"
+                                    />
+                                </PaginationItem>
+                            </Pagination>
+                        </div>
+                        
+                    </React.Fragment>
+                    {/* <ScheduleTable /> */}
                 </div>
             );
     }
