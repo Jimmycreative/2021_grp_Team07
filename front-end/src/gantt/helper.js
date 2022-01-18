@@ -19,7 +19,7 @@ export function initTasks() {
         currentDate.getFullYear(),
         currentDate.getMonth(),
         2,
-        12,
+        1,
         28
       ),
       name: "- Idea",
