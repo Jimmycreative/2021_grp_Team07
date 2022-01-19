@@ -14,20 +14,13 @@ import secrets
 import string
 
 app = Flask(__name__)
+CORS(app, supports_credentials=True)
 
-
-#app.secret_key="OF97y32PdR6bTUsZn89i"
-# 跨域支持
-def after_request(resp):
-    resp.headers['Access-Control-Allow-Origin'] = '*'
-    return resp
-
-app.after_request(after_request)
 database = mysql.connector.connect(
   host="127.0.0.1",
   user="root",
-  password="12345678",
-  database="try"
+  password="",
+  database="grp"
 )
 login_info = {
     "code": -1,
@@ -122,17 +115,13 @@ def modify_token(uses,token):
 #Below for api
 @app.route('/getuuid', methods = ['POST']) #for receiving the data from front end. After front end finish the definition page, api will be created in the frontend.
 def get_script():
-    
         data = request.json
         print(data)
         if data:
-            print(data)
-            #string = data["code"]
-            #print(string)
             uuid = post_script(data) #send the data to the algorithm. It should have parameter string, but for testing the connectivity I defined in the post_script
-            
             return uuid
-def post_script(string): #string will replace the variable s below
+
+def post_script(data): #string will replace the variable s below
 
     url = 'http://localhost:8083/home/getuuid' 
     s = '''
@@ -149,7 +138,6 @@ def post_script(string): #string will replace the variable s below
         //model.runMulti(jobs)
         return model.runBasic(jobs)
         '''
-    data = {"code":string}
     r = requests.post(url, data=data)  
     uuid = json.loads(r.text)
     return uuid
@@ -158,8 +146,7 @@ def post_uid():
     data = request.json
     if data:
         url = 'http://localhost:8083/home/getres'
-        pass_data = {"uuid":data["data"]}
-        r = requests.post(url, data=pass_data)  
+        r = requests.post(url, data=data)  
         algorithm_result = json.loads(r.text)
         return algorithm_result
 
@@ -280,7 +267,7 @@ def genToken():
 
 @app.route("/")
 def hello_world():
-    post_script() #right no it's used to test the connectivity between backend and the algorithm
+    # post_script() #right no it's used to test the connectivity between backend and the algorithm
     return "hello world"
 
 

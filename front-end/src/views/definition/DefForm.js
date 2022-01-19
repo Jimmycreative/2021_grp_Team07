@@ -41,9 +41,9 @@ class DefForm extends React.Component {
                 status: '0',
                 message: '',
               },
-
-
+              success:false
         };
+        this.domain="http://127.0.0.1:5000"
         this.toggle = this.toggle.bind(this);
         
         this.updateSolution = this.updateSolution.bind(this);
@@ -76,35 +76,7 @@ class DefForm extends React.Component {
         })
         console.log(this.state.description)
     };
-    sendUuid(uuid) {
-        return fetch("http://127.0.0.1:5000/getres",{
-            'method':'POST',
-            cache: "no-cache",
-            headers : { 
-              'Content-Type': 'application/json'
-        
-        },
-        body:JSON.stringify(uuid)
-      }).then(response=>{
-
-            if(response.ok){
-            return response.json()
-        }
-      }
-      
-    ).then(
-      data=>{
-        if(data["code"]===1){
-          
-            this.setState({
-                result: data["data"]
-              })
-        }
-        
-      }
-    )
-    .catch(error => console.log(error))
-    }
+    
     handleCodeChange(code) {
         const { task } = this.state;
         task.code = code;
@@ -115,31 +87,67 @@ class DefForm extends React.Component {
     
       handleRun = event=> {
         event.preventDefault();
-        fetch("/getuuid",{
-            'method':'POST',
-            cache: "no-cache",
-            headers : { 
-              'Content-Type': 'application/json'
-        
-        },
-        body:JSON.stringify({"code":1,"data":this.state.task.code})
-      }).then(response=>{
-            console.log(response)  
-            if(response.ok){
-            return response.json()
+        var mydata={
+            script:this.state.task.code
         }
-      }
-      
-    ).then(
-        data=>{
-          if(data["code"]===1){
-            this.sendUuid(data["data"])
-            
-          }
+        console.log(mydata)
+        fetch(this.domain+"/getuuid", {
+            body: JSON.stringify(mydata),
+            cache: 'no-cache',
+            headers: new Headers({
+                'Content-Type': 'application/json'
+              }),
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, cors, *same-origin
+            redirect: 'follow', // manual, *follow, error
+            referrer: 'no-referrer', // *client, no-referrer
+          })
+          .then(response => {
+              
+            if(response.ok) {
+                return response.json();
+            }
+        }) .then(
+            data=>{
+                console.log("line 142", data)
+                if(data.code===1){
+                    this.sendUuid(data.data)
+                    //轮询呢
+                }
           
-        }
-    
+        } 
     ).catch(error => console.log(error))
+    }
+    
+    sendUuid(id) {
+        var mydata={
+            uuid:id
+        }
+        console.log(mydata)
+        fetch(this.domain+"/getres", {
+            body: JSON.stringify(mydata),
+            cache: 'no-cache',
+            headers: new Headers({
+                'Content-Type': 'application/json'
+              }),
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, cors, *same-origin
+            redirect: 'follow', // manual, *follow, error
+            referrer: 'no-referrer', // *client, no-referrer
+          }).then(response=>{
+              if(response.ok){
+                  return response.json()
+                }
+            }).then(
+            data=>{
+                console.log("line 143", data)
+                if(data.code===1){
+                    this.setState({
+                        result: data.data
+                    })
+                }
+            })
+        .catch(error => console.log(error))
     }
     
       updateSolution(event) {

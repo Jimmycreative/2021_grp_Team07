@@ -19,10 +19,10 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `unnc_team_2021-07-p16`
+-- Database: `grp`
 --
-CREATE DATABASE IF NOT EXISTS `unnc_team_2021-07-p16` DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
-USE `unnc_team_2021-07-p16`;
+CREATE DATABASE IF NOT EXISTS `grp` DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
+USE `grp`;
 
 -- --------------------------------------------------------
 
