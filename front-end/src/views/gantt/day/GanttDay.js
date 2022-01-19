@@ -1,5 +1,5 @@
 import React from "react";
-import { Task, ViewMode, Gantt } from "gantt-task-react";
+import { ViewMode, Gantt } from "gantt-task-react";
 import { getStartEndDateForProject, initTasks } from "../../../gantt/helper";
 import "gantt-task-react/dist/index.css";
 

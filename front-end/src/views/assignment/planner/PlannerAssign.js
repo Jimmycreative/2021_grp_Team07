@@ -3,22 +3,6 @@ import "./PlannerAssign.css";
 import "./GetMessage";
 import GetMessage from './GetMessage';
 import ViewMessage from './ViewMessage';
-import { BrowserRouter as Router,Route, Switch, Link } from 'react-router-dom/cjs/react-router-dom.min';
-import {
-  Button,
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
-  CardTitle,
-  FormGroup,
-  Form,
-  Input,
-  Row,
-  Col,
- 
-  
-} from "reactstrap";
 
 
 export default function PlannerAssign() {

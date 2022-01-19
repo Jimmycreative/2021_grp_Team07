@@ -7,14 +7,11 @@ import { Form, FormGroup, Input, Label } from 'reactstrap';
 import { FormControl } from 'react-bootstrap';
 import {
     Card,
-    CardHeader,
     CardBody,
     CardTitle,
     CardSubtitle,
     CardText,
     CardGroup,
-    Table,
-    Row,
     Col,
   } from "reactstrap";
 

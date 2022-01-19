@@ -1,17 +1,11 @@
-import React, { Component, useState } from "react";
+import React, { Component } from "react";
 import {
     Button,
-    Card,
-    CardBody,
-    CardHeader,
-    Col,
     Pagination,
     PaginationItem,
     PaginationLink,
-    Row,
     Table,
   } from "reactstrap";
-import ScheduleTable from "./ScheduleTable";
 import sample_data from '../../variables/data/saved_data.json';
 import "./mySchedule.css"
 
@@ -152,7 +146,6 @@ class MySchedule extends Component {
                         </div>
                         
                     </React.Fragment>
-                    {/* <ScheduleTable /> */}
                 </div>
             );
     }

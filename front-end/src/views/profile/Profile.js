@@ -7,8 +7,6 @@ import {
     Col,
     Button
   } from "reactstrap";
-  import {Link} from 'react-router-dom';
-import User from 'views/User';
 
 // function exists(){
 // if()

@@ -1,19 +1,9 @@
 import React from "react";
-import ViewMessage from './ViewMessage';
 
 // reactstrap components
 import {
-
-
-  Button,
   Card,
-  CardHeader,
   CardBody,
-  CardFooter,
-  CardTitle,
-  FormGroup,
-  Form,
-  Input,
   Row,
   Col,
 } from "reactstrap";

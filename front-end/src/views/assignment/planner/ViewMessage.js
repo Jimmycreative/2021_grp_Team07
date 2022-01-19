@@ -1,19 +1,12 @@
 import React from 'react';
 import './ViewMessage.css';
 import {
-    Button,
     Card,
     CardHeader,
     CardBody,
-    CardFooter,
     CardTitle,
-    FormGroup,
-    Form,
-    Input,
     Row,
     Col,
-   
-    
   } from "reactstrap";
   
 
