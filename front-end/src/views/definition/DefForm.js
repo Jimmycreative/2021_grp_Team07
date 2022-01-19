@@ -32,6 +32,7 @@ class DefForm extends React.Component {
                 result:{}
             },
             uuid:"",
+            result:"",
             task: {
                 lang: 'javascript',
                 code: '',
@@ -44,7 +45,7 @@ class DefForm extends React.Component {
 
         };
         this.toggle = this.toggle.bind(this);
-        this.handleRun = this.handleRun.bind(this);
+        
         this.updateSolution = this.updateSolution.bind(this);
         this.handleCodeChange = this.handleCodeChange.bind(this);
     }
@@ -76,7 +77,7 @@ class DefForm extends React.Component {
         console.log(this.state.description)
     };
     sendUuid(uuid) {
-        return fetch("/getres",{
+        return fetch("http://127.0.0.1:5000/getres",{
             'method':'POST',
             cache: "no-cache",
             headers : { 
@@ -95,7 +96,9 @@ class DefForm extends React.Component {
       data=>{
         if(data["code"]===1){
           
-          
+            this.setState({
+                result: data["data"]
+              })
         }
         
       }
@@ -105,37 +108,38 @@ class DefForm extends React.Component {
     handleCodeChange(code) {
         const { task } = this.state;
         task.code = code;
-        console.log(code);
-        return this.setState({ task });
+        
+        this.setState({ task });
+        console.log(task.code);
       }
     
-      handleRun(event) {
+      handleRun = event=> {
         event.preventDefault();
-        return fetch("/getuuid",{
+        fetch("/getuuid",{
             'method':'POST',
             cache: "no-cache",
             headers : { 
               'Content-Type': 'application/json'
         
         },
-        body:JSON.stringify(this.state.task.code)
+        body:JSON.stringify({"code":1,"data":this.state.task.code})
       }).then(response=>{
-
+            console.log(response)  
             if(response.ok){
             return response.json()
         }
       }
       
     ).then(
-      data=>{
-        if(data["code"]===1){
-          this.sendUuid(data["data"])
+        data=>{
+          if(data["code"]===1){
+            this.sendUuid(data["data"])
+            
+          }
           
         }
-        
-      }
-    )
-    .catch(error => console.log(error))
+    
+    ).catch(error => console.log(error))
     }
     
       updateSolution(event) {
@@ -378,6 +382,7 @@ class DefForm extends React.Component {
                                     readOnly
                                     type="text"
                                     style={{height:"100px"}}
+                                    placeholder={this.state.result}
                                     onChange={this.handleChange}
                                     />
                                     
