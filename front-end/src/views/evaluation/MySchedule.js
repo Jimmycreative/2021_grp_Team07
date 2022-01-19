@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import {
     Button,
     Pagination,
@@ -6,6 +7,7 @@ import {
     PaginationLink,
     Table,
   } from "reactstrap";
+import GanttDay from "views/gantt/day/GanttDay";
 import sample_data from '../../variables/data/saved_data.json';
 import "./mySchedule.css"
 
@@ -19,12 +21,20 @@ class MySchedule extends Component {
         this.pagesCount = Math.ceil(sample_data.length / this.pageSize);
         
     
-        this.domain = `http://127.0.0.1:8000`;
+        this.domain = `http://127.0.0.1:5000`;
         this.state = {
             currentPage: 0,
-            searchSchedule:""
+            searchSchedule:"",
+            showGantt:false
         };
+        this.toggle = this.toggle.bind(this);
     }
+
+    toggle() {
+        this.setState({
+            showGantt: !this.state.showGantt
+        }); 
+      };
 
     handleClick(e, index) {
         e.preventDefault();
@@ -32,6 +42,10 @@ class MySchedule extends Component {
           currentPage: index
         });
         
+    }
+
+    componentWillMount() {
+        //this.getAllSchedules()
     }
 
     setSearchSchedule(schedule) {
@@ -43,20 +57,20 @@ class MySchedule extends Component {
       //invoke /getAllSchedules
       //planner 0, manager 1
       getAllSchedules () {
-        var mydata={
-            skip:this.state.pageSize*(this.state.page-1),
-            uid:this.state.script,
-            role: this.state.script
-        }
-        fetch('/getAllSchedules',{
-          method:'POST',
-          data:mydata,
-          headers:{
-            'Content-Type':'application/json;charset=UTF-8'
-          },
-          mode:'cors',
-          cache:'default'
-        })
+        // var mydata={
+        //     uid:this.state.script,
+        //     role: this.state.script
+        // }
+        fetch(this.domain+"/getAllSchedules", {
+            cache: 'no-cache',
+            headers: new Headers({
+                'Content-Type': 'application/json'
+            }),
+            method: 'GET', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, cors, *same-origin
+            // redirect: 'follow', // manual, *follow, error
+            // referrer: 'no-referrer', // *client, no-referrer
+          })
          .then(res =>res.json())
          .then((data) => {
            console.log(data)
@@ -110,7 +124,33 @@ class MySchedule extends Component {
                                             <td>{m.status}</td>
                                             <td>{m.endtime}</td>
                                             <td>
-                                                <Button className="table-btn">Gantt Chart</Button>
+                                                <Button
+                                                    className="table-btn"
+                                                    onClick={this.toggle}
+                                                >
+                                                    Gantt Chart
+                                                </Button>
+                                                {/* show Gantt Chart */}
+                                                <Modal
+                                                    isOpen={this.state.showGantt}
+                                                    toggle={this.toggle}
+                                                    backdrop={false}
+                                                    size="xl"
+                                                    centered
+                                                    scrollable
+                                                    className="my-modal"
+                                                    //style={{width: "120%"}}
+                                                >
+                                                    <ModalHeader toggle={this.toggle}>Type Choice</ModalHeader>
+                                                    <ModalBody>
+                                                        <GanttDay showBar={true} />
+                                                    </ModalBody>
+                                                    
+                                                    <ModalFooter>
+                                                        <Button className="cancel-btn" onClick={this.toggle}>Cancel</Button>{' '}
+                                                        <Button color="secondary" onClick={this.toggle}>Confirm</Button>
+                                                    </ModalFooter>
+                                                </Modal>
                                             </td>
                                         </tr>
                                     ))}

@@ -1,7 +1,6 @@
 # You should not import any additional modules
 # You can, however, import additional functionalities 
 # from the flask and sqlite3 modules
-import sys
 from click.types import convert_type
 from flask import Flask, render_template, request, redirect, session, url_for, flash
 import mysql.connector
@@ -12,6 +11,24 @@ import json
 import requests
 import secrets
 import string
+import  datetime
+import json
+import decimal
+
+class MyEncoder(json.JSONEncoder):
+
+    def default(self,obj):
+        if isinstance(obj,bytearray):   #返回内容如果包含bytearray类型的数据
+            return str(obj,encoding='utf-8')
+        elif isinstance(obj, bytes):
+            return str(obj, encoding='utf-8')
+        elif isinstance(obj,datetime.datetime): #返回内容如果包含datetime类型的数据
+            return obj.strftime('%Y-%m-%d %H:%M:%S')
+        elif isinstance(obj,decimal.Decimal):   #返回内容如果包含Decimal类型的数据
+            return float(obj)
+        super(MyEncoder, self).default(obj)
+
+        return json.JSONEncoder.default(self,obj)
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
@@ -27,6 +44,8 @@ login_info = {
     "message": ""
 }
 algorithm_result = {}
+
+
 
 #Below three functions are helper function
 # For generating token
@@ -150,19 +169,37 @@ def post_uid():
         algorithm_result = json.loads(r.text)
         return algorithm_result
 
-@app.route('/getAllSchedules', methods = ['POST'])
+@app.route('/getAllSchedules', methods = ['GET'])
+# 1. try catch
+# 2. format
+# 3. cursor close
 def getAllSchedule():
-    data = request.json
-    if data:
-        skip_schedule = data["skipschedule"]
-        cur = database.cursor(dictionary=True)
-        cur.execute("SELECT * FROM schedule ORDER BY startdate DESC LIMIT (%d,%d);",(skip_schedule,skip_schedule+20))
-    schedules = cur.fetchone()
-    if schedules:
-        return jsonify({"code":1, "data":schedules,"message":"Successfully get the schedules!"})
-    else:   
-        
-        return jsonify({"code":-1, "data":{},"message":"Fail to get the schedules!"})
+    res_list=[]
+    cur = database.cursor(dictionary=True)
+    # TODO exclude script
+    cur.execute("SELECT * FROM schedule ORDER BY startdate DESC")
+    #data = request.json
+    # if data:
+    #     #skip_schedule = data["skipschedule"]
+    #     cur = database.cursor(dictionary=True)
+    #     cur.execute("SELECT * FROM schedule ORDER BY startdate DESC")
+        # cur.execute("SELECT * FROM schedule ORDER BY startdate DESC LIMIT (%d,%d);",(skip_schedule,skip_schedule+20))
+    for schedule in cur:
+        res_str=json.dumps(schedule, cls=MyEncoder)
+        res_str=res_str.replace("'", '"')
+        print(res_str)
+        res_json=json.loads(res_str)
+        res_list.append(res_json)    
+    cur.close()
+    
+    mydict={}
+    mydict['result']=res_list
+    if res_list:
+        my_json=jsonify({"code":1, "data":mydict,"message":"Successfully get the schedules!"})
+        print(my_json)
+        return my_json
+    else:
+        return jsonify({"code":-1, "data":{},"message":"No schedules!"})
 
     
 

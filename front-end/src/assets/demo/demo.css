@@ -389,3 +389,7 @@ input:checked + .view-slider:before {
 .error {
   color: red;
 }
+
+.my-modal .modal-content {
+  background-color: #f4f3ef;
+}
