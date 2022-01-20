@@ -1,0 +1,86 @@
+.hero-background {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  /* background-image: url(../../assets/img/header.jpg); */
+  background-color: rgb(244, 243, 239);
+  background-position: center;
+  background-size: cover;
+  position: absolute;
+}
+
+.login-container {
+  top: -25px;
+  width: 480px;
+  height: 550px;
+  position: relative;
+  background: #fff;
+  border-radius: 5px;
+  transition: 0.5s;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.04);
+  opacity: 90%;
+}
+
+.signup-container {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  flex-direction: column;
+  top: -10px;
+  position: relative;
+  width: 670px;
+  height: 600px;
+  background-color: #fff;
+  transition: 0.5s;
+  border-radius: 5px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.04);
+  opacity: 90%;
+}
+
+.btn-box {
+  width: 150px;
+  margin: 25px auto;
+  position: relative;
+  box-shadow: 0 0 20px 9px #4444441f;
+}
+
+.toggle-btn-dark,
+.toggle-btn-light {
+  padding: 5px 10px;
+  background: transparent;
+  cursor: pointer;
+  border: 0;
+  outline: none;
+  position: relative;
+  font-weight: bold;
+  transition: 0.5s;
+}
+
+.toggle-btn-light {
+  color: white;
+}
+
+.btn-login,
+.btn-register {
+  top: 0;
+  left: 0;
+  position: absolute;
+  width: 70px;
+  height: 100%;
+  background: linear-gradient(to right, #000000, #464646);
+  transition: 0.5s;
+}
+
+.btn-register {
+  position: absolute;
+  left: 70px;
+  width: 80px;
+}
+
+.input-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
