@@ -28,6 +28,7 @@ import "perfect-scrollbar/css/perfect-scrollbar.css";
 import AdminLayout from "layouts/Admin.js";
 import LoginSignup from 'views/registration/LoginSignup';
 
+
 ReactDOM.render(
   <BrowserRouter>
     <Switch>
