@@ -6,7 +6,7 @@ import Login from "./LogTemp";
 
 function LoginSignup() {
 
-let [click,setClick] =useState(true);
+let [click,setClick] =useState(false);
 const handleLogin = () => setClick(true);
 const handleReg = () => setClick(false);
 let [userName,setUserName] =useState('');
