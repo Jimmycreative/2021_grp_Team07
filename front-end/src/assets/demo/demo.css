@@ -402,16 +402,13 @@ input:checked + .view-slider:before {
   line-height:200%;
 }
 
-.user-manual-input {
+.user-manual-page-navigation {
   margin-top: 100px;
   text-align: left;
 }
 
 .page-content1 {
   margin-left: 50px;
-}
-.user-manual-input #assignment {
-  color: rebeccapurple;
 }
 
 .page-content2 {

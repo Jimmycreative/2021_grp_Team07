@@ -18,8 +18,9 @@ const markdown=`
     * [**Flexible Type**](#flexible-type)
     * [**Dynamic Type**](#dynamic-type)
     * [**Multi-Resource Type**](#multi-resource-type)
+* [**3. Script Language**](#script-language)
 `
-const input = `
+const page_input = `
 <div id="page-navigation">
 
 # Some *emphasis* and <strong>strong</strong>!
@@ -60,8 +61,8 @@ const input = `
 #### Evaluation Page
 </div>
 </div>
-
-
+`
+const definition_input=`
 <div id="definition-types">
 
 ### Definition Types
@@ -89,15 +90,13 @@ const input = `
 </div>
 
 </div>
-
-</div>
 `
-
 function UserManual() {
     return (
         <>
         <ReactMarkdown className="user-manual-outline" remarkPlugins={[gfm]} children={ markdown } />
-        <ReactMarkdown className="user-manual-input" rehypePlugins={[rehypeRaw]} children={input} />
+        <ReactMarkdown className="user-manual-page-navigation" rehypePlugins={[rehypeRaw]} children={page_input} />
+        <ReactMarkdown className="user-manual-page-navigation" rehypePlugins={[rehypeRaw]} children={definition_input} />
         
         </>
     )
