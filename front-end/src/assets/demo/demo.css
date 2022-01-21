@@ -394,23 +394,3 @@ input:checked + .view-slider:before {
   background-color: #f4f3ef;
 }
 
-.user-manual-outline {
-  margin-top: 100px;
-  text-align: left;
-  margin-left: 20px;
-  font-size: large;
-  line-height:200%;
-}
-
-.user-manual-page-navigation {
-  margin-top: 100px;
-  text-align: left;
-}
-
-.page-content1 {
-  margin-left: 50px;
-}
-
-.page-content2 {
-  margin-left: 50px;
-}

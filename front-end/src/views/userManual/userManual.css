@@ -1,0 +1,56 @@
+.user-manual-outline {
+    margin-top: 100px;
+    text-align: left;
+    margin-left: 20px;
+    font-size: large;
+    line-height:200%;
+  }
+
+.catelog {
+    margin-left: 50px;
+  }
+  
+.user-manual-page-navigation {
+    margin-top: 100px;
+    text-align: left;
+  }
+  
+.page-content {
+    margin-left: 90px;
+  }
+  
+  
+.type-explanation {
+    margin-left: 18px;
+  }
+  
+.code-snippet {
+    margin-left: 100px;
+    width: 50%;
+}
+
+.script-table {
+    margin-left: 180px;
+    border-left: 1px solid #51cbce;
+    border-top: 1px solid #51cbce;
+    border-right: 1px solid #51cbce;
+    border-bottom: 1px solid #51cbce;
+    text-align: center;
+}
+
+.script-table td {
+    border-left: 1px solid #51cbce;
+    border-top: 1px solid #51cbce;
+}
+
+#job-table-table {
+    margin-left: 120px;
+}
+
+#operator-table-table {
+    margin-left: 280px;
+}
+
+#type-table-table {
+    margin-left: 320px;
+}
