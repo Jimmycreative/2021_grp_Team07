@@ -8,8 +8,16 @@ import { useHistory } from 'react-router-dom';
 
 function LoginSignup() {
     let [click,setClick] =useState(false);
-    const handleLogin = () => setClick(true);
-    const handleReg = () => setClick(false);
+    const handleLogin = () => {
+        setUsername('')
+        setPassword('')
+        setClick(true)
+    };
+    const handleReg = () => {
+        setUsername('')
+        setPassword('')
+        setClick(false)
+    };
 
     const history = useHistory();
 
