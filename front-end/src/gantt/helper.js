@@ -13,15 +13,14 @@ function setTrueDate(origin_tasks) {
     }
     real_tasks.push(task)
   }
-  console.log("line 132", real_tasks)
   return real_tasks
 }
 
-export function initTasks() {
+export function initTasks(my_tasks) {
   const origin_tasks=[{'start': 0, 'end': 5, 'name': 'Machine 0', 'id': 'Machine 0', 'progress': 100, 'type': 'project', 'hideChildren': false}, {'start': 0, 'end': 2, 'name': 'job_1 task_0', 'id': 'job_1|task_0', 'job_name': 'job_1', 'progress': 100, 'type': 'task', 'project': 'Machine 0', 'styles': {'progressColor': '#FFA87A', 'progressSelectedColor': '#FFA87A'}}, {'start': 2, 'end': 5, 'name': 'job_0 task_0', 'id': 'job_0|task_0', 'job_name': 'job_0', 'progress': 100, 'type': 'task', 'project': 'Machine 0', 'styles': {'progressColor': '#FF4829', 'progressSelectedColor': '#FF4829'}}, {'start': 0, 'end': 11, 'name': 'Machine 1', 'id': 'Machine 1', 'progress': 100, 'type': 'project', 'hideChildren': false}, {'start': 0, 'end': 4, 'name': 'job_2 task_0', 'id': 'job_2|task_0', 'job_name': 'job_2', 'progress': 100, 'type': 'task', 'project': 'Machine 1', 'styles': {'progressColor': '#FF36C3', 'progressSelectedColor': '#FF36C3'}}, {'start': 5, 'end': 7, 'name': 'job_0 task_1', 'id': 'job_0|task_1', 'job_name': 'job_0', 'progress': 100, 'type': 'task', 'project': 'Machine 1', 'styles': {'progressColor': 
   '#FF4829', 'progressSelectedColor': '#FF4829'}}, {'start': 7, 'end': 11, 'name': 'job_1 task_2', 'id': 'job_1|task_2', 'job_name': 'job_1', 'progress': 100, 'type': 'task', 'project': 'Machine 1', 'styles': {'progressColor': '#FFA87A', 'progressSelectedColor': '#FFA87A'}}, {'start': 2, 'end': 9, 'name': 'Machine 2', 'id': 'Machine 2', 'progress': 100, 'type': 'project', 'hideChildren': false}, {'start': 2, 'end': 3, 'name': 'job_1 task_1', 'id': 'job_1|task_1', 'job_name': 'job_1', 'progress': 100, 'type': 'task', 'project': 'Machine 2', 'styles': {'progressColor': '#FFA87A', 'progressSelectedColor': '#FFA87A'}}, {'start': 4, 'end': 7, 
   'name': 'job_2 task_1', 'id': 'job_2|task_1', 'job_name': 'job_2', 'progress': 100, 'type': 'task', 'project': 'Machine 2', 'styles': {'progressColor': '#FF36C3', 'progressSelectedColor': '#FF36C3'}}, {'start': 7, 'end': 9, 'name': 'job_0 task_2', 'id': 'job_0|task_2', 'job_name': 'job_0', 'progress': 100, 'type': 'task', 'project': 'Machine 2', 'styles': {'progressColor': '#FF4829', 'progressSelectedColor': '#FF4829'}}]
-  const tasks = setTrueDate(origin_tasks)
+  const tasks = setTrueDate(my_tasks)
   return tasks;
 }
 

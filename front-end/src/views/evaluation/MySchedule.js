@@ -7,6 +7,7 @@ import {
     PaginationLink,
     Table,
   } from "reactstrap";
+import NotificationAlert from "react-notification-alert";
 import GanttDay from "views/gantt/day/GanttDay";
 import sample_data from '../../variables/data/saved_data.json';
 import "./mySchedule.css"
@@ -14,6 +15,7 @@ import "./mySchedule.css"
 class MySchedule extends Component {
     constructor(props) {
         super(props);
+        this.notificationAlert =React.createRef();
         this.dataSet = [...Array(Math.ceil(500 + Math.random() * 500))].map(
             (a, i) => "Record " + (i + 1)
           );
@@ -25,10 +27,29 @@ class MySchedule extends Component {
         this.state = {
             currentPage: 0,
             searchSchedule:"",
-            showGantt:false
+            showGantt:false,
+            tableData:[{}],
+            dataErr:true,
+            errMsg:"",
+            alertVisible:true
         };
+
+        this.options={
+            place: 'tc',
+            message: (
+                <div>
+                    <div>
+                        {this.state.errMsg}
+                    </div>
+                </div>
+            ),
+            type: "info",
+            icon: "nc-icon nc-bell-55",
+            autoDismiss: 7
+        }
         this.toggle = this.toggle.bind(this);
     }
+    
 
     toggle() {
         this.setState({
@@ -45,7 +66,7 @@ class MySchedule extends Component {
     }
 
     componentWillMount() {
-        //this.getAllSchedules()
+        this.getAllSchedules()
     }
 
     setSearchSchedule(schedule) {
@@ -54,26 +75,46 @@ class MySchedule extends Component {
           }); 
     }
     
+    getScheduleTime(startDate, timeLength) {
+        console.log(startDate)
+        var date=new Date(startDate);
+        date.setDate(date.getDate()+timeLength);
+        var strDate = date.toLocaleDateString()
+        console.log("line 95", strDate)
+        return date
+    }
+    
       //invoke /getAllSchedules
       //planner 0, manager 1
       getAllSchedules () {
-        // var mydata={
-        //     uid:this.state.script,
-        //     role: this.state.script
-        // }
         fetch(this.domain+"/getAllSchedules", {
             cache: 'no-cache',
             headers: new Headers({
                 'Content-Type': 'application/json'
             }),
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
-            mode: 'cors', // no-cors, cors, *same-origin
-            // redirect: 'follow', // manual, *follow, error
-            // referrer: 'no-referrer', // *client, no-referrer
+            mode: 'cors'
           })
          .then(res =>res.json())
          .then((data) => {
-           console.log(data)
+            console.log("line 90")
+           if (data.code==1) {
+            console.log("line 90")
+            this.setState({
+                tableData:data.data.result
+            })
+            console.log(this.state.tableData)
+           }
+           
+           else {
+               console.log("linw 110")
+               this.setState({
+                   dataErr:true,
+                   errMsg:data.message
+               })
+               this.refs.notify.notificationAlert(this.options);
+           }
+           
          })
     }
 
@@ -81,6 +122,7 @@ class MySchedule extends Component {
         const { currentPage } = this.state;
         return (
                 <div>
+                    <NotificationAlert ref="notify" zIndex={9999} onClick={() => console.log("something is wrong")} />
                     <React.Fragment>
                         <h1 class = "text-center" style={{marginTop:100,marginBottom:40,width:"90%"}}>My Schedules</h1>
                         <input
@@ -104,13 +146,12 @@ class MySchedule extends Component {
                             </thead>
                             
                             <tbody>
-                                {sample_data.filter((val)=>{
+                                {this.state.tableData.filter((val)=>{
                                     if(this.state.searchSchedule === ""){
                                         return val;
                                     }
                                     else if(
-                                        val.first_name.toLowerCase().includes(this.state.searchSchedule.toLowerCase())||
-                                        val.project.toLowerCase().includes(this.state.searchSchedule.toLowerCase())
+                                        val.name.toLowerCase().includes(this.state.searchSchedule.toLowerCase())
                                         )
                                         {
                                             console.log(val)
@@ -119,10 +160,12 @@ class MySchedule extends Component {
                                     }).slice(currentPage * this.pageSize, (currentPage + 1) * this.pageSize)
                                     .map((m)=>(
                                         <tr>
-                                            <td>{m.first_name}</td>
-                                            <td>{m.project}</td>
+                                            <td>{m.name}</td>
+                                            <td>{new Date(m.startdate).toLocaleDateString()}</td>
                                             <td>{m.status}</td>
-                                            <td>{m.endtime}</td>
+                                            <td>{
+                                                    this.getScheduleTime(m.startdate,m.timelength).toLocaleDateString()
+                                                }</td>
                                             <td>
                                                 <Button
                                                     className="table-btn"
@@ -143,7 +186,7 @@ class MySchedule extends Component {
                                                 >
                                                     <ModalHeader toggle={this.toggle}>Type Choice</ModalHeader>
                                                     <ModalBody>
-                                                        <GanttDay showBar={true} />
+                                                        <GanttDay showBar={true} task={m.result} />
                                                     </ModalBody>
                                                     
                                                     <ModalFooter>
