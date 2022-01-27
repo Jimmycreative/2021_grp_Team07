@@ -39,6 +39,9 @@ import Maps from "views/Map.js";
 import UserPage from "views/User.js";
 import UpgradeToPro from "views/Upgrade.js";
 
+import ManagerHome from "views/tempo_home/ManagerHome";
+import PlannerHome from "views/tempo_home/PlannerHome";
+
 var routes = [
  
   {
@@ -56,6 +59,35 @@ var routes = [
     component: Home,
     layout: "/admin",
     toView:true
+  },
+  {
+    path: "/tempo_home",
+    name: "tempo_home",
+    icon: "nc-icon nc-bullet-list-67",
+    layout: "/admin",
+    iconClosed: <RiIcons.RiArrowDownSFill />,
+    iconOpened: <RiIcons.RiArrowUpSFill />,
+    toView:true,
+    subNav: [
+      {
+        path: "/home_m",
+        name: "home (M)",
+        icon: "nc-icon nc-paper",
+        component: ManagerHome,
+        layout: "/admin",
+        isManager:true,
+        toView:true
+      },
+      {
+        path: "/home_p",
+        name: "home (p)",
+        icon: "nc-icon nc-badge",
+        component: PlannerHome,
+        layout: "/admin",
+        isManager:true,
+        toView:true
+      }
+    ]
   },
   {
     path: "/usermanual",
