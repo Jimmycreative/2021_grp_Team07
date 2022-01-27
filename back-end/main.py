@@ -2,6 +2,8 @@
 # You can, however, import additional functionalities 
 # from the flask and sqlite3 modules
 from click.types import convert_type
+
+from math import *
 from flask import Flask, render_template, request, redirect, session, url_for, flash
 import mysql.connector
 import sys
@@ -48,6 +50,7 @@ algorithm_result = {}
 
 
 #Below three functions are helper function
+
 def handle_result(result):
     res = []
     dic = {}
@@ -236,6 +239,8 @@ def handle_result(result):
                             
         i+=1
     return res
+
+    
 # For generating token
 def tokengen():
     purgetoken()
@@ -324,6 +329,7 @@ def modify_token(uses,token):
 def get_script():
         data = request.json
         print(data)
+        
         if data:
             uuid = post_script(data) #send the data to the algorithm. It should have parameter string, but for testing the connectivity I defined in the post_script
             return uuid
@@ -379,9 +385,10 @@ def getAllSchedule():
             #res_str=res_str.replace("\\", '')
             
             res_json=json.loads(res_str)
-            modify_result = handle_result(res_json["result"])
+          
+            modify_result = eval(res_json["result"].replace("false","False"))
             res_json["result"] = modify_result
-            #print(res_json["result"])
+            print(res_json["result"])
             print("--------------------------")
             res_list.append(res_json)    
     finally:
@@ -434,7 +441,7 @@ def test():
                 username = data['username']
                 password = data['password']
                 cur = database.cursor(dictionary=True)
-                cur.execute("SELECT username, password FROM user WHERE username = %s AND password = %s;", (username, password))
+                cur.execute("SELECT uid,username, displayname,password FROM user WHERE username = %s AND password = %s;", (username, password))
                 #cur.execute("SELECT uid, displayname, rank, disabled FROM user WHERE username = %s AND password = %s;", (username, password,))
                 #cur.execute("SELECT uid, displayname, rank, disabled FROM user WHERE username = %s AND password = AES_ENCRYPT(%s, UNHEX(SHA2('', )));", (username, password,))
         except Exception as e:
@@ -443,6 +450,10 @@ def test():
             account = cur.fetchone()
             cur.close()
         
+        session["uid"] = account["uid"]
+        session["username"] = account["username"] #result = session.get(‘key’)
+        session["displayname"] = account["displayname"]
+
         if account:
             modify_info(1,"Login successfully!")
         else:   
