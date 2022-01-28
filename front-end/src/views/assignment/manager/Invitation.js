@@ -16,7 +16,6 @@ function Invatation() {
 
     const [time, setTime] = useState('minutes');
 
-    const [checked, setChecked] = useState(false);
     const [isConfirmed, setIsConfirmed] = useState(false);
 
     //domain = "http://127.0.0.1:5000"
@@ -72,6 +71,7 @@ function Invatation() {
         if (isValid) {
             setIsConfirmed(true);
             JSdatetimeToMySQLdatetime();
+            setUsesNull();
         } else {
             setIsConfirmed(false);
         }
@@ -132,7 +132,7 @@ function Invatation() {
 
     const usesValidation = () => {
 
-        if (checked) {
+        if (document.getElementById("usesCheckbox").checked) {
             setUsesError('');
             return true;
         }
@@ -178,7 +178,6 @@ function Invatation() {
                 var seconds = Math.floor(expiration * 24 * 60 * 60);
                 break;
             default:
-                var seconds = null;
         }
 
         var receivedTimeInSeconds = seconds;
@@ -209,13 +208,19 @@ function Invatation() {
     }
 
 
+    const setUsesNull = () => {
+        if (document.getElementById("uses").disabled) {
+            setUses(null);
+        }
+    }
+
 
 
     const changeSelectBox = () => {
 
         if (document.getElementById("dateexpireSelect").value === "Unlimited") {
             setExpiration('');
-            setExpirationError('')
+            setExpirationError('');
             setTime("Unlimited");
             document.getElementById("dateexpire").disabled = true;
         }
@@ -230,6 +235,18 @@ function Invatation() {
         else if (document.getElementById("dateexpireSelect").value === "days")
             setTime("days");
 
+    }
+
+    const changeCheckBox = () => {
+
+        if (document.getElementById("usesCheckbox").checked) {
+            setUses('');
+            setUsesError('');
+            document.getElementById("uses").disabled = true;
+        }
+        else {
+            document.getElementById("uses").disabled = false;
+        }
     }
 
 
@@ -276,9 +293,19 @@ function Invatation() {
                     <br />
                     <br />
 
-                    <div>token expiration time is {expirationDate}</div>
-                    <div>limit of token uses is {uses}</div>
-                    <div>time is in is {time}</div>
+                    {expirationDate == null ?
+                        <div>token expiration time is Unlimited</div>
+                        :
+                        <div>token expiration time is {expirationDate}</div>
+                    }
+
+                    {uses == null ?
+                        <div>limit of token uses is Unlimited</div>
+                        :
+                        <div>limit of token uses is {uses}</div>
+                    }
+
+                    <div>time is in {time}</div>
                 </div>
 
                 :
@@ -340,24 +367,17 @@ function Invatation() {
                             type="text"
                             placeholder="uses"
                             name="uses"
+                            id="uses"
                             value={uses}
                             onChange={(e) => setUses(e.target.value)}
-                            disabled={checked}
                         />
 
                         <input
                             type="checkbox"
-                            id="uses"
-                            name="uses"
-                            value="uses"
-
-                            checked={checked}
-                            onChange={() => {
-                                setUses('')
-                                setUsesError('')
-                                setChecked(!checked)
-                                if (uses === '') { setUses(null) }
-                            }}
+                            id="usesCheckbox"
+                            name="usesCheckbox"
+                            value="usesCheckbox"
+                            onChange={() => { changeCheckBox(); }}
                         />
                         <label for="Unlimited">Unlimited</label>
 
@@ -369,8 +389,6 @@ function Invatation() {
 
                         <button type="submit" className="Confirm">Confirm</button>
 
-
-
                     </form>
                 </div>
             }
@@ -379,6 +397,5 @@ function Invatation() {
     )
 }
 
-// Box disabled
 
 export default Invatation;
