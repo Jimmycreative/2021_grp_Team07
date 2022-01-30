@@ -4,7 +4,7 @@ import CodeEditor from './controls/CodeEditor';
 
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { Form, FormGroup, Input, Label } from 'reactstrap';
-import { FormControl } from 'react-bootstrap';
+import axios from 'axios';
 import {
     Card,
     CardBody,
@@ -15,11 +15,77 @@ import {
     Col,
   } from "reactstrap";
 
+
+
+const basic = `//task=[machine_id, duration]
+job1=[[0, 3], [1, 2], [2, 2]]
+job2=[[0, 2], [12, 1], [1, 4]]
+job3=[[1, 4], [2, 3]]
+jobs=[job1,job2,job3]
+
+//optional
+job_names=["job_1","job_2", "job_3"]
+//optional
+machine_names=["machine_0","machine_1", "machine_2", "machine_12"]
+
+//remember to return
+return model.runBasic(jobs)`
+
+const dynamic = `//task=[machine_id, duration]
+job1=[[0, 3], [1, 2], [2, 2]]
+job2=[[0, 2], [12, 1], [1, 4]]
+job3=[[1, 4], [2, 3]]
+jobs=[job1,job2,job3]
+
+//priorities will be set in ascending order of expected duration
+expected_duration=[15,15,10]
+
+//optional
+job_names=["job_1","job_2", "job_3"]
+//optional
+machine_names=["machine_0","machine_1", "machine_2", "machine_12"]
+
+//remember to return
+return model.runDynamic(jobs,expected_duration)`
+
+const flexible = `//task=[machine_id, duration]
+//if one task has multiple machine choices, it can be defined as below
+job1=[[0, 3], [[2, 4], [4, 2]], [2, 4]]
+job2=[[4, 1],[[2, 1],[3, 12]]]
+job3=[[0, 4], [2, 3]]
+jobs=[job1,job2,job3]
+
+//optional
+job_names=["job_1","job_2", "job_3"]
+//optional
+machine_names=["machine_0","machine_2", "machine_3", "machine_4"]
+
+//remember to return
+return model.runFlexible(jobs)`
+
+const multi = `//task=[machine_id, duration]
+//if one task has multiple concurrent processes on different machines, it can be defined as below
+job1=[[0, 3], [[1, 2], [10,1]], [[2, 2],[12, 10]]]
+job2=[[0, 2], [2, 1], [1, 4]]
+job3=[[1, 4], [2, 3]]
+jobs=[job1,job2,job3]
+
+//optional
+job_names=["job_1","job_2", "job_3"]
+//optional
+machine_names=["machine_0","machine_1", "machine_2", "machine_10", "machine_12"]
+
+//remember to return
+return model.runMulti(jobs)
+`
+const jobType = [basic,dynamic,flexible,multi];
 class DefForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             modal : false,
+            modalImport: false,
+            showGantt: false,
             selectedOption:"Basic Type",
             scheduleName:"New Schedule",
             description:"",
@@ -30,37 +96,92 @@ class DefForm extends React.Component {
             },
             uuid:"",
             result:"",
-            task: {
-                lang: 'javascript',
-                code: '',
-              },
+            
+            result_gantt:"", // result for gantt chart 
+            code: jobType[0],
+            jobIndex: 0,
+            
               response: {
                 status: '0',
                 message: '',
               },
-              success:false
+              success:false,
+              flag: 1,
+              selectedFile: null
         };
         this.domain="http://127.0.0.1:5000"
         this.toggle = this.toggle.bind(this);
-        
+        this.toggleImport = this.toggleImport.bind(this);
         this.updateSolution = this.updateSolution.bind(this);
         this.handleCodeChange = this.handleCodeChange.bind(this);
     }
+    componentDidMount() {
+
+            this.dataPolling = setInterval(
+                () => {
+                    console.log(this.state.flag)
+                  if(this.state.uuid!=="" && this.state.flag===1){
+                      
+                      this.sendUuid();
+                  }
+                  
+                },
+                3000);
+        
+        
+      }
+    
+    componentWillUnmount() {
+        clearInterval(this.dataPolling);
+      }
+      
+    toggleGantt= () =>{
+        console.log(this.state.showGantt)
+        this.setState({
+          showGantt: !this.state.showGantt
+        });
+      };
+    clickConfirm = ()=>{
+
+        let index
+        if(this.state.selectedOption=== "Basic Type")
+            index = 0
+        else if(this.state.selectedOption=== "Dynamic Type")
+            index = 1
+        else if(this.state.selectedOption=== "Flexible Type")
+            index = 2
+        else if(this.state.selectedOption=== "Multi-Resource Type")
+            index = 3
+        this.setState({
+            modal: !this.state.modal,
+            code: jobType[index]
+        })
+          
+    }
+
+    toggleImport(){
+        this.setState({
+            modalImport: !this.state.modalImport,
+            
+          });
+    };
 
     toggle() {
         this.setState({
-          modal: !this.state.modal
+          modal: !this.state.modal,
+          
         });
       };
 
-    changeOption = changeEvent =>{
+    changeOption = changeEvent =>{    
+            
           this.setState({
             selectedOption:changeEvent.target.value
-        })
-          console.log(this.state.selectedOption)
+        })        
     };
 
     changeScheduleName = changeEvent =>{
+
         this.setState({
           scheduleName:changeEvent.target.value
       })
@@ -68,6 +189,7 @@ class DefForm extends React.Component {
     };
 
     changeDescription = changeEvent =>{
+
         this.setState({
           description:changeEvent.target.value
         })
@@ -75,17 +197,16 @@ class DefForm extends React.Component {
     };
     
     handleCodeChange(code) {
-        const { task } = this.state;
-        task.code = code;
+      
         
-        this.setState({ task });
-        console.log(task.code);
+        this.setState({ code:code });
+        console.log(this.state.code);
       }
     
       handleRun = event=> {
         event.preventDefault();
         var mydata={
-            script:this.state.task.code
+            script:this.state.code
         }
         console.log(mydata)
         fetch(this.domain+"/getuuid", {
@@ -104,21 +225,24 @@ class DefForm extends React.Component {
             if(response.ok) {
                 return response.json();
             }
-        }) .then(
+        }).then(
             data=>{
                 console.log("line 142", data)
                 if(data.code===1){
-                    this.sendUuid(data.data)
-                    //轮询呢
+                    console.log(data.data)
+                    this.setState({uuid: data.data})
+                    this.setState({result:"Schedule "+this.state.uuid+" is running."})
+                    this.setState({flag: 1})
+                    //this.sendUuid(data.data)
                 }
           
         } 
     ).catch(error => console.log(error))
     }
     
-    sendUuid(id) {
+    sendUuid() {
         var mydata={
-            uuid:id
+            uuid:this.state.uuid
         }
         console.log(mydata)
         fetch(this.domain+"/getres", {
@@ -139,13 +263,22 @@ class DefForm extends React.Component {
             data=>{
                 console.log("line 143", data)
                 if(data.code===1){
+                    console.log(data.data)
+                    console.log(this.state.showGantt)
+                    console.log(data.data.mid_msg)
                     this.setState({
-                        result: data.data
-                    })
+                        result: data.data.mid_msg,
+                        result_gantt: data.data.result,
+                        showGantt: true,
+                        flag: 0
+
+                    }
+                    )
                 }
             })
         .catch(error => console.log(error))
     }
+
     
       updateSolution(event) {
         // event.preventDefault();
@@ -164,6 +297,9 @@ class DefForm extends React.Component {
 
     //invoke /saveSchedule
     saveSchedule(){
+        this.setState({
+            showGantt: !this.state.showGantt
+        })
         var mydata={
             name:this.state.scheduleName,
             script:this.state.script,
@@ -177,7 +313,7 @@ class DefForm extends React.Component {
             //uid TODO
             uid:this.state.uid
         }
-        fetch('/saveSchedule',{
+        fetch(this.domain+'/saveSchedule',{
           method:'POST',
           data:mydata,
           headers:{
@@ -191,8 +327,33 @@ class DefForm extends React.Component {
            console.log(data)
          })
       }
+      fileSelectedHandler = (event=>{
+        console.log(event.target.files[0])
+        if(event.target.files[0].type==="text/plain"){
+            console.log("correct!")
+        }
+        else{
+            console.log("wrong format!")
+        }
+        this.setState({
+            selectedFile: event.target.files[0]
+        })
+      })
 
-
+      fileUploadHandler = ()=>{
+        this.setState({
+            modalImport: !this.state.modalImport
+        })
+        const reader = new FileReader()
+        reader.readAsText(this.state.selectedFile)
+        reader.onload = ()=>{
+            this.setState({code:reader.result})
+        }
+        reader.onerror = ()=>{
+            console.log("file error",reader.error)
+        }
+        
+      }
 
     render() {
         
@@ -209,15 +370,30 @@ class DefForm extends React.Component {
                 <Button
                     className="import-button"
                     round
-                    
+                    onClick={this.toggleImport}
                     >
                     <i className="nc-icon nc-share-66"></i> Import Existing File
                 </Button>
             </div>
-
+            <Modal 
+                isOpen={this.state.modalImport}
+                className={this.props.className}
+                style={{width: "120%"}}
+            
+            >
+                <ModalHeader>Import Script</ModalHeader>
+                <ModalBody>
+                    <input type="file" onChange={this.fileSelectedHandler}/>
+                    
+                </ModalBody>
+                <ModalFooter>
+                    <Button className="cancel-btn" onClick={this.toggleImport}>Cancel</Button>{' '}
+                    <Button color="secondary" onClick={this.fileUploadHandler}>Upload</Button>    
+                </ModalFooter>
+            </Modal>
             <Modal
                 isOpen={this.state.modal}
-                toggle={this.toggle}
+                
                 className={this.props.className}
                 style={{width: "120%"}}
                 >
@@ -226,72 +402,76 @@ class DefForm extends React.Component {
                     <Form>
                         {/* Basic Type */}
                         <div className="form-check">
-                            <label>
+                            <label style={{marginLeft: "-15px"}}>
                                 <input
                                     type="radio"
                                     name="react-tips"
                                     value="Basic Type"
+                                    
                                     checked={this.state.selectedOption === "Basic Type"}
                                     onChange={this.changeOption}
                                     className="form-check-input"
                                 />
                                 Basic Type
                             </label>
-                            <Button className="radio-btn">See Details</Button>
+                            
                         </div>
 
                         {/* Flexible Type */}
                         <div className="form-check">
-                            <label>
+                            <label style={{marginLeft: "-1px"}}>
                                 <input
                                     type="radio"
                                     name="react-tips"
                                     value="Flexible Type"
+                                    
                                     checked={this.state.selectedOption === "Flexible Type"}
                                     onChange={this.changeOption}
                                     className="form-check-input"
                                 />
                                 Flexible Type
                             </label>
-                            <Button className="radio-btn">See Details</Button>
+                            
                         </div>
 
                         {/* Dynamic Type */}
                         <div className="form-check">
-                            <label>
+                            <label style={{marginLeft: "8px"}}>
                                 <input
                                     type="radio"
                                     name="react-tips"
                                     value="Dynamic Type"
+                                    
                                     checked={this.state.selectedOption === "Dynamic Type"}
                                     onChange={this.changeOption}
                                     className="form-check-input"
                                 />
                                 Dynamic Type
                             </label>
-                            <Button className="radio-btn">See Details</Button>
+                            
                         </div>
 
                         {/* Multi-Resource Type */}
                         <div className="form-check">
-                            <label>
+                            <label style={{marginLeft: "50px"}}>
                                 <input
                                     type="radio"
                                     name="react-tips"
                                     value="Multi-Resource Type"
+                                    
                                     checked={this.state.selectedOption === "Multi-Resource Type"}
                                     onChange={this.changeOption}
                                     className="form-check-input"
                                 />
                                 Multi-Resource Type
                             </label>
-                            <Button className="radio-btn">See Details</Button>
+                          
                         </div>
                     </Form>
                 </ModalBody>
                 <ModalFooter>
                     <Button className="cancel-btn" onClick={this.toggle}>Cancel</Button>{' '}
-                <Button color="secondary" onClick={this.toggle}>Confirm</Button>
+                <Button color="secondary" onClick={this.clickConfirm}>Confirm</Button>
                     
                 </ModalFooter>
             </Modal>
@@ -314,14 +494,14 @@ class DefForm extends React.Component {
                                 <FormGroup>
                                     <Label>
                                         <div className="required-field">
-                                            Schedule Name<div className="asterisk">*</div>
+                                            Assignment ID<div className="asterisk">*</div>
                                         </div>
                                         
                                     </Label>
                                     <Input
                                         name="schedulename"
                                         onChange={this.changeScheduleName}
-                                        placeholder="Name your schedule"
+                                        placeholder="Please specify the Assignment ID"
                                         //disabled
                                     />
                                 </FormGroup>
@@ -355,7 +535,7 @@ class DefForm extends React.Component {
                                 </FormGroup>
                                 <FormGroup >
                                     <Col sm={12}>
-                                    <CodeEditor onChange={this.handleCodeChange} code={this.state.task.code} />
+                                    <CodeEditor onChange={this.handleCodeChange} code={this.state.code} />
                                     </Col>
                                 </FormGroup>
                                 
@@ -377,28 +557,46 @@ class DefForm extends React.Component {
                                 >
                                 Card subtitle
                             </CardSubtitle>
-                            <CardText>
-                                where the output goes
-                            </CardText>
+                            
                             
                                 <FormGroup >
                                     
-                                    <FormControl
+                                    {/* <FormControl
                                     readOnly
                                     type="text"
-                                    style={{height:"100px"}}
-                                    placeholder={this.state.result}
-                                    onChange={this.handleChange}
-                                    />
-                                    
+                                    style={{height:"200px",whiteSpace:"pre-line"}}
+                                    placeholder={"jimmy <br> jjjj"}
+                                    //onChange={this.handleChange}
+                                    /> */}
+                                    <span style={{height:"200px",whiteSpace:"pre-line",lineHeight:"22px"}}>
+                                        {this.state.result}
+                                    </span>
                                 </FormGroup>
-                            <div className="gantt-chart">
-                                <GanttDay showBar={false} />
-                            </div>
                             
-                            <Button>
-                                Accept
-                            </Button>
+                                
+                                <Modal
+                                    isOpen={this.state.showGantt}
+                                    toggle={this.toggleGantt}
+                                    backdrop={false}
+                                    size="xl"
+                                    centered
+                                    scrollable
+                                    className="my-modal"
+                                    //style={{width: "120%"}}
+                                >
+                                    
+                                    <ModalBody>
+                                        <GanttDay showBar={true} task={this.state.result_gantt}/>
+                                    </ModalBody>
+                                                    
+                                    <ModalFooter>
+                                        <Button className="cancel-btn" onClick={this.toggleGantt}>Cancel</Button>
+                                        <Button color="secondary" onClick={this.saveSchedule}>Accept</Button>
+                                    </ModalFooter>
+                                </Modal>
+                            
+                            
+                    
                         </CardBody>
                     </Card>
                 </CardGroup>

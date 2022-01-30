@@ -1,7 +1,8 @@
-import React from "react";
+import React from 'react';
+import "./RegTemp.css";
 
 
-class Registration extends React.Component {
+class RegTemp extends React.Component {
 
   constructor() {
 
@@ -154,40 +155,42 @@ class Registration extends React.Component {
     return (
       <div className="registration">
 
-        <br />
-        <br />
+      <br />
+      <br />
+  
+{this.state.isSubmitted
 
-        {this.state.isSubmitted
+?
 
-          ?
+<div style={{ textAlign: "center" }} className="complete">
+  <h3>Complete registration!</h3>
+  <div>Username: {this.state.username}</div>
+  <div>Displayname: {this.state.displayname}</div>
+</div>
 
-          <div style={{ textAlign: "center" }} className="complete">
-            <h3>Complete registration!</h3>
-            <div>Username: {this.state.username}</div>
-            <div>Displayname: {this.state.displayname}</div>
-          </div>
+:
 
-          :
-
-          <div className="registration-form" style={{ textAlign: "center" }}>
-
-            <input
+<div className="registration-form" style={{ textAlign: "center" }}>
+      <div className="container">
+        <form onSubmit={this.handleSubmit}>
+          <h5> CREATE ACCOUNT</h5>
+          <h6>Enter every field to join us</h6>
+          <div className="detail-container">
+            <div className="input-box">
+              <input
               readOnly
               type="text"
-              placeholder="Token"
+              placeholder="TOKEN"
               name="token"
               //value={ get value from backend }
               onChange={this.handleChange}
             />
-
-            <br />
-            <br />
-
-            <form onSubmit={this.handleSubmit} >
-
+            </div>
+            <div className={!this.state.displaynameError ? "input-box": "no-margin"}>
+            
               <input
                 type="text"
-                placeholder="Username"
+                placeholder="USER NAME"
                 name="username"
                 value={this.state.username}
                 onChange={this.handleChange}
@@ -196,12 +199,12 @@ class Registration extends React.Component {
               {this.state.usernameError &&
                 (<div className="error">{this.state.usernameError}</div>)}
 
-              <br />
-              <br />
-
+            </div>
+            <div className={!this.state.displaynameError ? "input-box":"no-margin"}>
+          
               <input
                 type="text"
-                placeholder="Displayname"
+                placeholder="DISPLAY NAME"
                 name="displayname"
                 value={this.state.displayname}
                 onChange={this.handleChange}
@@ -209,13 +212,12 @@ class Registration extends React.Component {
 
               {this.state.displaynameError &&
                 (<div className="error">{this.state.displaynameError}</div>)}
-
-              <br />
-              <br />
-
+            </div>
+            <div className={!this.state.displaynameError ? "input-box":"no-margin"}>
+            
               <input
                 type="password"
-                placeholder="Password"
+                placeholder="PASSWORD"
                 name="password"
                 value={this.state.password}
                 onChange={this.handleChange}
@@ -223,13 +225,12 @@ class Registration extends React.Component {
 
               {this.state.passwordError &&
                 (<div className="error">{this.state.passwordError}</div>)}
-
-              <br />
-              <br />
-
-              <input
+            </div>
+            <div className={!this.state.displaynameError ? "input-box":"no-margin"}>
+     
+            <input
                 type="password"
-                placeholder="Confirm password"
+                placeholder="CONFIRM PASSWORD"
                 name="password2"
                 value={this.state.password2}
                 onChange={this.handleChange}
@@ -237,19 +238,21 @@ class Registration extends React.Component {
 
               {this.state.password2Error &&
                 (<div className="error">{this.state.password2Error}</div>)}
-
-              <br />
-              <br />
-
-              <button type="submit" >Register</button>
-
-            </form>
+            </div>
           </div>
-        }
+          
+          <button className="submit-btn" type="submit" >REGISTER</button>
+          
+
+
+        </form>
+      </div>
+    </div>
+
+  }
       </div>
     );
-  }
+}
 }
 
-
-export default Registration;
+export default RegTemp; 

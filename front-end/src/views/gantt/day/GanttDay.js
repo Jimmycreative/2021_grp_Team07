@@ -8,7 +8,7 @@ class GanttDay extends React.Component {
     super(props);
     this.state = {
       view : ViewMode.Day,
-      tasks: initTasks(),
+      tasks: initTasks(this.props.task),
       isChecked: false,
       columnWidth: 60,
       showBar: this.props.showBar

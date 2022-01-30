@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import APIService from './ApiService'
+import APIService from '../ApiService'
 import { useHistory } from 'react-router-dom';
 
 function Login (){
@@ -43,7 +43,7 @@ function Login (){
       }
     
     return (
-      <div>
+      <div className="log-container">
         
         <form className="form" onSubmit={handleSubmit}>
           
@@ -54,7 +54,7 @@ function Login (){
             <label htmlFor="password">Password</label>
             <input type="password" name="password" placeholder="Enter your password:" value={password} onChange={(e)=>setPassword(e.target.value)}/>
           
-            <button type="submit" >Login</button>
+            <button type="submit" className="login-btn">Login</button>
         </form>
 
 
