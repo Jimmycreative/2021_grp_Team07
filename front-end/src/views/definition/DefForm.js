@@ -26,7 +26,7 @@ jobs=[job1,job2,job3]
 //optional
 job_names=["job_1","job_2", "job_3"]
 //optional
-machine_names=["machine_0","machine_1", "machine_2"]
+machine_names=["machine_0","machine_1", "machine_2", "machine_12"]
 
 //remember to return
 return model.runBasic(jobs)`
@@ -46,7 +46,7 @@ job_names=["job_1","job_2", "job_3"]
 machine_names=["machine_0","machine_1", "machine_2", "machine_12"]
 
 //remember to return
-model.runDynamic(jobs,expected_duration)`
+return model.runDynamic(jobs,expected_duration)`
 
 const flexible = `//task=[machine_id, duration]
 //if one task has multiple machine choices, it can be defined as below
@@ -61,7 +61,7 @@ job_names=["job_1","job_2", "job_3"]
 machine_names=["machine_0","machine_2", "machine_3", "machine_4"]
 
 //remember to return
-model.runFlexible(jobs)`
+return model.runFlexible(jobs)`
 
 const multi = `//task=[machine_id, duration]
 //if one task has multiple concurrent processes on different machines, it can be defined as below
@@ -76,7 +76,7 @@ job_names=["job_1","job_2", "job_3"]
 machine_names=["machine_0","machine_1", "machine_2", "machine_10", "machine_12"]
 
 //remember to return
-model.runMulti(jobs)
+return model.runMulti(jobs)
 `
 const jobType = [basic,dynamic,flexible,multi];
 class DefForm extends React.Component {
@@ -232,8 +232,8 @@ class DefForm extends React.Component {
                     console.log(data.data)
                     this.setState({uuid: data.data})
                     this.setState({result:"Schedule "+this.state.uuid+" is running."})
+                    this.setState({flag: 1})
                     //this.sendUuid(data.data)
-                    //轮询呢
                 }
           
         } 
@@ -494,14 +494,14 @@ class DefForm extends React.Component {
                                 <FormGroup>
                                     <Label>
                                         <div className="required-field">
-                                            Schedule Name<div className="asterisk">*</div>
+                                            Assignment ID<div className="asterisk">*</div>
                                         </div>
                                         
                                     </Label>
                                     <Input
                                         name="schedulename"
                                         onChange={this.changeScheduleName}
-                                        placeholder="Name your schedule"
+                                        placeholder="Please specify the Assignment ID"
                                         //disabled
                                     />
                                 </FormGroup>

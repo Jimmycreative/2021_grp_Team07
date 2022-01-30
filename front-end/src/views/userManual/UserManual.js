@@ -121,7 +121,7 @@ jobs=[job1,job2,job3]
 //optional
 job_names=["job_1","job_2", "job_3"]
 //optional
-machine_names=["machine_0","machine_1", "machine_2"]
+machine_names=["machine_0","machine_1", "machine_2", "machine_12"]
 
 //remember to return
 return model.runBasic(jobs)
@@ -167,7 +167,7 @@ job_names=["job_1","job_2", "job_3"]
 machine_names=["machine_0","machine_1", "machine_2", "machine_12"]
 
 //remember to return
-model.runDynamic(jobs,expected_duration)
+return model.runDynamic(jobs,expected_duration)
 ~~~
 `
 
@@ -186,7 +186,7 @@ job_names=["job_1","job_2", "job_3"]
 machine_names=["machine_0","machine_2", "machine_3", "machine_4"]
 
 //remember to return
-model.runFlexible(jobs)
+return model.runFlexible(jobs)
 ~~~
 `
 
@@ -247,7 +247,7 @@ job_names=["job_1","job_2", "job_3"]
 machine_names=["machine_0","machine_1", "machine_2", "machine_10", "machine_12"]
 
 //remember to return
-model.runMulti(jobs)
+return model.runMulti(jobs)
 ~~~
 `
 

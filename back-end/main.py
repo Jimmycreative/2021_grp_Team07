@@ -4,7 +4,6 @@
 from click.types import convert_type
 from flask import Flask, render_template, request, redirect, session, url_for, flash
 import mysql.connector
-import sys
 from flask import jsonify
 from flask_cors import CORS, cross_origin
 import json
@@ -39,8 +38,10 @@ CORS(app, supports_credentials=True)
 database = mysql.connector.connect(
   host="127.0.0.1",
   user="root",
-  password="12345678",
-  database="try"
+  password="",
+  database="grp"
+#   password="12345678",
+#   database="try"
 )
 login_info = {
     "code": -1,
@@ -48,194 +49,6 @@ login_info = {
 }
 algorithm_result = {}
 
-
-# Below three functions are helper function
-def handle_result(result):
-    res = []
-    dic = {}
-    i = 0
-
-    while True:
-        if i == len(result):
-            break
-        elif result[i] == "{":
-            key = ""
-            value = ""
-            i += 1
-            while True:
-                if (result[i] == "," and result[i-1] == "}") or (result[i] == "}" and result[i-1] == "]"):
-                    break
-                elif result[i] == "," or result[i] == "}":
-                    i += 1
-                elif result[i] == "'":
-                    i += 1
-                    while True:
-                        if result[i] == "'":
-                            i += 1
-                            break
-                        else:
-                            key += result[i]
-                            i += 1
-                elif result[i] == ":":
-                    if key == "start":
-                        i += 1
-                        while True:
-                            if result[i] == "}" or result[i] == ",":
-                                dic[key] = int(value)
-                                key = ""
-                                value = ""
-                                i += 1
-                                break
-                            else:
-                                value += result[i]
-                                i += 1
-                    elif key == "name":
-                        i += 2  # start from character not '
-                        while True:
-                            if result[i] == "}" or result[i] == "'":
-                                if result[i] == "}":
-                                    res.append(dic)
-                                    dic = {}
-
-                                dic[key] = value
-                                key = ""
-                                value = ""
-                                i += 1
-                                break
-                            else:
-                                value += result[i]  # if for '
-                                i += 1
-                    elif key == "progress":
-                        i += 1
-                        while True:
-                            if result[i] == "}" or result[i] == ",":
-                                if result[i] == "}":
-                                    res.append(dic)
-                                    dic = {}
-                                dic[key] = int(value)
-                                key = ""
-                                value = ""
-                                i += 1
-                                break
-                            else:
-                                value += result[i]
-                                i += 1
-                    elif key == "end":
-                        i += 1
-                        while True:
-                            if result[i] == "}" or result[i] == ",":
-                                if result[i] == "}":
-                                    res.append(dic)
-                                    dic = {}
-                                dic[key] = int(value)
-                                key = ""
-                                value = ""
-                                i += 1
-                                break
-                            else:
-                                value += result[i]
-                                i += 1
-                    elif key == "id":
-                        i += 2  # start from character not '
-                        while True:
-                            if result[i] == "}" or result[i] == "'":
-                                if result[i] == "}":
-                                    res.append(dic)
-                                    dic = {}
-                                dic[key] = value
-                                key = ""
-                                value = ""
-                                i += 1
-                                break
-                            else:
-                                value += result[i]
-                                i += 1
-                    elif key == "type":
-                        i += 2  # start from character not '
-                        while True:
-                            if result[i] == ",":
-                                dic[key] = value
-                                key = ""
-                                value = ""
-                                i += 1
-                                break
-                            elif result[i] == "}":
-
-                                dic[key] = value
-                                res.append(dic)
-                                dic = {}
-                                key = ""
-                                value = ""
-                                i += 1
-                                break
-                            elif result[i] != "'":
-                                value += result[i]
-                            i += 1
-                    elif key == "hideChildren":
-                        i += 1  # start from character not '
-                        while True:
-                            if result[i] == "}" or result[i] == ",":
-
-                                if value == "false":  # false}
-                                    dic[key] = False
-                                elif value == "true":
-                                    dic[key] = True
-
-                                if result[i] == "}":
-                                    res.append(dic)
-                                    dic = {}
-                                key = ""
-                                value = ""
-                                i += 1
-                                break
-
-                            else:
-                                value += result[i]
-                                i += 1
-                    elif key == "project":
-                        i += 2  # start from character not '
-                        while True:
-                            if result[i] == "}" or result[i] == "'":
-                                dic[key] = value
-                                if result[i] == "}":
-                                    res.append(dic)
-                                    dic = {}
-
-                                key = ""
-                                value = ""
-                                i += 1
-                                break
-                            else:
-                                value += result[i]
-                                i += 1
-                    elif key == "dependencies":
-                        i += 2
-                        temp_ls = []
-                        while True:
-
-                            if result[i] == "]":
-                                dic[key] = temp_ls
-                                res.append(dic)
-                                dic = {}
-                                key = ""
-                                value = ""
-                                i += 1
-                                break
-                            elif result[i] == "'":
-                                temp_str = ""
-                                i += 1
-                                while True:
-                                    if result[i] == "'":
-                                        temp_ls.append(temp_str)
-                                        temp_str = ""
-                                        i += 1
-                                        break
-                                    else:
-                                        temp_str += result[i]
-                                        i += 1
-
-        i += 1
-    return res
 # For generating token
 
 
@@ -393,7 +206,7 @@ def getAllSchedule():
             #res_str=res_str.replace("\\", '')
 
             res_json = json.loads(res_str)
-            modify_result = handle_result(res_json["result"])
+            modify_result = eval(res_json["result"].replace("false","False"))
             res_json["result"] = modify_result
             # print(res_json["result"])
             print("--------------------------")
