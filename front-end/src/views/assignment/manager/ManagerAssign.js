@@ -1,131 +1,302 @@
-import React from 'react';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import 'react-tabs/style/react-tabs.css';
+import "react-datepicker/dist/react-datepicker.css";
+import {Button,Card,CardHeader,CardBody,CardTitle,Table,Row,Col,FormGroup,Form,Input} from "reactstrap";
+import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import React, { Component } from "react";
+
 import './ManagerAssign.css';
-import Plannerdata from "./infoPlanner.json";
-import {useState} from 'react';
-import {
-  Button,
-  Card,
-  CardHeader,
-  CardBody,
-  CardTitle,
-  FormGroup,
-  Form,
-  Input,
-  Row,
-  Col,
- 
-  
-} from "reactstrap";
-
-
-
+import infoPlanner from "./infoPlanner.json";
+import { useState } from 'react';
+import {InputGroup,InputGroupAddon,InputGroupText} from "reactstrap"; {/* npm install --save react-tabs */}
 
 
 function ManagerAssign() {
-  const[searchPlanner,setSearchPlanner] = useState("");
-  return (
+
+  const[searchPlanner,setSearchPlanner] = useState(""); {/* Searching function */}
+  const [modal, setModal] = React.useState(false);      {/* popup */}
+  const toggle = () => setModal(!modal);                {/* popup */}
+  const[searchMessage,setSearchMessage] = useState(""); {/* Searching function */}
+  const [dateRange, setDateRange] = useState([null, null]);{/* search date function */}
+  
+  
+  
+    return (
     <>
-   
-    <div className='Assign'>
-      <div className='SearchUser'> 
-        <div className='SearchUserBox'> 
-        <div className='titleSearchBox'> <i className="nc-icon nc-zoom-split" /> &nbsp; Search Username </div>
-          </div>
-          <input placeholder='Type planner name....' className='FuncSearch' onChange={(event) => {
-            setSearchPlanner(event.target.value);}}>
+     
+     
+    <div className='ContentTabBox'>
+    <Tabs>
+     <TabList className='TwoTabs'>
+        <Tab>Assgin Schedules</Tab>
+        <Tab>View Messages</Tab>
+       
+      </TabList>
 
-            
-          </input>
-        
-             {Plannerdata.filter((val)=>{
-               if (searchPlanner == ""){
-                 return val
-               }
-               else if (val.name.toLowerCase().includes(searchPlanner.toLowerCase())){
-                 return val
-               }
-             }).map((val,key)=> {
-            return(
-              <div className='plannerName'>{val.username}</div>
-            );
-          })}
+      <TabPanel className='SearchingPlanner'>
+      {/* when click this tab, it shows the searching box which is able to find planner and write the form */}
 
-      </div>
-      
-
-      <div className="content">
-    <Row>
-    <Col md="10">
-            <Card className="card-user">
+      <div className="ContentOfForm">
+        <Row>
+         
+          <div className='AssignForm'>
+            <Card className="card-plain">
               <CardHeader>
-                <CardTitle tag="h5">Assgin Schedules </CardTitle>
-              </CardHeader>
+                <CardTitle tag="h4">Assgin Schedule</CardTitle>
+                <p className="card-category">
+                  Search planner name and click the icon to send the message.
+                </p>
+                    <InputGroup>  {/* Search Box */}
+                      <InputGroupAddon addonType="prepend">
+                      <InputGroupText><i className="nc-icon nc-single-02"></i> </InputGroupText>
+                      </InputGroupAddon>
+                      <input type = "text" placeholder='Please type Fullname' className='form-control' onChange={(e) => {setSearchPlanner(e.target.value) }}/>
+                    </InputGroup>
+
+                    </CardHeader>
+
+                          
               <CardBody>
-                <Form>
-                  <Row>
-                    
-                    <Col className="pr-1" md="10">
-                      <FormGroup>
-                        <label>Title</label>
-                        <Input
-                          placeholder="Title..."
-                          type="text"
-                        />
-                      </FormGroup>
-                    </Col>
-                    
+                <Table responsive className='table' id='userList'>
+                  <thead className="text-primary" >
+                    <tr>
+                      <th>Name</th>
+                      <th>Username</th>
+                      <th>Send</th>
+                    </tr>
+                  </thead>
+                  <tbody>
                   
-                  </Row>
-                  <Row>
-                    <Col className="pr-1" md="6">
-                      <FormGroup>
-                        <label>Username</label>
-                        <Input
-                          placeholder="Username..."
-                          type="text"
-                        />
-                      </FormGroup>
-                    </Col>
-                    
-                  </Row>
-                  <Row>
-                    
-                    <Col md="10">
+                  {infoPlanner.filter((val)=>{
+                        if(searchPlanner === ""){
+                            return val;
 
-                      <FormGroup>
-                        <label>Message</label>
-                        <Input
-                          type="textarea"
-                          placeholder="Assign Schedules..."
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                  <Row>
-                    
-                  <Button className='button' color="primary" round outline>
-                  <i className="nc-icon nc-check-2"></i> Send
-                  </Button>
+                        } 
+                        else if(
+                            val.name.toLowerCase().includes(searchPlanner.toLowerCase()) ||
+                            val.username.toLowerCase().includes(searchPlanner.toLowerCase())
+                            
+                        )
+                        {
+                            return val;
+
+                        } 
+                    }).map((val)=>(
+                        <tr>
+                            <td>{val.name}</td>
+                            <td>{val.username}</td>
+                            <td> <Button className="btn-round btn-icon"
+                      color="success"
+                      size="sm"
+                      onClick={toggle}
+                      >  {/*pop up function */}
+                    <i className="fa fa-envelope" /> </Button>
 
                     
-                  </Row>
-                </Form>
+                    
+                     <Modal
+                      isOpen={modal}
+                      toggle={toggle}
+                      backdrop={false}
+                      size="xl"
+                      centered
+                      scrollable
+                      className="popupForm" >
+                     <ModalHeader toggle={toggle}> <CardTitle tag="h8">Assgin Schedules </CardTitle> </ModalHeader>
+                      <ModalBody>
+                      
+                          <div>
+                         <FormGroup>
+                                  <label htmlFor="AssignTitle">Title</label>
+                                  <Input
+                                    placeholder="Title..."
+                                    type="text"
+                                    id='AssignTitle'
+                                    />
+
+                                    
+                                </FormGroup>
+
+                                <FormGroup>
+                                  
+                                  <label htmlFor="username" >Username</label>
+                                  <Input
+                                    placeholder="username..."
+                                    type="text"
+                                    value={val.username}
+                                    id='username'
+                                   
+                                  />
+                                  
+                                    
+                                </FormGroup>
+
+                                <FormGroup >
+                                  <label htmlFor="message">Message</label>
+                                  
+                                  <Input
+                                    placeholder="Message..."
+                                    type="textarea"
+                                    className='TextBox'
+                                    id='message'
+                                   
+                                  />
+                                 
+                         
+                                </FormGroup>
+                                </div>
+                       
+                      </ModalBody>
+                                                    
+                       <ModalFooter>
+                       <Button color="primary" type='submit' onClick={toggle}>Send</Button>                    
+                       </ModalFooter>
+                       </Modal>
+                   
+                       </td>
+
+                        </tr>
+                      
+                    ))}
+                          
+                  </tbody>
+                </Table>
               </CardBody>
             </Card>
-          </Col>
+            </div>
         </Row>
       </div>
-                      
-                      
+   
+      
+    </TabPanel>
+
+    <TabPanel className='ViewMessages'> {/* when click this tab, 
+                                          it shows table to search the messages that manager sent*/}
+    {/*여기서부터 */}
+    <div className="CheckMessage">
+        <Row>
+         
+          <div className='View'>
+            <Card className="card-plain">
+              <CardHeader>
+                <CardTitle tag="h4">Message History</CardTitle>
+                <p className="card-category">
+                  Search planner name or date to review sent message.
+                </p>
+                    <InputGroup>  {/* Search Box */}
+                      <InputGroupAddon addonType="prepend">
+                      <InputGroupText><i className="nc-icon nc-single-02"></i> </InputGroupText>
+                      </InputGroupAddon>
+                      <input type = "text" placeholder='Please type plannername' className='form-control' onChange={(e) => {setSearchMessage(e.target.value) }}/>
+                     
+                    </InputGroup>
                     
    
-      </div>
-      
+                    </CardHeader>
 
-     
-      </>
-    );
-  }
-  
-  export default ManagerAssign;
+                          
+              <CardBody>
+                <Table responsive>
+                  <thead className="text-primary">
+                    <tr>
+                      <th>Name</th>
+                      <th>Date</th>
+                      <th>View</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {infoPlanner.filter((val)=>{
+                        if(searchMessage === ""){
+                            return val;
+
+                        } 
+                        else if(
+                            val.name.toLowerCase().includes(searchMessage.toLowerCase()) ||
+                            val.date.includes(dateRange)
+                            
+                        )
+                        {
+                            return val;
+
+                        }
+                       
+                    }).map((val)=>(
+                        <tr>
+                            <td>{val.name}</td>
+                            <td>{val.date}</td>
+                            <td> <Button 
+                      color="success"
+                      size="sm"
+                      onClick={toggle}
+                      >  {/*pop up function */}
+                    View Message </Button>
+                    <Modal
+                      isOpen={modal}
+                      toggle={toggle}
+                      backdrop={false}
+                      size="xl"
+                      centered
+                      scrollable
+                      className="popupMessage">
+                        <ModalHeader
+                            toggle={toggle}>
+                              
+                                <CardTitle tag="h5">Planner: {val.name}</CardTitle>
+                              
+                            </ModalHeader>
+                        <ModalBody>
+                                
+
+                                <FormGroup>
+                                  <label>Message</label>
+                                  
+                                  <Input
+                                    placeholder="Message..."
+                                    type="textarea"
+                                    value={val.message}
+                                  />
+                                </FormGroup>
+
+                        </ModalBody>
+                        
+                    </Modal>
+                   
+                       </td>
+
+                        </tr>
+
+                    ))}
+                   
+                  </tbody>
+                </Table>
+              </CardBody>
+            </Card>
+            </div>
+        </Row>
+      </div>
+   
+
+
+
+
+                    
+
+
+
+
+    {/*여기까지  */}
+
+      </TabPanel>
+
+    </Tabs>
+    </div>
+    </>
+  );
+                    
+}
+
+
+
+export default ManagerAssign;
+
   
