@@ -4,7 +4,7 @@ import CodeEditor from './controls/CodeEditor';
 
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { Form, FormGroup, Input, Label } from 'reactstrap';
-import { FormControl } from 'react-bootstrap';
+import axios from 'axios';
 import {
     Card,
     CardBody,
@@ -84,6 +84,7 @@ class DefForm extends React.Component {
         super(props);
         this.state = {
             modal : false,
+            modalImport: false,
             showGantt: false,
             selectedOption:"Basic Type",
             scheduleName:"New Schedule",
@@ -96,7 +97,7 @@ class DefForm extends React.Component {
             uuid:"",
             result:"",
             
-              
+            result_gantt:"", // result for gantt chart 
             code: jobType[0],
             jobIndex: 0,
             
@@ -105,11 +106,12 @@ class DefForm extends React.Component {
                 message: '',
               },
               success:false,
-              flag: 1
+              flag: 1,
+              selectedFile: null
         };
         this.domain="http://127.0.0.1:5000"
         this.toggle = this.toggle.bind(this);
-        
+        this.toggleImport = this.toggleImport.bind(this);
         this.updateSolution = this.updateSolution.bind(this);
         this.handleCodeChange = this.handleCodeChange.bind(this);
     }
@@ -132,35 +134,50 @@ class DefForm extends React.Component {
     componentWillUnmount() {
         clearInterval(this.dataPolling);
       }
+      
     toggleGantt= () =>{
         console.log(this.state.showGantt)
         this.setState({
           showGantt: !this.state.showGantt
         });
       };
+    clickConfirm = ()=>{
+
+        let index
+        if(this.state.selectedOption=== "Basic Type")
+            index = 0
+        else if(this.state.selectedOption=== "Dynamic Type")
+            index = 1
+        else if(this.state.selectedOption=== "Flexible Type")
+            index = 2
+        else if(this.state.selectedOption=== "Multi-Resource Type")
+            index = 3
+        this.setState({
+            modal: !this.state.modal,
+            code: jobType[index]
+        })
+          
+    }
+
+    toggleImport(){
+        this.setState({
+            modalImport: !this.state.modalImport,
+            
+          });
+    };
+
     toggle() {
         this.setState({
           modal: !this.state.modal,
-          code: jobType[this.state.jobIndex]
+          
         });
       };
 
     changeOption = changeEvent =>{    
-          let index
-          if(changeEvent.target.value=== "Basic Type")
-            index = 0
-          else if(changeEvent.target.value=== "Dynamic Type")
-            index = 1
-          else if(changeEvent.target.value=== "Flexible Type")
-            index = 2
-          else if(changeEvent.target.value=== "Multi-Resource Type")
-            index = 3
+            
           this.setState({
-            jobIndex: index,
             selectedOption:changeEvent.target.value
-
-        })
-          
+        })        
     };
 
     changeScheduleName = changeEvent =>{
@@ -212,8 +229,9 @@ class DefForm extends React.Component {
             data=>{
                 console.log("line 142", data)
                 if(data.code===1){
+                    console.log(data.data)
                     this.setState({uuid: data.data})
-                    this.setState({result: "Schedule "+this.state.uuid+" is running!"})
+                    this.setState({result:"Schedule "+this.state.uuid+" is running."})
                     //this.sendUuid(data.data)
                     //轮询呢
                 }
@@ -250,6 +268,7 @@ class DefForm extends React.Component {
                     console.log(data.data.mid_msg)
                     this.setState({
                         result: data.data.mid_msg,
+                        result_gantt: data.data.result,
                         showGantt: true,
                         flag: 0
 
@@ -278,6 +297,9 @@ class DefForm extends React.Component {
 
     //invoke /saveSchedule
     saveSchedule(){
+        this.setState({
+            showGantt: !this.state.showGantt
+        })
         var mydata={
             name:this.state.scheduleName,
             script:this.state.script,
@@ -291,7 +313,7 @@ class DefForm extends React.Component {
             //uid TODO
             uid:this.state.uid
         }
-        fetch('/saveSchedule',{
+        fetch(this.domain+'/saveSchedule',{
           method:'POST',
           data:mydata,
           headers:{
@@ -305,8 +327,33 @@ class DefForm extends React.Component {
            console.log(data)
          })
       }
+      fileSelectedHandler = (event=>{
+        console.log(event.target.files[0])
+        if(event.target.files[0].type==="text/plain"){
+            console.log("correct!")
+        }
+        else{
+            console.log("wrong format!")
+        }
+        this.setState({
+            selectedFile: event.target.files[0]
+        })
+      })
 
-
+      fileUploadHandler = ()=>{
+        this.setState({
+            modalImport: !this.state.modalImport
+        })
+        const reader = new FileReader()
+        reader.readAsText(this.state.selectedFile)
+        reader.onload = ()=>{
+            this.setState({code:reader.result})
+        }
+        reader.onerror = ()=>{
+            console.log("file error",reader.error)
+        }
+        
+      }
 
     render() {
         
@@ -323,15 +370,30 @@ class DefForm extends React.Component {
                 <Button
                     className="import-button"
                     round
-                    
+                    onClick={this.toggleImport}
                     >
                     <i className="nc-icon nc-share-66"></i> Import Existing File
                 </Button>
             </div>
-
+            <Modal 
+                isOpen={this.state.modalImport}
+                className={this.props.className}
+                style={{width: "120%"}}
+            
+            >
+                <ModalHeader>Import Script</ModalHeader>
+                <ModalBody>
+                    <input type="file" onChange={this.fileSelectedHandler}/>
+                    
+                </ModalBody>
+                <ModalFooter>
+                    <Button className="cancel-btn" onClick={this.toggleImport}>Cancel</Button>{' '}
+                    <Button color="secondary" onClick={this.fileUploadHandler}>Upload</Button>    
+                </ModalFooter>
+            </Modal>
             <Modal
                 isOpen={this.state.modal}
-                toggle={this.toggle}
+                
                 className={this.props.className}
                 style={{width: "120%"}}
                 >
@@ -409,7 +471,7 @@ class DefForm extends React.Component {
                 </ModalBody>
                 <ModalFooter>
                     <Button className="cancel-btn" onClick={this.toggle}>Cancel</Button>{' '}
-                <Button color="secondary" onClick={this.toggle}>Confirm</Button>
+                <Button color="secondary" onClick={this.clickConfirm}>Confirm</Button>
                     
                 </ModalFooter>
             </Modal>
@@ -524,12 +586,12 @@ class DefForm extends React.Component {
                                 >
                                     
                                     <ModalBody>
-                                        <GanttDay showBar={true} />
+                                        <GanttDay showBar={true} task={this.state.result_gantt}/>
                                     </ModalBody>
                                                     
                                     <ModalFooter>
                                         <Button className="cancel-btn" onClick={this.toggleGantt}>Cancel</Button>
-                                        <Button color="secondary" onClick={this.toggleGantt}>Accept</Button>
+                                        <Button color="secondary" onClick={this.saveSchedule}>Accept</Button>
                                     </ModalFooter>
                                 </Modal>
                             

@@ -38,8 +38,8 @@ CORS(app, supports_credentials=True)
 database = mysql.connector.connect(
   host="127.0.0.1",
   user="root",
-  password="",
-  database="grp"
+  password="12345678",
+  database="try"
 )
 login_info = {
     "code": -1,
@@ -160,6 +160,7 @@ def post_script(data): #string will replace the variable s below
         '''
     r = requests.post(url, data=data)  
     uuid = json.loads(r.text)
+    print(uuid)
     return uuid
 @app.route('/getres', methods = ['POST'])
 def post_uid():
