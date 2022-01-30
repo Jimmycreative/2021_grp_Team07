@@ -33,6 +33,7 @@ class MyEncoder(json.JSONEncoder):
 
 
 app = Flask(__name__)
+app.secret_key = "hello"
 CORS(app, supports_credentials=True)
 
 database = mysql.connector.connect(
@@ -386,10 +387,6 @@ def getAllSchedule():
     # TODO exclude script
     try:
         cur.execute("SELECT * FROM schedule ORDER BY startdate DESC")
-    except Exception as e:
-        # print(e)
-        return jsonify({"code": -2, "data": {}, "message": e})
-    else:
         for schedule in cur:
             res_str = json.dumps(schedule, cls=MyEncoder)
             #res_str=res_str.replace("'", '"')
@@ -401,6 +398,10 @@ def getAllSchedule():
             # print(res_json["result"])
             print("--------------------------")
             res_list.append(res_json)
+    except Exception as e:
+        # print(e)
+        return jsonify({"code": -2, "data": {}, "message": e})
+        
     finally:
         cur.close()
     #data = request.json
@@ -426,20 +427,24 @@ def save_schedule():
     data = request.json
 
     if data:
-        cur = database.cursor(dictionary=True)
-        name = data["data"]["name"]
-        uid = data["data"]["uid"]
-        script = data["data"]["script"]
-        timelength = data["data"]["timelength"]
-        result = data["data"]["result"]
-        status = data["data"]["status"]
-        errlog = data["data"]["errlog"]
-        description = data["data"]["description"]
-        uuid = data["data"]["uuid"]
-        cur.execute("INSERT INTO schedule (name, uid, script, timelength, result, status, errlog, description, uuid) VALUES ( %s, %d, %s, %d, %s, %d, %s, %s, %s);",
-                    (name, uid, script, timelength, result, status, errlog, description, uuid))
-        # INSERT INTO schedule (name, uid, script, timelength, result, status, errlog, description, uuid) VALUES ('schedule 1',1,'i am handsome',3,"[{'start':0,'name':'Maachine 0','progress':0,'end':5,'id':'Machine 0','type':'project','hideChildren':false},{'start':0,'name':'job_0 task_0','progress':0,'project':'Machine 0','end':3,'id':'job_0|task_0','type':'task'},{'start':3,'name':'job_1 task_0','progress':0,'project':'Machine 0','end':5,'id':'job_1|task_0','type':'task'},{'start':0,'name':'Maachine 1','progress':0,'end':10,'id':'Machine 1','type':'project','hideChildren':false},{'start':0,'name':'job_2 task_0','progress':0,'project':'Machine 1','end':4,'id':'job_2|task_0','type':'task'},{'start':4,'name':'job_0 task_1','progress':0,'project':'Machine 1','end':6,'id':'job_0|task_1','type':'task','dependencies':['job_0|task_0']},{'start':6,'name':'job_1 task_2','progress':0,'project':'Machine 1','end':10,'id':'job_1|task_2','type':'task','dependencies':['job_1|task_1']},{'start':4,'name':'Maachine 2','progress':0,'end':9,'id':'Machine 2','type':'project','hideChildren':false},{'start':4,'name':'job_2 task_1','progress':0,'project':'Machine 2','end':7,'id':'job_2|task_1','type':'task','dependencies':['job_2|task_0']},{'start':7,'name':'job_0 task_2','progress':0,'project':'Machine 2','end':9,'id':'job_0|task_2','type':'task','dependencies':['job_0|task_1']},{'start':5,'name':'Maachine 12','progress':0,'end':6,'id':'Machine 12','type':'project','hideChildren':false},{'start':5,'name':'job_1 task_1','progress':0,'project':'Machine 12','end':6,'id':'job_1|task_1','type':'task','dependencies':['job_1|task_0']}]", -1, "none",'good schedule','8jug7g7g');
-        database.commit()
+        try:
+            cur = database.cursor(dictionary=True)
+            name = data["data"]["name"]
+            uid = session["uid"]
+            script = data["data"]["script"]
+            timelength = data["data"]["timelength"]
+            result = data["data"]["result"]
+            status = data["data"]["status"]
+            errlog = data["data"]["errlog"]
+            description = data["data"]["description"]
+            uuid = data["data"]["uuid"]
+            cur.execute("INSERT INTO schedule (name, uid, script, timelength, result, status, errlog, description, uuid) VALUES ( %s, %d, %s, %d, %s, %d, %s, %s, %s);",
+                        (name, uid, script, timelength, result, status, errlog, description, uuid))
+            # INSERT INTO schedule (name, uid, script, timelength, result, status, errlog, description, uuid) VALUES ('schedule 1',1,'i am handsome',3,"[{'start':0,'name':'Maachine 0','progress':0,'end':5,'id':'Machine 0','type':'project','hideChildren':false},{'start':0,'name':'job_0 task_0','progress':0,'project':'Machine 0','end':3,'id':'job_0|task_0','type':'task'},{'start':3,'name':'job_1 task_0','progress':0,'project':'Machine 0','end':5,'id':'job_1|task_0','type':'task'},{'start':0,'name':'Maachine 1','progress':0,'end':10,'id':'Machine 1','type':'project','hideChildren':false},{'start':0,'name':'job_2 task_0','progress':0,'project':'Machine 1','end':4,'id':'job_2|task_0','type':'task'},{'start':4,'name':'job_0 task_1','progress':0,'project':'Machine 1','end':6,'id':'job_0|task_1','type':'task','dependencies':['job_0|task_0']},{'start':6,'name':'job_1 task_2','progress':0,'project':'Machine 1','end':10,'id':'job_1|task_2','type':'task','dependencies':['job_1|task_1']},{'start':4,'name':'Maachine 2','progress':0,'end':9,'id':'Machine 2','type':'project','hideChildren':false},{'start':4,'name':'job_2 task_1','progress':0,'project':'Machine 2','end':7,'id':'job_2|task_1','type':'task','dependencies':['job_2|task_0']},{'start':7,'name':'job_0 task_2','progress':0,'project':'Machine 2','end':9,'id':'job_0|task_2','type':'task','dependencies':['job_0|task_1']},{'start':5,'name':'Maachine 12','progress':0,'end':6,'id':'Machine 12','type':'project','hideChildren':false},{'start':5,'name':'job_1 task_1','progress':0,'project':'Machine 12','end':6,'id':'job_1|task_1','type':'task','dependencies':['job_1|task_0']}]", -1, "none",'good schedule','8jug7g7g');
+            database.commit()
+        except Exception as e:
+        # print(e)
+            return jsonify({"code": -2, "data": {}, "message": e})
 
 
 @app.route('/login', methods=['POST'])
@@ -453,13 +458,14 @@ def test():
             password = data['password']
             cur = database.cursor(dictionary=True)
             cur.execute(
-                "SELECT username, password FROM user WHERE username = %s AND password = %s;", (username, password))
+                "SELECT uid, username, password FROM user WHERE username = %s AND password = %s;", (username, password))
             #cur.execute("SELECT uid, displayname, rank, disabled FROM user WHERE username = %s AND password = %s;", (username, password,))
             #cur.execute("SELECT uid, displayname, rank, disabled FROM user WHERE username = %s AND password = AES_ENCRYPT(%s, UNHEX(SHA2('', )));", (username, password,))
     except Exception as e:
         return jsonify({"code": -2, "data": {}, "message": e})
     finally:
         account = cur.fetchone()
+        session["uid"] = account["uid"]
         cur.close()
 
     if account:
@@ -485,21 +491,24 @@ def registration():
                 uses = tokendata['uses']
                 modify_token(uses, tokendata)
                 # store the user in the database
-                cur = database.cursor()
-                username = json_data["data"]["username"]
-                displayname = json_data["data"]["displayname"]
-                password = json_data["data"]["password"]
-                cur.execute(
-                    "SELECT ranks FROM token WHERE token = %s;", (tokendata))
-                rank = cur.fetchone()["ranks"]
-                database.commit()
+                try:
+                    cur = database.cursor()
+                    username = json_data["data"]["username"]
+                    displayname = json_data["data"]["displayname"]
+                    password = json_data["data"]["password"]
+                    cur.execute(
+                        "SELECT ranks FROM token WHERE token = %s;", (tokendata))
+                    rank = cur.fetchone()["ranks"]
+                    database.commit()
 
-                cur.execute("""
-                INSERT INTO user (username, displayname, password, rank)
-                VALUES (%s, %s, %s, %s);
-                """, (username, displayname, password, rank,))  # CHANGE2022-01-15
-                database.commit()
-                return jsonify({"code": 1, "message": "Succesfully register."})
+                    cur.execute("""
+                    INSERT INTO user (username, displayname, password, rank)
+                    VALUES (%s, %s, %s, %s);
+                    """, (username, displayname, password, rank,))  # CHANGE2022-01-15
+                    database.commit()
+                    return jsonify({"code": 1, "message": "Succesfully register."})
+                except Exception as e:
+                    return jsonify({"code": -2, "data": {}, "message": e})
             else:
                 return jsonify({"code": 0, "message": "Username already exist."})
 
