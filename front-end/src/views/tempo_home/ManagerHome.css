@@ -1,0 +1,74 @@
+/* .ongoing-project {
+  overflow-y: scroll;
+  overflow-x: hidden;
+} */
+
+.content {
+  margin-bottom: 0px;
+  margin-left: 0px;
+  margin-right: 0px;
+}
+
+.form-history i {
+  position: relative;
+  top: 5px;
+  font-size: 30px;
+}
+.calendar i {
+  position: relative;
+  top: 3px;
+}
+
+.ongoing-project i {
+  position: relative;
+  top: 2px;
+}
+.recieved-history i {
+  position: relative;
+  top: 5px;
+}
+
+.home-container .card-category {
+  position: relative;
+  left: 10px;
+}
+
+.recieved-history .card-category {
+  position: relative;
+  left: 0px;
+}
+
+.home-container {
+  position: relative;
+  top: 33.5px;
+}
+
+.list-element {
+  list-style: none;
+  padding-left: 0px;
+}
+.name {
+  font-weight: bold;
+  color: gray;
+}
+
+.link-btn,
+.link-btn2 {
+  background-color: white;
+  border: 0;
+  text-decoration: underline;
+  font-weight: bold;
+}
+.link-btn2 {
+  color: rgb(0, 204, 204);
+}
+.link-btn:hover {
+  color: rgb(78, 78, 78);
+}
+.link-btn2:hover {
+  color: rgb(101, 221, 221);
+}
+
+.ft-container {
+  padding: 12px 0px;
+}

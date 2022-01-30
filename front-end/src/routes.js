@@ -39,6 +39,11 @@ import Maps from "views/Map.js";
 import UserPage from "views/User.js";
 import UpgradeToPro from "views/Upgrade.js";
 
+
+import BothHome from "views/tempo_home/BothHome";
+
+
+
 var routes = [
  
   {
@@ -54,6 +59,22 @@ var routes = [
     name: "Home",
     icon: "nc-icon nc-bank",
     component: Home,
+    layout: "/admin",
+    toView:true
+  },
+  {
+    path: "/tempo_home",
+    name: "tempo_home",
+    icon: "nc-icon nc-bullet-list-67",
+    layout: "/admin",
+    component: BothHome,
+    toView:true
+  },
+  {
+    path: "/chart",
+    name: "Chart",
+    icon: "nc-icon nc-bank",
+    component: MyGantt,
     layout: "/admin",
     toView:true
   },
