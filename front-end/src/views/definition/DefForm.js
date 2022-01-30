@@ -15,11 +15,76 @@ import {
     Col,
   } from "reactstrap";
 
+
+
+const basic = `//task=[machine_id, duration]
+job1=[[0, 3], [1, 2], [2, 2]]
+job2=[[0, 2], [12, 1], [1, 4]]
+job3=[[1, 4], [2, 3]]
+jobs=[job1,job2,job3]
+
+//optional
+job_names=["job_1","job_2", "job_3"]
+//optional
+machine_names=["machine_0","machine_1", "machine_2"]
+
+//remember to return
+return model.runBasic(jobs)`
+
+const dynamic = `//task=[machine_id, duration]
+job1=[[0, 3], [1, 2], [2, 2]]
+job2=[[0, 2], [12, 1], [1, 4]]
+job3=[[1, 4], [2, 3]]
+jobs=[job1,job2,job3]
+
+//priorities will be set in ascending order of expected duration
+expected_duration=[15,15,10]
+
+//optional
+job_names=["job_1","job_2", "job_3"]
+//optional
+machine_names=["machine_0","machine_1", "machine_2", "machine_12"]
+
+//remember to return
+model.runDynamic(jobs,expected_duration)`
+
+const flexible = `//task=[machine_id, duration]
+//if one task has multiple machine choices, it can be defined as below
+job1=[[0, 3], [[2, 4], [4, 2]], [2, 4]]
+job2=[[4, 1],[[2, 1],[3, 12]]]
+job3=[[0, 4], [2, 3]]
+jobs=[job1,job2,job3]
+
+//optional
+job_names=["job_1","job_2", "job_3"]
+//optional
+machine_names=["machine_0","machine_2", "machine_3", "machine_4"]
+
+//remember to return
+model.runFlexible(jobs)`
+
+const multi = `//task=[machine_id, duration]
+//if one task has multiple concurrent processes on different machines, it can be defined as below
+job1=[[0, 3], [[1, 2], [10,1]], [[2, 2],[12, 10]]]
+job2=[[0, 2], [2, 1], [1, 4]]
+job3=[[1, 4], [2, 3]]
+jobs=[job1,job2,job3]
+
+//optional
+job_names=["job_1","job_2", "job_3"]
+//optional
+machine_names=["machine_0","machine_1", "machine_2", "machine_10", "machine_12"]
+
+//remember to return
+model.runMulti(jobs)
+`
+const jobType = [basic,dynamic,flexible,multi];
 class DefForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             modal : false,
+            showGantt: false,
             selectedOption:"Basic Type",
             scheduleName:"New Schedule",
             description:"",
@@ -30,15 +95,17 @@ class DefForm extends React.Component {
             },
             uuid:"",
             result:"",
-            task: {
-                lang: 'javascript',
-                code: '',
-              },
+            
+              
+            code: jobType[0],
+            jobIndex: 0,
+            
               response: {
                 status: '0',
                 message: '',
               },
-              success:false
+              success:false,
+              flag: 1
         };
         this.domain="http://127.0.0.1:5000"
         this.toggle = this.toggle.bind(this);
@@ -46,21 +113,58 @@ class DefForm extends React.Component {
         this.updateSolution = this.updateSolution.bind(this);
         this.handleCodeChange = this.handleCodeChange.bind(this);
     }
+    componentDidMount() {
 
+            this.dataPolling = setInterval(
+                () => {
+                    console.log(this.state.flag)
+                  if(this.state.uuid!=="" && this.state.flag===1){
+                      
+                      this.sendUuid();
+                  }
+                  
+                },
+                3000);
+        
+        
+      }
+    
+    componentWillUnmount() {
+        clearInterval(this.dataPolling);
+      }
+    toggleGantt= () =>{
+        console.log(this.state.showGantt)
+        this.setState({
+          showGantt: !this.state.showGantt
+        });
+      };
     toggle() {
         this.setState({
-          modal: !this.state.modal
+          modal: !this.state.modal,
+          code: jobType[this.state.jobIndex]
         });
       };
 
-    changeOption = changeEvent =>{
+    changeOption = changeEvent =>{    
+          let index
+          if(changeEvent.target.value=== "Basic Type")
+            index = 0
+          else if(changeEvent.target.value=== "Dynamic Type")
+            index = 1
+          else if(changeEvent.target.value=== "Flexible Type")
+            index = 2
+          else if(changeEvent.target.value=== "Multi-Resource Type")
+            index = 3
           this.setState({
+            jobIndex: index,
             selectedOption:changeEvent.target.value
+
         })
-          console.log(this.state.selectedOption)
+          
     };
 
     changeScheduleName = changeEvent =>{
+
         this.setState({
           scheduleName:changeEvent.target.value
       })
@@ -68,6 +172,7 @@ class DefForm extends React.Component {
     };
 
     changeDescription = changeEvent =>{
+
         this.setState({
           description:changeEvent.target.value
         })
@@ -75,17 +180,16 @@ class DefForm extends React.Component {
     };
     
     handleCodeChange(code) {
-        const { task } = this.state;
-        task.code = code;
+      
         
-        this.setState({ task });
-        console.log(task.code);
+        this.setState({ code:code });
+        console.log(this.state.code);
       }
     
       handleRun = event=> {
         event.preventDefault();
         var mydata={
-            script:this.state.task.code
+            script:this.state.code
         }
         console.log(mydata)
         fetch(this.domain+"/getuuid", {
@@ -104,11 +208,13 @@ class DefForm extends React.Component {
             if(response.ok) {
                 return response.json();
             }
-        }) .then(
+        }).then(
             data=>{
                 console.log("line 142", data)
                 if(data.code===1){
-                    this.sendUuid(data.data)
+                    this.setState({uuid: data.data})
+                    this.setState({result: "Schedule "+this.state.uuid+" is running!"})
+                    //this.sendUuid(data.data)
                     //轮询呢
                 }
           
@@ -116,9 +222,9 @@ class DefForm extends React.Component {
     ).catch(error => console.log(error))
     }
     
-    sendUuid(id) {
+    sendUuid() {
         var mydata={
-            uuid:id
+            uuid:this.state.uuid
         }
         console.log(mydata)
         fetch(this.domain+"/getres", {
@@ -139,13 +245,21 @@ class DefForm extends React.Component {
             data=>{
                 console.log("line 143", data)
                 if(data.code===1){
+                    console.log(data.data)
+                    console.log(this.state.showGantt)
+                    console.log(data.data.mid_msg)
                     this.setState({
-                        result: data.data
-                    })
+                        result: data.data.mid_msg,
+                        showGantt: true,
+                        flag: 0
+
+                    }
+                    )
                 }
             })
         .catch(error => console.log(error))
     }
+
     
       updateSolution(event) {
         // event.preventDefault();
@@ -226,66 +340,70 @@ class DefForm extends React.Component {
                     <Form>
                         {/* Basic Type */}
                         <div className="form-check">
-                            <label>
+                            <label style={{marginLeft: "-15px"}}>
                                 <input
                                     type="radio"
                                     name="react-tips"
                                     value="Basic Type"
+                                    
                                     checked={this.state.selectedOption === "Basic Type"}
                                     onChange={this.changeOption}
                                     className="form-check-input"
                                 />
                                 Basic Type
                             </label>
-                            <Button className="radio-btn">See Details</Button>
+                            
                         </div>
 
                         {/* Flexible Type */}
                         <div className="form-check">
-                            <label>
+                            <label style={{marginLeft: "-1px"}}>
                                 <input
                                     type="radio"
                                     name="react-tips"
                                     value="Flexible Type"
+                                    
                                     checked={this.state.selectedOption === "Flexible Type"}
                                     onChange={this.changeOption}
                                     className="form-check-input"
                                 />
                                 Flexible Type
                             </label>
-                            <Button className="radio-btn">See Details</Button>
+                            
                         </div>
 
                         {/* Dynamic Type */}
                         <div className="form-check">
-                            <label>
+                            <label style={{marginLeft: "8px"}}>
                                 <input
                                     type="radio"
                                     name="react-tips"
                                     value="Dynamic Type"
+                                    
                                     checked={this.state.selectedOption === "Dynamic Type"}
                                     onChange={this.changeOption}
                                     className="form-check-input"
                                 />
                                 Dynamic Type
                             </label>
-                            <Button className="radio-btn">See Details</Button>
+                            
                         </div>
 
                         {/* Multi-Resource Type */}
                         <div className="form-check">
-                            <label>
+                            <label style={{marginLeft: "50px"}}>
                                 <input
                                     type="radio"
                                     name="react-tips"
                                     value="Multi-Resource Type"
+                                    
                                     checked={this.state.selectedOption === "Multi-Resource Type"}
                                     onChange={this.changeOption}
                                     className="form-check-input"
                                 />
                                 Multi-Resource Type
                             </label>
-                            <Button className="radio-btn">See Details</Button>
+                          
                         </div>
                     </Form>
                 </ModalBody>
@@ -355,7 +473,7 @@ class DefForm extends React.Component {
                                 </FormGroup>
                                 <FormGroup >
                                     <Col sm={12}>
-                                    <CodeEditor onChange={this.handleCodeChange} code={this.state.task.code} />
+                                    <CodeEditor onChange={this.handleCodeChange} code={this.state.code} />
                                     </Col>
                                 </FormGroup>
                                 
@@ -377,28 +495,46 @@ class DefForm extends React.Component {
                                 >
                                 Card subtitle
                             </CardSubtitle>
-                            <CardText>
-                                where the output goes
-                            </CardText>
+                            
                             
                                 <FormGroup >
                                     
-                                    <FormControl
+                                    {/* <FormControl
                                     readOnly
                                     type="text"
-                                    style={{height:"100px"}}
-                                    placeholder={this.state.result}
-                                    onChange={this.handleChange}
-                                    />
-                                    
+                                    style={{height:"200px",whiteSpace:"pre-line"}}
+                                    placeholder={"jimmy <br> jjjj"}
+                                    //onChange={this.handleChange}
+                                    /> */}
+                                    <span style={{height:"200px",whiteSpace:"pre-line",lineHeight:"22px"}}>
+                                        {this.state.result}
+                                    </span>
                                 </FormGroup>
-                            <div className="gantt-chart">
-                                <GanttDay showBar={false} />
-                            </div>
                             
-                            <Button>
-                                Accept
-                            </Button>
+                                
+                                <Modal
+                                    isOpen={this.state.showGantt}
+                                    toggle={this.toggleGantt}
+                                    backdrop={false}
+                                    size="xl"
+                                    centered
+                                    scrollable
+                                    className="my-modal"
+                                    //style={{width: "120%"}}
+                                >
+                                    
+                                    <ModalBody>
+                                        <GanttDay showBar={true} />
+                                    </ModalBody>
+                                                    
+                                    <ModalFooter>
+                                        <Button className="cancel-btn" onClick={this.toggleGantt}>Cancel</Button>
+                                        <Button color="secondary" onClick={this.toggleGantt}>Accept</Button>
+                                    </ModalFooter>
+                                </Modal>
+                            
+                            
+                    
                         </CardBody>
                     </Card>
                 </CardGroup>
