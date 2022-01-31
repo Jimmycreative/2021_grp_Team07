@@ -30,14 +30,14 @@ USE `grp`;
 -- Table structure for table `jobs`
 --
 
-CREATE TABLE `jobs` (
+/* CREATE TABLE `jobs` (
   `id` int(11) NOT NULL,
   `machine` int(11) NOT NULL,
   `name` varchar(128) COLLATE utf8_bin NOT NULL,
   `startdate` datetime NOT NULL DEFAULT current_timestamp(),
   `enddate` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `priority` int(11) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin; */
 
 -- --------------------------------------------------------
 
@@ -45,12 +45,22 @@ CREATE TABLE `jobs` (
 -- Table structure for table `machine`
 --
 
-CREATE TABLE `machine` (
+/* CREATE TABLE `machine` (
   `machineid` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
+ */
 -- --------------------------------------------------------
+
+CREATE TABLE `assignment` (
+  `aid` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `title` varchar(64) COLLATE utf8_bin NOT NULL,
+  `description` varchar(512) COLLATE utf8_bin NOT NULL,
+  `datecreated` datetime NOT NULL DEFAULT current_timestamp(),
+  `status` tinyint(1) NOT NULL, -- 0 for not accept 1 for accept
+  `manager` varchar(16) NOT NULL,
+  `planner` varchar(16) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
 -- Table structure for table `schedules`
@@ -59,11 +69,11 @@ CREATE TABLE `machine` (
 CREATE TABLE `schedule` (
   `scheduleid` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
-  `uid` int(11) NOT NULL,
+  `aid` int(11) NOT NULL FOREIGN KEY(aid) REFERENCES assignment(aid),
   `script` text NOT NULL,
   `timelength` int(11),
   `result` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
-  `status` tinyint(1) NOT NULL,
+  `status` tinyint(1) NOT NULL, -- 0 for not accept 1 for accept
   `errlog` varchar(255) COLLATE utf8_bin,
   `description` varchar(512) COLLATE utf8_bin,
   `startdate` datetime NOT NULL DEFAULT current_timestamp(),
@@ -77,7 +87,7 @@ CREATE TABLE `schedule` (
 --
 
 CREATE TABLE `token` (
-  `token` varchar(128) COLLATE utf8_bin NOT NULL,
+  `token` varchar(128) COLLATE utf8_bin NOT NULL PRIMARY KEY,
   `datecreated` timestamp NOT NULL DEFAULT current_timestamp(),
   `dateexpire` timestamp NULL DEFAULT NULL,
   `rank` int(1) NOT NULL,
@@ -104,7 +114,7 @@ INSERT INTO `tokens` (`token`, `datecreated`, `dateexpire`, `rank`, `uses`, `dis
 
 CREATE TABLE `user` (
   `uid` int(11) NOT NULL,
-  `username` varchar(16) COLLATE utf8_bin NOT NULL,
+  `username` varchar(16) COLLATE utf8_bin NOT NULL UNIQUE,
   `displayname` varchar(64) COLLATE utf8_bin NOT NULL,
   `password` varchar(256) COLLATE utf8_bin NOT NULL,
   `datecreated` datetime NOT NULL DEFAULT current_timestamp(),
