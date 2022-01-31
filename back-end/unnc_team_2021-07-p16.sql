@@ -57,7 +57,7 @@ CREATE TABLE `assignment` (
   `title` varchar(64) COLLATE utf8_bin NOT NULL,
   `description` varchar(512) COLLATE utf8_bin NOT NULL,
   `datecreated` datetime NOT NULL DEFAULT current_timestamp(),
-  `status` tinyint(1) NOT NULL, -- 0 for not accept 1 for accept
+  `_status` tinyint(1) NOT NULL DEFAULT 0, -- 0 for not accept 1 for accept
   `manager` varchar(16) NOT NULL,
   `planner` varchar(16) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
@@ -111,6 +111,7 @@ INSERT INTO `tokens` (`token`, `datecreated`, `dateexpire`, `rank`, `uses`, `dis
 
 --
 -- Table structure for table `user`
+-- 0 for planner, 1 for manager
 --
 
 CREATE TABLE `user` (
