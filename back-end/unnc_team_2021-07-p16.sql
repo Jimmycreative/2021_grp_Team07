@@ -69,7 +69,7 @@ CREATE TABLE `assignment` (
 CREATE TABLE `schedule` (
   `scheduleid` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
-  `aid` int(11) NOT NULL FOREIGN KEY(aid) REFERENCES assignment(aid),
+  `aid` int(11) NOT NULL,
   `script` text NOT NULL,
   `timelength` int(11),
   `result` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
@@ -77,7 +77,8 @@ CREATE TABLE `schedule` (
   `errlog` varchar(255) COLLATE utf8_bin,
   `description` varchar(512) COLLATE utf8_bin,
   `startdate` datetime NOT NULL DEFAULT current_timestamp(),
-  `uuid` varchar(64)
+  `uuid` varchar(64) NOT NULL,
+  FOREIGN KEY(aid) REFERENCES assignment(aid)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
