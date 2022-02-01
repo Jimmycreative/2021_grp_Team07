@@ -44,7 +44,7 @@ const dateformat = (date)=> { //only date object
 
 const dateformat2 = (date)=> { //only date object
     //yyyy-mm-dd HH:MM:SS
-    return date.getFullYear() + "-" + (("00"+(date.getMonth()+1)).slice(-2))+"-"+(("00"+date.getDate()).slice(-2))
+  return date.getFullYear() + "-" + (("00"+(date.getMonth()+1)).slice(-2))+"-"+(("00"+date.getDate()).slice(-2))
     +" "+(("00"+date.getHours()).slice(-2))+":"+(("00"+date.getMinutes()).slice(-2))+":"+(("00"+date.getSeconds()).slice(-2))};
 const [modal, setModal] = useState(false);
 const [loading, setLoading] = useState(false);
@@ -102,7 +102,6 @@ useEffect(()=>{
  getAllSchedules();
 },[]);
 
-const noRefCheck = () =>{};
       
   return (
 

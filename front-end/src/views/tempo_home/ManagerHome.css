@@ -4,7 +4,6 @@
 } */
 
 .content {
-  margin-bottom: 0px;
   margin-left: 0px;
   margin-right: 0px;
 }
@@ -28,10 +27,10 @@
   top: 5px;
 }
 
-.home-container .card-category {
+/*.home-container .card-category {
   position: relative;
   left: 10px;
-}
+}*/
 
 .recieved-history .card-category {
   position: relative;

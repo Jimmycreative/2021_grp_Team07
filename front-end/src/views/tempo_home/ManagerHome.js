@@ -71,9 +71,12 @@ const getAllSchedules = () =>{
       cache: 'no-cache',
       headers: new Headers({
           'Content-Type': 'application/json'
+          
       }),
       method: 'GET',
-      mode: 'cors'
+      mode: 'cors',
+      redirect: 'follow',
+      referrer: 'no-referrer', 
     })
    .then(res=> {if(res.ok){ // true if res returned successful
        return res.json();}

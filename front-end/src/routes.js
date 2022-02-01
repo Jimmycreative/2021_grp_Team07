@@ -55,17 +55,9 @@ var routes = [
     toView:true
   },
   {
-    path: "/home",
-    name: "Home",
-    icon: "nc-icon nc-bank",
-    component: Home,
-    layout: "/admin",
-    toView:true
-  },
-  {
     path: "/tempo_home",
     name: "tempo_home",
-    icon: "nc-icon nc-bullet-list-67",
+    icon: "nc-icon nc-bank",
     layout: "/admin",
     component: BothHome,
     toView:true
