@@ -79,7 +79,13 @@ const getAllSchedules = () => {
         var timelength=res[i].timelength
         var cur=new Date()
         var now=cur.getDate()-start.getDate()
-        my_data.push(now/timelength)
+        if (now>timelength) {
+          my_data.push(1)
+        }
+        else {
+          my_data.push(now/timelength)
+        }
+        
       }
       var bar_data={}
       bar_data = {
