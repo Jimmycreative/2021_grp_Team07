@@ -128,9 +128,8 @@ CREATE TABLE `user` (
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`uid`, `username`, `displayname`, `password`, `datecreated`, `rank`, `disabled`) VALUES
-(1, 'admin', 'admin', 'admin', '2022-01-07 18:47:37', 3, 0),
-(2, 'asdas', 'sadasd', '?l?ԤIA?R?<r?p', '2022-01-14 17:42:00', 0, 0);
+INSERT INTO `user` (`uid`, `username`, `displayname`, `password`, `rank`, `disabled`) VALUES
+(1, 'Shawn123', 'shawn', '123456', 1, 0);
 
 --
 -- Indexes for dumped tables

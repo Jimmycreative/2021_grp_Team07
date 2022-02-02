@@ -1,7 +1,7 @@
 import "./LoginSignup.css";
 import {Button} from "reactstrap";
 import React, { useState, useEffect } from "react";
-import APIService from './ApiService'
+
 import { useHistory } from 'react-router-dom';
 // import Registration from "./RegTemp";
 // import Login from "./LogTemp";
@@ -58,6 +58,7 @@ function LoginSignup() {
     const [tokenError, setTokenError] = useState('');
 
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const domain = "http://127.0.0.1:5000"
 
     const submitRegister = e => {
         e.preventDefault();
@@ -79,7 +80,34 @@ function LoginSignup() {
         return isSubmitted;
     };
 
-
+    const insertData= (body)=>{
+        fetch(domain+"/login", {
+          body: JSON.stringify(body),
+          cache: 'no-cache',
+          headers: new Headers({
+              'Content-Type': 'application/json'
+            }),
+          method: 'POST', // *GET, POST, PUT, DELETE, etc.
+          mode: 'cors', // no-cors, cors, *same-origin
+          redirect: 'follow', // manual, *follow, error
+          referrer: 'no-referrer', // *client, no-referrer
+        })
+      .then(response=>{
+        if(response.ok){
+          return response.json()
+          }
+        }
+        
+      ).then(
+        data=>{
+          if(data["code"]===1){
+            console.log(data)
+            history.push("/main")
+          }
+          
+        }
+      )
+    }
     const isField = (field) => {
 
         let isValid = false;
@@ -173,7 +201,11 @@ function LoginSignup() {
         e.preventDefault()
         console.log(username)
         console.log(password)
-        APIService.InsertData({username,password})
+        var mydata={
+            username:username,
+            password:password
+        }
+        insertData(mydata)
         setUsername('')
         setPassword('')
     }
