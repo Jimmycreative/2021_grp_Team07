@@ -178,14 +178,9 @@ function ManagerAssign() {
                                 <FormGroup >
                                   <label htmlFor="message">Schedule Description</label>
                                   
-<<<<<<< HEAD
                                   <TextField
                                    variant="filled"
                                     placeholder="Message..."
-=======
-                                  <Input
-                                    placeholder="Description..."
->>>>>>> e30c04ecf7e7cdfffc1bea7b1eca82e342e774e5
                                     type="textarea"
                                     className='TextBox'
                                     id='message'
@@ -308,13 +303,8 @@ function ManagerAssign() {
                                   <Input
                                     placeholder="Message..."
                                     type="textarea"
-<<<<<<< HEAD
                                     value={val.message}
                                   />    {/* need to modify */}
-=======
-                                    value={val.description}
-                                  />
->>>>>>> e30c04ecf7e7cdfffc1bea7b1eca82e342e774e5
                                 </FormGroup>
 
                         </ModalBody>
