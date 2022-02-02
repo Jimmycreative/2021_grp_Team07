@@ -113,7 +113,6 @@ export default function PlannerAssign() {
                             </ModalHeader>
                         <ModalBody>
                                 
-<<<<<<< HEAD
                                 <Table>
                                 <thead className="text-primary">
                                       <tr>
@@ -133,20 +132,6 @@ export default function PlannerAssign() {
                                       </tr>
                                       </tbody>
                                 </Table>
-=======
-
-                                <FormGroup>
-                                  <label>Date: {val.date} </label> 
-                                  <br/>
-                                  <label>Assignment</label>
-                                  
-                                  <Input
-                                    placeholder="Message..."
-                                    type="textarea"
-                                    value={val.description}
-                                  />
-                                </FormGroup>
->>>>>>> e30c04ecf7e7cdfffc1bea7b1eca82e342e774e5
 
                         </ModalBody>
 

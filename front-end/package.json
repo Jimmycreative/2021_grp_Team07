@@ -47,10 +47,7 @@
     "react-router-dom": "5.2.0",
     "react-scripts": "4.0.3",
     "react-syntax-highlighter": "^15.4.5",
-<<<<<<< HEAD
     "react-table": "^7.7.0",
-=======
->>>>>>> e30c04ecf7e7cdfffc1bea7b1eca82e342e774e5
     "react-tabs": "^3.2.3",
     "reactstrap": "8.9.0",
     "rehype-highlight": "^5.0.2",
