@@ -24,9 +24,9 @@ function Invatation() {
     //link to backend
 
     const getToken = () => {
-        
+        let date = JSdatetimeToMySQLdatetime();
          var mydata = {
-             expirationDate: expirationDate,
+             expirationDate: date,
              rank: 0,
              uses: uses
          }
@@ -82,7 +82,7 @@ function Invatation() {
             setIsConfirmed(false);
         }
 
-        return isConfirmed;
+        //return isConfirmed;
     };
 
 
@@ -192,8 +192,19 @@ function Invatation() {
 
 
 
-    const JSdatetimeToMySQLdatetime = (exp) => {
-        setExpiration(exp)
+    const JSdatetimeToMySQLdatetime = () => {
+        
+        if (time === "Unlimited") {
+            setExpiration('');
+            setExpirationError('');
+            setTime("Unlimited");
+            document.getElementById("dateexpire").disabled = true;
+        }
+        else {
+            document.getElementById("dateexpire").disabled = false;
+        }
+
+        
         // get current datetime in sconeds
         let currentTimeInSeconds = (new Date().getTime() / 1000) + (new Date().getTimezoneOffset() * -60);
 
@@ -202,16 +213,18 @@ function Invatation() {
 
         if (receivedTimeInSeconds == null) {
             setExpirationDate(null);
-            console.log("w")
             return;
         }
 
         // add it to current datetime
         let addedTime = (currentTimeInSeconds + receivedTimeInSeconds) * 1000;
+        console.log(addedTime)
 
         // convert added datetime to MySQL datetime
-        setExpirationDate(new Date(addedTime).toISOString().slice(0, 19).replace('T', ' '));
-        console.log(expirationDate)
+        //setExpirationDate(new Date(addedTime).toISOString().slice(0, 19).replace('T', ' '));
+        let date = new Date(addedTime).toISOString().slice(0, 19).replace('T', ' ');
+        setExpirationDate(date)
+        return date
 
     }
 
@@ -223,27 +236,6 @@ function Invatation() {
     }
 
 
-
-    const changeSelectBox = () => {
-
-        if (document.getElementById("dateexpireSelect").value === "Unlimited") {
-            setExpiration('');
-            setExpirationError('');
-            setTime("Unlimited");
-            document.getElementById("dateexpire").disabled = true;
-        }
-        else {
-            document.getElementById("dateexpire").disabled = false;
-        }
-
-        if (document.getElementById("dateexpireSelect").value === "minutes")
-            setTime("minutes");
-        else if (document.getElementById("dateexpireSelect").value === "hours")
-            setTime("hours");
-        else if (document.getElementById("dateexpireSelect").value === "days")
-            setTime("days");
-
-    }
 
     const changeCheckBox = () => {
 
@@ -328,13 +320,13 @@ function Invatation() {
                             name="dateexpire"
                             id="dateexpire"
                             value={expiration}
-                            onChange={(e) => JSdatetimeToMySQLdatetime(e.target.value)}
+                            onChange={(e) => setExpiration(e.target.value)}
                         />
 
                         <select
                             id="dateexpireSelect"
                             name="dateexpireSelect"
-                            onChange={() => { changeSelectBox(); }}
+                            onChange={(e) => setTime(e.target.value) }
                         >
                             <option
                                 value="minutes"

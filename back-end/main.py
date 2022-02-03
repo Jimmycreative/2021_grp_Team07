@@ -17,6 +17,8 @@ import json
 import decimal
 import re
 
+from sqlalchemy import true
+
 
 class MyEncoder(json.JSONEncoder):
 
@@ -90,12 +92,12 @@ def puttoken(token, dateexpire, rank, uses):
 
     if dateexpire is None:
         cur.execute("""
-        INSERT INTO token (token, dateexpire, rank, uses)
+        INSERT INTO token (token, dateexpire, role, uses)
         VALUES (%s, NULL, %s, %s);
         """, (token, rank, uses))
     else:
         cur.execute("""
-        INSERT INTO token (token, dateexpire, rank, uses)
+        INSERT INTO token (token, dateexpire, role, uses)
         VALUES (%s, %s, %s, %s);
         """, (token, dateexpire, rank, uses))
 
@@ -123,17 +125,20 @@ def checkusername(username):
 def checktoken(token):
     cur = database.cursor(dictionary=True)
     cur.execute("""
-    SELECT uses, rank
+    SELECT *
     FROM token
-    WHERE token = %s
+    WHERE tokenid = %s
     AND disabled = 0
     AND (dateexpire IS NULL OR dateexpire > CURRENT_TIMESTAMP()) 
     AND uses <> 0;
     """, (token,))
 
     tokendata = cur.fetchone()
-    return tokendata
-
+    if tokendata:
+        return True
+    else:
+        return False
+    
 
 def modify_info(isLogin, message):
     login_info["isLogin"] = isLogin
@@ -474,7 +479,7 @@ def registration():
                     displayname = json_data["data"]["displayname"]
                     password = json_data["data"]["password"]
                     cur.execute(
-                        "SELECT ranks FROM token WHERE token = %s;", (tokendata))
+                        "SELECT ranks FROM token WHERE tokenid = %s;", (tokendata))
                     rank = cur.fetchone()["ranks"]
                     database.commit()
 
@@ -503,15 +508,36 @@ def genToken():
     if json_data:
         print("you get it!")
         dateexpire = json_data["expirationDate"]
-        rank = json_data["rank"]  # 0 for planner 1 for manager
+        role = json_data["rank"]  # 0 for planner 1 for manager
         uses = json_data["uses"]
 
-        token = tokengen()
+        cur = database.cursor()
+        #purgetoken()
+        token = ''.join(secrets.choice(string.ascii_letters + string.digits)
+                for _ in range(8))
+
         print(token)
+        while checktoken(token):
+            token = ''.join(secrets.choice(string.ascii_letters +
+                            string.digits) for _ in range(8))
+        print(token)
+        if uses=="":
+            uses = str(-1)
+        #print("type: ",type(uses))
+        if dateexpire=="":
+            cur.execute("""
+            INSERT INTO token (tokenid, dateexpire, role, uses) VALUES (%s, NULL, %s, %s);""", (token, role, uses))
+        else:
+            cur.execute("""
+            INSERT INTO token (tokenid, dateexpire, role, uses)
+            VALUES (%s, %s, %s, %s);
+            """, (token, dateexpire, role, int(uses)))
+            database.commit()
+
         if token is None:
             return jsonify({"code": -1, "data": "", "message": "Not successfully generating token!"})
         else:
-            puttoken(token, dateexpire, rank, uses)
+            #puttoken(token, dateexpire, role, uses)
             return jsonify({"code": 1, "data": token, "message": "Successfully generating token!"})
     return
 
