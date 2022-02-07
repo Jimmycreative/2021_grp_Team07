@@ -4,10 +4,10 @@
 from distutils.cygwinccompiler import CygwinCCompiler
 from turtle import title
 from click.types import convert_type
-from flask import Flask, render_template, request, redirect, session, url_for, flash
+from flask import Flask, request, session
 import mysql.connector
 from flask import jsonify
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 import json
 import requests
 import secrets
@@ -16,6 +16,8 @@ import datetime
 import json
 import decimal
 import re
+
+from sqlalchemy import true
 
 
 class MyEncoder(json.JSONEncoder):
@@ -39,12 +41,21 @@ app.secret_key = "hello"
 CORS(app, supports_credentials=True)
 
 database = mysql.connector.connect(
+<<<<<<< HEAD
     host="127.0.0.1",
     user="root",
     password="",
     database="grp"
     #   password="12345678",
     #   database="try"
+=======
+  host="127.0.0.1",
+  user="root",
+  #password="",
+  #database="grp"
+  password="12345678",
+  database="try"
+>>>>>>> 4f6aa3e7de462971ebdd79fc500cb48232dbc985
 )
 login_info = {
     "code": -1,
@@ -59,6 +70,7 @@ def tokengen():
     purgetoken()
     token = ''.join(secrets.choice(string.ascii_letters + string.digits)
                     for _ in range(8))
+    print(token)
     while checktoken(token):
         token = ''.join(secrets.choice(string.ascii_letters +
                                        string.digits) for _ in range(8))
@@ -89,12 +101,12 @@ def puttoken(token, dateexpire, rank, uses):
 
     if dateexpire is None:
         cur.execute("""
-        INSERT INTO token (token, dateexpire, rank, uses)
+        INSERT INTO token (token, dateexpire, role, uses)
         VALUES (%s, NULL, %s, %s);
         """, (token, rank, uses))
     else:
         cur.execute("""
-        INSERT INTO token (token, dateexpire, rank, uses)
+        INSERT INTO token (token, dateexpire, role, uses)
         VALUES (%s, %s, %s, %s);
         """, (token, dateexpire, rank, uses))
 
@@ -122,17 +134,20 @@ def checkusername(username):
 def checktoken(token):
     cur = database.cursor(dictionary=True)
     cur.execute("""
-    SELECT uses, rank
+    SELECT *
     FROM token
-    WHERE token = %s
+    WHERE tokenid = %s
     AND disabled = 0
     AND (dateexpire IS NULL OR dateexpire > CURRENT_TIMESTAMP()) 
     AND uses <> 0;
     """, (token,))
 
     tokendata = cur.fetchone()
-    return tokendata
-
+    if tokendata:
+        return True
+    else:
+        return False
+    
 
 def modify_info(isLogin, message):
     login_info["isLogin"] = isLogin
@@ -176,10 +191,15 @@ def getAllPlanners():
 
 # Assign Schedules page
 # 字段
+<<<<<<< HEAD
 # planner username从session取
 # manager, title, description
 
 
+=======
+# manager username从session取
+# planner, title, description
+>>>>>>> 4f6aa3e7de462971ebdd79fc500cb48232dbc985
 @app.route('/sendAssignment', methods=['POST'])
 def sendAssignment():
     res_json = {}
@@ -189,11 +209,19 @@ def sendAssignment():
     try:
         data = request.json
         if data:
+<<<<<<< HEAD
             manager = data['manager']
             title = data['title']
             description = data['description']
             # TODO, get from session
             planner = "xiaowanzi"
+=======
+            planner=data['planner']
+            title=data['title']
+            description=data['description']
+            # TODO, get from session
+            manager = session["username"]
+>>>>>>> 4f6aa3e7de462971ebdd79fc500cb48232dbc985
 
             cur = database.cursor(dictionary=True)
             cur.execute("INSERT INTO assignment (title, description, manager, planner) VALUES ( %s, %s, %s, %s);",
@@ -249,8 +277,13 @@ def getMySchedules():
         temp_list = []
         cur = database.cursor(dictionary=True)
         # TODO, get from session
+<<<<<<< HEAD
         planner = "xiaowanzi"
         sql = """
+=======
+        planner=session["username"]
+        sql="""
+>>>>>>> 4f6aa3e7de462971ebdd79fc500cb48232dbc985
             SELECT manager, COUNT(IF(_status=0,1,NULL)) AS unfinished_assignment, GROUP_CONCAT(title) AS title,
             GROUP_CONCAT(_status) AS status,
             GROUP_CONCAT(description) AS description,
@@ -430,24 +463,26 @@ def save_schedule():
 def test():
 
     data = request.json
+    print(data)
     try:
         if data:
-            print(data)
+            
             username = data['username']
             password = data['password']
             cur = database.cursor(dictionary=True)
             cur.execute(
-                "SELECT uid, username, password FROM user WHERE username = %s AND password = %s;", (username, password))
+                "SELECT username,password FROM user WHERE username = %s AND password = %s;", (username, password))
             #cur.execute("SELECT uid, displayname, rank, disabled FROM user WHERE username = %s AND password = %s;", (username, password,))
             #cur.execute("SELECT uid, displayname, rank, disabled FROM user WHERE username = %s AND password = AES_ENCRYPT(%s, UNHEX(SHA2('', )));", (username, password,))
     except Exception as e:
         return jsonify({"code": -2, "data": {}, "message": e})
     finally:
         account = cur.fetchone()
-        session["uid"] = account["uid"]
+        session["username"] = account["username"]
         cur.close()
 
     if account:
+        
         modify_info(1, "Login successfully!")
     else:
         modify_info(0, "Login not successful")
@@ -476,7 +511,7 @@ def registration():
                     displayname = json_data["data"]["displayname"]
                     password = json_data["data"]["password"]
                     cur.execute(
-                        "SELECT ranks FROM token WHERE token = %s;", (tokendata))
+                        "SELECT ranks FROM token WHERE tokenid = %s;", (tokendata))
                     rank = cur.fetchone()["ranks"]
                     database.commit()
 
@@ -501,18 +536,42 @@ def registration():
 @app.route('/genToken', methods=['POST'])
 def genToken():
     json_data = request.json
+    print(json_data)
     if json_data:
+        print("you get it!")
+        dateexpire = json_data["expirationDate"]
+        role = json_data["rank"]  # 0 for planner 1 for manager
+        uses = json_data["uses"]
 
-        dateexpire = json_data["data"]["dateexpire"]
-        rank = json_data["data"]["rank"]  # 0 for planner 1 for manager
-        uses = json_data["data"]["uses"]
+        cur = database.cursor()
+        #purgetoken()
+        token = ''.join(secrets.choice(string.ascii_letters + string.digits)
+                for _ in range(8))
 
-        token = tokengen()
+        print(token)
+        while checktoken(token):
+            token = ''.join(secrets.choice(string.ascii_letters +
+                            string.digits) for _ in range(8))
+        print(token)
+        if uses=="":
+            uses = str(-1)
+        #print("type: ",type(uses))
+        if dateexpire=="":
+            cur.execute("""
+            INSERT INTO token (tokenid, dateexpire, role, uses) VALUES (%s, NULL, %s, %s);""", (token, role, uses))
+        else:
+            cur.execute("""
+            INSERT INTO token (tokenid, dateexpire, role, uses)
+            VALUES (%s, %s, %s, %s);
+            """, (token, dateexpire, role, int(uses)))
+            database.commit()
+
         if token is None:
             return jsonify({"code": -1, "data": "", "message": "Not successfully generating token!"})
         else:
-            puttoken(token, dateexpire, rank, uses)
+            #puttoken(token, dateexpire, role, uses)
             return jsonify({"code": 1, "data": token, "message": "Successfully generating token!"})
+    return
 
 
 @app.route("/")

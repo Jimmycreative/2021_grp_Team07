@@ -1,12 +1,14 @@
 import Badge from '@mui/material/Badge'; 
 import MailIcon from '@mui/icons-material/Mail';  
-import React, {useState} from 'react';
+import React, {useMemo, useState} from 'react';
+import * as ReactTable from 'react-table';
+import {useTable} from "react-table";
 import "./PlannerAssign.css";
 import Contact from "./contact.json";
 import {Button,Card,CardHeader,CardBody,CardTitle,Table,Row,Col,FormGroup,Form,Input,UncontrolledAlert} from "reactstrap";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import {InputGroup,InputGroupAddon,InputGroupText} from "reactstrap";
-
+import { Link, BrowserRouter as Router } from "react-router-dom";
 
 
 
@@ -16,12 +18,15 @@ export default function PlannerAssign() {
   const[searchManager,setSearchManager] = useState(""); {/* Searching function */}
   const [modal, setModal] = React.useState(false);      {/* popup */}
   const toggle = () => setModal(!modal);                {/* popup */}
+
+  const [viewForm, setViewForm] = React.useState(false);      {/* popup */}
+  const toggleView = () => setViewForm(!viewForm);                {/* popup */}
   let countmessages = 0;
       Contact.map((i) => {
         countmessages = countmessages + i.countmessages;
     });
-
- 
+   
+  
   return (
     <>
     
@@ -96,30 +101,74 @@ export default function PlannerAssign() {
                       centered
                       scrollable
                       className="popup">
+                        
+                      
+
+                      
                         <ModalHeader
                             toggle={toggle}>
                               
-                                <CardTitle tag="h7">Manager: {val.name}</CardTitle>
+                                <CardTitle tag="h5">Message </CardTitle>
                               
                             </ModalHeader>
                         <ModalBody>
                                 
-
-                                <FormGroup>
-                                  <label>Date: {val.date} </label> 
-                                  <br/>
-                                  <label>Assignment</label>
-                                  
-                                  <Input
-                                    placeholder="Message..."
-                                    type="textarea"
-                                    value={val.description}
-                                  />
-                                </FormGroup>
+                                <Table>
+                                <thead className="text-primary">
+                                      <tr>
+                                        <th>Name</th>
+                                        <th>Date</th>
+                                        <th>Message</th>
+                                        
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        
+                                        <td>{val.name}</td>
+                                        <td> {val.date} </td>
+                                        <td><Button onClick={toggleView} >View Message</Button></td>
+                                        
+                                      </tr>
+                                      </tbody>
+                                </Table>
 
                         </ModalBody>
-                        
+
+                     
+   
                     </Modal>
+                   
+                    <Modal
+                    data={Contact}
+                      isOpen={viewForm}
+                      toggle={toggleView}
+                      backdrop={false}
+                      size="xl"
+                      centered
+                      scrollable
+                      className="popup">
+                        
+                        {/*<TablePlanner/>*/}
+
+                      
+                        <ModalHeader
+                            toggle={toggleView}>
+                              
+                                <CardTitle tag="h7"> Message from {val.name} </CardTitle>
+                              
+                            </ModalHeader>
+
+                            <ModalBody>
+                              {val.message}
+                            </ModalBody>
+                                <ModalFooter>
+                              <Link to="/admin/definition">
+                              <Button>Go to Definition page</Button>   {/*click and go to definition page */}
+                            </Link> 
+                            </ModalFooter> 
+                            </Modal>
+
                 </li>
               </ul>
 
@@ -133,3 +182,6 @@ export default function PlannerAssign() {
 
 
 }
+
+
+                

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import APIService from './ApiService'
+import React, { useState} from "react";
+
 import { useHistory } from 'react-router-dom';
 import "./LogTemp.css";
 
@@ -7,41 +7,47 @@ function LogTemp (){
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const history = useHistory();
+  const domain = "http://127.0.0.1:5000"
     
-      useEffect(() => {
-        fetch("/login",{
-          headers : { 
-            
-            'Accept': 'application/json'
-           }
-        }).then(response=>{
-            if(response.ok){
-                return response.json()
-                }
-            }
-            
-        ).then(
-            data=>{
-                if(data["isLogin"]===1){
-                  console.log(data)
-                  history.push("/Main")
-                }
-                
-
-            }
-        )
-      });
-      const handleSubmit = (e) => {
-        e.preventDefault()
-        console.log(username)
-        console.log(password)
-        APIService.InsertData({username,password})
-        
-        setUsername('')
-        setPassword('')
-       
-
+    const insertData= (body)=>{
+      return fetch(domain+"/login", {
+        body: JSON.stringify(body),
+        cache: 'no-cache',
+        headers: new Headers({
+            'Content-Type': 'application/json'
+          }),
+        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        mode: 'cors', // no-cors, cors, *same-origin
+        redirect: 'follow', // manual, *follow, error
+        referrer: 'no-referrer', // *client, no-referrer
+      })
+    .then(response=>{
+      if(response.ok){
+        return response.json()
+        }
       }
+      
+    ).then(
+      data=>{
+        if(data["code"]===1){
+          console.log(data)
+          history.push("/main")
+        }
+        
+      }
+    )
+    .catch(error => console.log(error))
+    }
+    const handleSubmit = (e) => {
+      e.preventDefault()
+      console.log(username)
+      console.log(password)
+      insertData({username,password})
+      
+      setUsername('')
+      setPassword('')
+    
+    }
     
     return (
       <div className="log-container">

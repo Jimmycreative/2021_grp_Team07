@@ -3,8 +3,8 @@ import 'react-tabs/style/react-tabs.css';
 import "react-datepicker/dist/react-datepicker.css";
 import {Button,Card,CardHeader,CardBody,CardTitle,Table,Row,Col,FormGroup,Form,Input} from "reactstrap";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-import React, { Component } from "react";
-
+import React, { useEffect } from "react";
+import TextField from '@mui/material/TextField';
 import './ManagerAssign.css';
 import infoPlanner from "./infoPlanner.json";
 import { useState } from 'react';
@@ -17,10 +17,38 @@ function ManagerAssign() {
   const [modal, setModal] = React.useState(false);      {/* popup */}
   const toggle = () => setModal(!modal);                {/* popup */}
   const[searchMessage,setSearchMessage] = useState(""); {/* Searching function */}
-  const [dateRange, setDateRange] = useState([null, null]);{/* search date function */}
   
-  
-  
+
+ {/*validation */}
+  const [Title, setTitle] = useState("")
+  const [Plannername, setPlannername] = useState("")
+  const [Message, setMessage] = useState("")
+
+
+          const onTitleHandler = (e) => {
+            setTitle(e.currentTarget.value)
+        }
+
+        const onPlannerHandler = (e) => {
+          setPlannername(e.currentTarget.value)
+        }
+
+        const onMessageHandler = (e) => {
+          setMessage(e.currentTarget.value)
+        }
+
+        const TitleError = TitleEntered =>
+                Title.length < 1 ? true : false;
+
+       
+
+        const MessageError = MessageEntered =>
+                Message.length < 1 ? true : false;
+
+         const onSubmitHandler = (e) => {
+                  e.preventDefault();
+                }
+
     return (
     <>
      
@@ -105,43 +133,63 @@ function ManagerAssign() {
                      <ModalHeader toggle={toggle}> <CardTitle tag="h8">Assgin Schedules </CardTitle> </ModalHeader>
                       <ModalBody>
                       
-                          <div>
+                          <div onSubmit={onSubmitHandler}>
                          <FormGroup>
                                   <label htmlFor="AssignTitle">Title</label>
-                                  <Input
+                                  <TextField
+                                   variant="filled"
                                     placeholder="Title..."
                                     type="text"
                                     className='mytext'
                                     id='AssignTitle'
+                                    value={Title}
+                                   onChange={onTitleHandler}
+                                   error={TitleError('title')} 
+                                   
+                                   label="Title is required"
+                                   color="success"
+                                   focused 
                                     />
 
-                                    
+                          
                                 </FormGroup>
 
                                 <FormGroup>
                                   
                                   <label htmlFor="username" >Username</label>
-                                  <Input
+                                  <TextField
+                                   variant="filled"
                                     placeholder="username..."
                                     type="text"
                                     className='mytext'
                                     value={val.username}
                                     id='username'
+                                    
+                                    onChange={onPlannerHandler}
+                                    label="Filled success"
+                                    color="success"
+                                    focused 
                                    
                                   />
                                   
-                                    
+                                                            
                                 </FormGroup>
 
                                 <FormGroup >
                                   <label htmlFor="message">Schedule Description</label>
                                   
-                                  <Input
-                                    placeholder="Description..."
+                                  <TextField
+                                   variant="filled"
+                                    placeholder="Message..."
                                     type="textarea"
                                     className='TextBox'
                                     id='message'
-                                   
+                                    value={Message}
+                                    onChange={onMessageHandler}
+                                    error={MessageError('message')} 
+                                    label="Message is required"
+                                    color="success"
+                                    focused 
                                   />
                                  
                          
@@ -151,7 +199,7 @@ function ManagerAssign() {
                       </ModalBody>
                                                     
                        <ModalFooter>
-                       <Button color="primary" type='submit' onClick={toggle}>Send</Button>                    
+                       <Button color="primary" type='submit' onClick={toggle} onSubmit={onSubmitHandler} >Send</Button>                    
                        </ModalFooter>
                        </Modal>
                    
@@ -174,7 +222,7 @@ function ManagerAssign() {
 
     <TabPanel className='ViewMessages'> {/* when click this tab, 
                                           it shows table to search the messages that manager sent*/}
-    {/*여기서부터 */}
+    
     <div className="CheckMessage">
         <Row>
          
@@ -213,8 +261,8 @@ function ManagerAssign() {
 
                         } 
                         else if(
-                            val.name.toLowerCase().includes(searchMessage.toLowerCase()) ||
-                            val.date.includes(dateRange)
+                            val.name.toLowerCase().includes(searchMessage.toLowerCase())
+                          
                             
                         )
                         {
@@ -255,8 +303,8 @@ function ManagerAssign() {
                                   <Input
                                     placeholder="Message..."
                                     type="textarea"
-                                    value={val.description}
-                                  />
+                                    value={val.message}
+                                  />    {/* need to modify */}
                                 </FormGroup>
 
                         </ModalBody>
@@ -276,17 +324,6 @@ function ManagerAssign() {
             </div>
         </Row>
       </div>
-   
-
-
-
-
-                    
-
-
-
-
-    {/*여기까지  */}
 
       </TabPanel>
 
