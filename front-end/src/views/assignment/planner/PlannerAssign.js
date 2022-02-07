@@ -30,8 +30,8 @@ export default function PlannerAssign() {
         <div className='MessageTitle'  ><h4>Messages</h4></div>
         <UncontrolledAlert color="danger" fade={true} className='WarningBox'>
                           <div className='WarningUnread'>
-                            <b>Unread Message - </b>
-                            {countmessages} unread messages. Please check!
+                            <b>Undefined Assignments - </b>
+                            {countmessages} undefined assignments. Please check!
                             
                           </div>
        </UncontrolledAlert>
@@ -81,7 +81,7 @@ export default function PlannerAssign() {
 
                       <Col className="text-right" md="3" xs="3">
                       
-                        <Badge badgeContent={val.countmessages} color="success" >
+                        <Badge badgeContent={val.unfinished_assignment} color="success" >
                         <MailIcon color="action" onClick={toggle} />
                         </Badge>
                        
@@ -108,12 +108,12 @@ export default function PlannerAssign() {
                                 <FormGroup>
                                   <label>Date: {val.date} </label> 
                                   <br/>
-                                  <label>Message</label>
+                                  <label>Assignment</label>
                                   
                                   <Input
                                     placeholder="Message..."
                                     type="textarea"
-                                    value={val.message}
+                                    value={val.description}
                                   />
                                 </FormGroup>
 

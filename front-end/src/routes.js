@@ -21,7 +21,7 @@ import * as RiIcons from 'react-icons/ri';
 
 import Profile from "views/profile/Profile";
 import Home from "views/Home";
-import MyGantt from 'views/gantt/GanttChart';
+// import MyGantt from 'views/gantt/GanttChart';
 import UserManual from "views/userManual/UserManual";
 import Invitation from "views/assignment/manager/Invitation";
 import ManagerAssign from "views/assignment/manager/ManagerAssign";
@@ -55,19 +55,11 @@ var routes = [
     toView:true
   },
   {
-    path: "/tempo_home",
-    name: "tempo_home",
+    path: "/home",
+    name: "Home",
     icon: "nc-icon nc-bank",
     layout: "/admin",
     component: BothHome,
-    toView:true
-  },
-  {
-    path: "/chart",
-    name: "Chart",
-    icon: "nc-icon nc-bank",
-    component: MyGantt,
-    layout: "/admin",
     toView:true
   },
   {

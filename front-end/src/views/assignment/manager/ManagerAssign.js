@@ -28,8 +28,8 @@ function ManagerAssign() {
     <div className='ContentTabBox'>
     <Tabs>
      <TabList className='TwoTabs'>
-        <Tab>Assgin Schedules</Tab>
-        <Tab>View Messages</Tab>
+        <Tab>Assign Schedules</Tab>
+        <Tab>View Assignment History</Tab>
        
       </TabList>
 
@@ -98,7 +98,7 @@ function ManagerAssign() {
                       isOpen={modal}
                       toggle={toggle}
                       backdrop={false}
-                      size="xl"
+                      size="md"
                       centered
                       scrollable
                       className="popupForm" >
@@ -111,6 +111,7 @@ function ManagerAssign() {
                                   <Input
                                     placeholder="Title..."
                                     type="text"
+                                    className='mytext'
                                     id='AssignTitle'
                                     />
 
@@ -123,6 +124,7 @@ function ManagerAssign() {
                                   <Input
                                     placeholder="username..."
                                     type="text"
+                                    className='mytext'
                                     value={val.username}
                                     id='username'
                                    
@@ -132,10 +134,10 @@ function ManagerAssign() {
                                 </FormGroup>
 
                                 <FormGroup >
-                                  <label htmlFor="message">Message</label>
+                                  <label htmlFor="message">Schedule Description</label>
                                   
                                   <Input
-                                    placeholder="Message..."
+                                    placeholder="Description..."
                                     type="textarea"
                                     className='TextBox'
                                     id='message'
@@ -229,7 +231,7 @@ function ManagerAssign() {
                       size="sm"
                       onClick={toggle}
                       >  {/*pop up function */}
-                    View Message </Button>
+                    {val.title} </Button>
                     <Modal
                       isOpen={modal}
                       toggle={toggle}
@@ -248,12 +250,12 @@ function ManagerAssign() {
                                 
 
                                 <FormGroup>
-                                  <label>Message</label>
+                                  <label>Description</label>
                                   
                                   <Input
                                     placeholder="Message..."
                                     type="textarea"
-                                    value={val.message}
+                                    value={val.description}
                                   />
                                 </FormGroup>
 

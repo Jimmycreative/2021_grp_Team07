@@ -1,6 +1,8 @@
 # You should not import any additional modules
 # You can, however, import additional functionalities
 # from the flask and sqlite3 modules
+from distutils.cygwinccompiler import CygwinCCompiler
+from turtle import title
 from click.types import convert_type
 from flask import Flask, render_template, request, redirect, session, url_for, flash
 import mysql.connector
@@ -13,6 +15,7 @@ import string
 import datetime
 import json
 import decimal
+import re
 
 
 class MyEncoder(json.JSONEncoder):
@@ -36,12 +39,12 @@ app.secret_key = "hello"
 CORS(app, supports_credentials=True)
 
 database = mysql.connector.connect(
-  host="127.0.0.1",
-  user="root",
-  password="",
-  database="grp"
-#   password="12345678",
-#   database="try"
+    host="127.0.0.1",
+    user="root",
+    password="",
+    database="grp"
+    #   password="12345678",
+    #   database="try"
 )
 login_info = {
     "code": -1,
@@ -146,6 +149,171 @@ def modify_token(uses, token):
 
 
 # Below for api
+# assignment section
+
+# for manager
+# Assign Schedules page
+@app.route('/getAllPlanners', methods=['GET'])
+def getAllPlanners():
+    res_json = {}
+    res_json['code'] = 1
+    res_json['message'] = "success"
+
+    planners = []
+    try:
+        cur = database.cursor(dictionary=True)
+        cur.execute("SELECT * FROM `user` WHERE rank=0")
+        for planner in cur:
+            planner_str = json.dumps(planner, cls=MyEncoder)
+            planner_json = json.loads(planner_str)
+            planners.append(planner_json)
+        cur.close()
+
+        res_json['result'] = planners
+        return res_json
+    except Exception as e:
+        return jsonify({"code": -2, "data": {}, "message": e})
+
+# Assign Schedules page
+# 字段
+# planner username从session取
+# manager, title, description
+
+
+@app.route('/sendAssignment', methods=['POST'])
+def sendAssignment():
+    res_json = {}
+    res_json['code'] = 1
+    res_json['data'] = {}
+    res_json['message'] = "success"
+    try:
+        data = request.json
+        if data:
+            manager = data['manager']
+            title = data['title']
+            description = data['description']
+            # TODO, get from session
+            planner = "xiaowanzi"
+
+            cur = database.cursor(dictionary=True)
+            cur.execute("INSERT INTO assignment (title, description, manager, planner) VALUES ( %s, %s, %s, %s);",
+                        (title, description, manager, planner))
+            database.commit()
+    except Exception as e:
+        database.rollback()
+        res_json['code'] = -2
+        res_json['message'] = e
+    finally:
+        cur.close()
+        return res_json
+
+# View Messages page
+
+
+@app.route('/getAssignedSchedules', methods=['GET'])
+def getAssignedSchedules():
+    res_json = {}
+    res_json['code'] = 1
+    res_json['data'] = {}
+    res_json['message'] = "success"
+    try:
+        assignments = []
+        cur = database.cursor(dictionary=True)
+        # TODO get manager from session
+        manager = 'fyyc'
+        sql = "SELECT * FROM assignment WHERE manager='%s';" % (manager)
+        cur.execute(sql)
+        for assignement in cur:
+            assignement_str = json.dumps(assignement, cls=MyEncoder)
+            assignement_json = json.loads(assignement_str)
+            assignments.append(assignement_json)
+
+        res_json['result'] = assignments
+    except Exception as e:
+        res_json['code'] = -2
+        res_json['message'] = e
+    finally:
+        cur.close()
+        return res_json
+
+
+# for planner
+# sorted by manager
+@app.route('/getMySchedules', methods=['GET'])
+def getMySchedules():
+    res_json = {}
+    res_json['code'] = 1
+    res_json['data'] = {}
+    res_json['message'] = "success"
+    try:
+        temp_list = []
+        cur = database.cursor(dictionary=True)
+        # TODO, get from session
+        planner = "xiaowanzi"
+        sql = """
+            SELECT manager, COUNT(IF(_status=0,1,NULL)) AS unfinished_assignment, GROUP_CONCAT(title) AS title,
+            GROUP_CONCAT(_status) AS status,
+            GROUP_CONCAT(description) AS description,
+            GROUP_CONCAT(datecreated) AS datecreated
+            FROM assignment WHERE planner='%s' GROUP BY manager
+        """ % planner
+        cur.execute(sql)
+
+        for record in cur:
+            record_str = json.dumps(record, cls=MyEncoder)
+            record_json = json.loads(record_str)
+            temp_list.append(record_json)
+
+        res_json['data'] = sortPlannerList(temp_list)
+
+    except Exception as e:
+        res_json['code'] = -2
+        res_json['message'] = e
+    finally:
+        cur.close()
+        return res_json
+
+# auxiliary function
+
+
+def sortPlannerList(my_list):
+    result = []
+    for my_json in my_list:
+        this_manager_json = {}
+        this_manager_list = []
+        manager = my_json['manager']
+        titles = my_json['title']
+        status = my_json['status']
+        description = my_json['description']
+        start = my_json['datecreated']
+
+        title_list = getAttributeList(titles)
+        status_list = getAttributeList(status)
+        description_list = getAttributeList(description)
+        start_list = getAttributeList(start)
+
+        for i in range(len(title_list)):
+            temp_json = {}
+            temp_json['title'] = title_list[i]
+            temp_json['status'] = status_list[i]
+            temp_json['description'] = description_list[i]
+            temp_json['start'] = start_list[i]
+            this_manager_list.append(temp_json)
+
+        this_manager_json['manager'] = manager
+        this_manager_json['unfinished_assignment'] = my_json['unfinished_assignment']
+        this_manager_json['assignment'] = this_manager_list
+        result.append(this_manager_json)
+
+    return result
+
+
+def getAttributeList(concat_str):
+    seperate_list = re.split(r'[,]s*', concat_str)
+    return seperate_list
+
+
+# definition section
 # for receiving the data from front end. After front end finish the definition page, api will be created in the frontend.
 @app.route('/getuuid', methods=['POST'])
 def get_script():
@@ -191,9 +359,6 @@ def post_uid():
 
 
 @app.route('/getAllSchedules', methods=['GET'])
-# 1. try catch
-# 2. format
-# 3. cursor close
 def getAllSchedule():
     res_list = []
     cur = database.cursor(dictionary=True)
@@ -206,7 +371,7 @@ def getAllSchedule():
             #res_str=res_str.replace("\\", '')
 
             res_json = json.loads(res_str)
-            modify_result = eval(res_json["result"].replace("false","False"))
+            modify_result = eval(res_json["result"].replace("false", "False"))
             res_json["result"] = modify_result
             # print(res_json["result"])
             print("--------------------------")
@@ -214,7 +379,7 @@ def getAllSchedule():
     except Exception as e:
         # print(e)
         return jsonify({"code": -2, "data": {}, "message": e})
-        
+
     finally:
         cur.close()
     #data = request.json
@@ -236,6 +401,7 @@ def getAllSchedule():
 
 
 @app.route('/saveSchedule', methods=['POST'])
+# TODO
 def save_schedule():
     data = request.json
 
@@ -256,7 +422,7 @@ def save_schedule():
             # INSERT INTO schedule (name, uid, script, timelength, result, status, errlog, description, uuid) VALUES ('schedule 1',1,'i am handsome',3,"[{'start':0,'name':'Maachine 0','progress':0,'end':5,'id':'Machine 0','type':'project','hideChildren':false},{'start':0,'name':'job_0 task_0','progress':0,'project':'Machine 0','end':3,'id':'job_0|task_0','type':'task'},{'start':3,'name':'job_1 task_0','progress':0,'project':'Machine 0','end':5,'id':'job_1|task_0','type':'task'},{'start':0,'name':'Maachine 1','progress':0,'end':10,'id':'Machine 1','type':'project','hideChildren':false},{'start':0,'name':'job_2 task_0','progress':0,'project':'Machine 1','end':4,'id':'job_2|task_0','type':'task'},{'start':4,'name':'job_0 task_1','progress':0,'project':'Machine 1','end':6,'id':'job_0|task_1','type':'task','dependencies':['job_0|task_0']},{'start':6,'name':'job_1 task_2','progress':0,'project':'Machine 1','end':10,'id':'job_1|task_2','type':'task','dependencies':['job_1|task_1']},{'start':4,'name':'Maachine 2','progress':0,'end':9,'id':'Machine 2','type':'project','hideChildren':false},{'start':4,'name':'job_2 task_1','progress':0,'project':'Machine 2','end':7,'id':'job_2|task_1','type':'task','dependencies':['job_2|task_0']},{'start':7,'name':'job_0 task_2','progress':0,'project':'Machine 2','end':9,'id':'job_0|task_2','type':'task','dependencies':['job_0|task_1']},{'start':5,'name':'Maachine 12','progress':0,'end':6,'id':'Machine 12','type':'project','hideChildren':false},{'start':5,'name':'job_1 task_1','progress':0,'project':'Machine 12','end':6,'id':'job_1|task_1','type':'task','dependencies':['job_1|task_0']}]", -1, "none",'good schedule','8jug7g7g');
             database.commit()
         except Exception as e:
-        # print(e)
+            database.rollback()
             return jsonify({"code": -2, "data": {}, "message": e})
 
 
