@@ -41,21 +41,12 @@ app.secret_key = "hello"
 CORS(app, supports_credentials=True)
 
 database = mysql.connector.connect(
-<<<<<<< HEAD
-    host="127.0.0.1",
-    user="root",
-    password="",
-    database="grp"
-    #   password="12345678",
-    #   database="try"
-=======
   host="127.0.0.1",
   user="root",
   #password="",
   #database="grp"
   password="12345678",
   database="try"
->>>>>>> 4f6aa3e7de462971ebdd79fc500cb48232dbc985
 )
 login_info = {
     "code": -1,
@@ -191,15 +182,8 @@ def getAllPlanners():
 
 # Assign Schedules page
 # 字段
-<<<<<<< HEAD
-# planner username从session取
-# manager, title, description
-
-
-=======
 # manager username从session取
 # planner, title, description
->>>>>>> 4f6aa3e7de462971ebdd79fc500cb48232dbc985
 @app.route('/sendAssignment', methods=['POST'])
 def sendAssignment():
     res_json = {}
@@ -209,19 +193,11 @@ def sendAssignment():
     try:
         data = request.json
         if data:
-<<<<<<< HEAD
-            manager = data['manager']
-            title = data['title']
-            description = data['description']
-            # TODO, get from session
-            planner = "xiaowanzi"
-=======
             planner=data['planner']
             title=data['title']
             description=data['description']
             # TODO, get from session
             manager = session["username"]
->>>>>>> 4f6aa3e7de462971ebdd79fc500cb48232dbc985
 
             cur = database.cursor(dictionary=True)
             cur.execute("INSERT INTO assignment (title, description, manager, planner) VALUES ( %s, %s, %s, %s);",
@@ -277,13 +253,8 @@ def getMySchedules():
         temp_list = []
         cur = database.cursor(dictionary=True)
         # TODO, get from session
-<<<<<<< HEAD
-        planner = "xiaowanzi"
-        sql = """
-=======
         planner=session["username"]
         sql="""
->>>>>>> 4f6aa3e7de462971ebdd79fc500cb48232dbc985
             SELECT manager, COUNT(IF(_status=0,1,NULL)) AS unfinished_assignment, GROUP_CONCAT(title) AS title,
             GROUP_CONCAT(_status) AS status,
             GROUP_CONCAT(description) AS description,
