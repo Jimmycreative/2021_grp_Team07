@@ -1,6 +1,6 @@
 import Badge from '@mui/material/Badge'; 
 import MailIcon from '@mui/icons-material/Mail';  
-import React, {useMemo, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import * as ReactTable from 'react-table';
 import {useTable} from "react-table";
 import "./PlannerAssign.css";
@@ -25,7 +25,33 @@ export default function PlannerAssign() {
       Contact.map((i) => {
         countmessages = countmessages + i.countmessages;
     });
-   
+
+    const [plannerdata,plannersetdata] = useState(null);
+    const [plannerloading,plannersetloading] = useState(true);
+    const [plannererror,plannerseterror] = useState(null);
+
+    useEffect(()=> {
+  
+      fetch("domain + /getMySchedules'")
+     
+      .then(response => {
+        if(response.ok){
+          return response.json()
+        }
+        throw response;
+      })
+      .then(res => {
+        plannersetdata(res);
+      })
+      .catch(plannererror => {
+        console.error("Error fetching data: ",plannererror);
+        plannerseterror(plannererror)
+      })
+      .finally(()=>{
+        plannersetloading(false);
+      })
+    },[])
+    
   
   return (
     <>
@@ -73,7 +99,7 @@ export default function PlannerAssign() {
           <Col md="2" xs="2"> 
           <div className= "img" >
           <img alt="..."
-          src={require("assets/img/User.png").default} className='image'></img>
+          src={require("assets/img/User.png").default} className='image2'></img>
 
           </div>
           </Col>

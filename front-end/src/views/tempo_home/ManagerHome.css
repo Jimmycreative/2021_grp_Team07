@@ -3,8 +3,75 @@
   overflow-x: hidden;
 } */
 
+/*color: rgb(173, 253, 183) start;
+  color: rgb(255, 187, 184) end;
+  color: rgb(203, 245, 255) form*/
+.start-color,
+.finish-color,
+.end-color,
+.form-color {
+  font-weight: bold;
+  border-radius: 4px;
+  color: rgb(85, 85, 85);
+}
+
+.start-color {
+  background-color: rgb(173, 253, 183);
+}
+
+.finish-color {
+  background-color: rgb(226, 226, 226);
+}
+
+.end-color {
+  background-color: rgb(255, 195, 184);
+}
+
+.form-color {
+  background-color: rgb(203, 245, 255);
+}
+
+.card-list {
+  font-size: 16px;
+  list-style: none;
+}
+
+.card-list span {
+  font-weight: bold;
+}
+.card-list i {
+  position: relative;
+  top: 1.5px;
+}
+
+.modal-card .card-title {
+  font-weight: bold;
+}
+
+.modal-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.modal-card {
+  flex-grow: 1;
+}
+
+.modal-card .card-category {
+  font-size: 20px;
+}
+
+.modal-header {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.modal-header span {
+  font-weight: bold;
+  font-size: 30px;
+}
+
 .content {
-  margin-bottom: 0px;
   margin-left: 0px;
   margin-right: 0px;
 }
@@ -28,10 +95,10 @@
   top: 5px;
 }
 
-.home-container .card-category {
+/*.home-container .card-category {
   position: relative;
   left: 10px;
-}
+}*/
 
 .recieved-history .card-category {
   position: relative;

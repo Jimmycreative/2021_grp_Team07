@@ -1,11 +1,12 @@
 import React,{useState, useEffect} from 'react';
 import {Link} from 'react-router-dom'
-import sample_data from '../../variables/data/saved_data.json';
 import "./ManagerHome.css";
 import GanttDay from "views/gantt/day/GanttDay";
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-
+import sample_data from './schedule_data.json';
+import sample_form from './form_data.json';
+import sample_data2 from '../../variables/data/saved_data.json';
 
 import {
     Card,
@@ -20,6 +21,7 @@ import {
     ModalFooter,
     Modal,
     Button,
+    ButtonGroup
     
   } from "reactstrap";
 import { DatasetController } from 'chart.js';
@@ -28,7 +30,7 @@ import { DatasetController } from 'chart.js';
 export default function ManagerHome() {
   //timelength : Time for schedule from start to the end
 
-  const [date, setDate] = useState([{}]);
+  
   //getDate, getMonth, getFullYear, getMinutes, getSeconds
   //getMonth(): month-1 /getFullYear(): 2021 /getYear():21
 //end-time "2022-01-15"
@@ -53,6 +55,11 @@ const [data, setData] = useState([{}]);
 
 
 const [value, setValue] =useState("");
+const [change, setChange] = useState(false); //calendar - schedule /form switch
+
+const [startDate, setStartDate] = useState([{}]);
+const [endDate, setEndDate] = useState([{}]);
+const [formDate, setFormDate] = useState([{}]);
 
 let domain = "http://127.0.0.1:5000";
 
@@ -61,19 +68,25 @@ const toggle = () => {
   setModal(!modal)
 }
 
+const formToSchedule = () =>{
+  setChange(!change)
+}
 
 const getAllSchedules = () =>{
   setError(null);
   setData(null);
-  console.log((dateformat(new Date())));
+  console.log((dateformat2(new Date())));
   setLoading(true);
   fetch(domain+"/getAllSchedules", {
       cache: 'no-cache',
       headers: new Headers({
           'Content-Type': 'application/json'
+          
       }),
       method: 'GET',
-      mode: 'cors'
+      mode: 'cors',
+      redirect: 'follow',
+      referrer: 'no-referrer', 
     })
    .then(res=> {if(res.ok){ // true if res returned successful
        return res.json();}
@@ -91,16 +104,34 @@ const getAllSchedules = () =>{
        e=>{alert(e)} 
    )
        
-   
   setLoading(false);
 }
 
+// const getAssignedSchedules = () =>{
+
+// }
 
 
 
-useEffect(()=>{
- getAllSchedules();
-},[]);
+const [day, setDay] = useState(new Date()); //date 
+const [rSelected, setrSelected] = useState({});
+const onRadioBtnClick = (rSelected) => {
+  setrSelected(rSelected);
+}
+
+
+// useEffect(()=>{
+//  getAllSchedules();
+// },[]);
+
+
+const getEndTime=(startDate, timeLength) =>{
+  let endDate=new Date(startDate);
+  endDate.setDate(endDate.getDate()+timeLength);
+  return endDate;
+}
+
+//Date format 가능 
 
 const noRefCheck = () =>{};
       
@@ -124,69 +155,196 @@ const noRefCheck = () =>{};
           <Calendar
            onClickDay={
             (value,event) => {
-              setValue(dateformat(value))
-              setDate(sample_data.filter((f)=> {
-                if (f.endtime.includes(dateformat(value))){
+              setValue(dateformat(value)) //day in yyyy-mm-dd string
+              setDay(value); //day in date object
+              console.log(dateformat(value));
+              setStartDate(sample_data.filter((f)=> {
+                if (dateformat(new Date(f.startdate)).includes(dateformat(value))){
                   return f}
                 }
               ));
+              setEndDate(sample_data.filter((f)=> {
+                if (dateformat(getEndTime(f.startdate,f.timelength)).includes(dateformat(value))){
+                  return f}
+                }
+              ));
+              setFormDate(sample_form.filter((f)=> {
+                if (dateformat(new Date(f.date)).includes(dateformat(value))){
+                  return f}
+                }));
               setModal(!modal);
             }
           }  />
       </CardBody>
       </Card>
           </Col>
+
+{/*Options: see only ongoing message/ start message / will end message/ both*/}
+{/*condition: if the selected date is future to today's date: {Number(value.replace(/\-/g,''))>Number(dateformat(new Date()).replace(/\-/g,''))*/}
           <div>
           {/*Modal*/}
-        <Modal isOpen={modal} toggle={toggle} scrollable>
-      
-          <ModalHeader toggle={toggle}> Projects End at {value}</ModalHeader>
-          <ModalBody>
-          {
-          (date.map(m=>(
-            <ul style={{ listStyle: "none"}}>
-              <li style={{fontSize:"15px" ,fontWeight:"bold"}}> 
-                <span className="text-info">{m.project}</span> ends &#62;&#62;</li> 
-                </ul>
-          )
-          )
-          )
-          }
-            { console.log(date)}
-            {date.length == 0 && <h6>None</h6>}
+     {/*search with ctrl+f*/}
+     {/*if date has arrived? A:B*/}
+     {Number(value.replace(/\-/g,''))<=Number(dateformat(new Date()).replace(/\-/g,'')) ?<>
+        {change ? <Modal isOpen={modal} toggle={toggle} scrollable size="xl"> <ModalHeader className="modal-header" toggle={toggle} close={<button className="close" onClick={toggle}><i className='nc-icon nc-simple-remove'/></button>}>
+          {console.log(new Date())}
+          {console.log(day)}
+        <p className="card-category"> Projects {value} <i className="nc-icon nc-chart-bar-32 text-success" /></p></ModalHeader>
+          <ModalBody className="modal-container">
+            {/*console.log(startDate)*/}
+            {/* if the date is not yet arrived, don't show startime card*/}
+     
+       <div className="modal-card">          
+       <CardTitle className="card-title card-category"> Projects <span className="text-success">Started on: {value} <i className="nc-icon nc-button-play"/></span></CardTitle>
+       
+       {startDate.length == 0 && <p className="card-category">There is no Project</p>}  
+       {startDate.sort((a,b)=>{
+             return Number(getEndTime(b.startdate, b.timelength))-Number(getEndTime(a.startdate, a.timelength))})
+             .map(m=>
+       <Card>  
+             <CardHeader>
+             {Number(new Date())>Number(getEndTime(m.startdate, m.timelength)) ?
+           <div className="finish-color card-category">Project: {m.name} (finished)</div> 
+           :<div className="start-color card-category">Project: {m.name} (ongoing) </div>}
+           </CardHeader> 
+           <ul className="card-list text-justify">
+           <li> <span><i className="nc-icon nc-circle-10 text-primary"/> Responsible planner:</span> {m.user}</li> 
+           <li> <span className={Number(new Date())>Number(getEndTime(m.startdate, m.timelength))? "text-secondary" : "text-success"}><i className="nc-icon nc-button-play text-success"/> Project start date: </span><span>{dateformat2(new Date(m.startdate))}</span></li>
+           <li> <span><i className="nc-icon nc-button-power text-danger"/> {Number(new Date())>Number(getEndTime(m.startdate, m.timelength)) ? <>End date</>: <>Expected end date</>}: </span> {dateformat2(getEndTime(m.startdate,m.timelength))}</li> 
+           </ul>
+           </Card>
+           )
+         }
+         
+         </div>
+        
+        
+            <div className="modal-card">
+            
+                <CardTitle className="card-category"> Projects {Number(dateformat(new Date()).replace(/\-/g,''))>Number(value.replace(/\-/g,'')) ? <span className="text-secondary">Ended on: {value} <i className="nc-icon nc-button-power"/></span>:<span className="text-danger">Will end on: {value} <i className="nc-icon nc-button-power"/></span>}
+                </CardTitle>
+              
+             
+              
+            {endDate.length == 0 && <p className="card-category">There is no Project</p>} 
+            
+            {endDate.sort((a,b)=>{
+                return Number(new Date(b.startdate))-Number(new Date(a.startdate))}).map(m=>
+          <Card>
+              <CardHeader>{Number(new Date())>Number(getEndTime(m.startdate, m.timelength)) ? <div className="finish-color card-category">Project: {m.name} (finished) </div>:<div className="end-color card-category">Project: {m.name} (ongoing)</div>}</CardHeader>
+              <ul className="card-list text-justify">
+              <li> <span><i className="nc-icon nc-circle-10 text-primary"/> Responsible planner:</span> {m.user}</li> 
+              <li> <span><i className="nc-icon nc-button-play text-success"/> Project start date:</span> {dateformat2(new Date(m.startdate))}</li>
+              <li> <i className="nc-icon nc-button-power text-danger"/> {Number(new Date())>Number(getEndTime(m.startdate, m.timelength)) ? <span className="text-secondary">End date</span>: <span className="text-danger">Expected end date</span>}: <span>{dateformat2(getEndTime(m.startdate,m.timelength))}</span></li> 
+              </ul>
+              </Card>
+              )
+            }
+        </div>
+         </ModalBody>
+         
+          <ModalFooter>
+          <p className="card-category">Switch to:</p>
+          <Button color="primary" onClick={formToSchedule}>Assignment</Button>{' '}
+            <Button color="secondary" onClick={toggle}>Cancel</Button>
+          </ModalFooter>
+          
+          </Modal>
+
+        : 
+        <Modal isOpen={modal} toggle={toggle} scrollable size="lg">
+          <ModalHeader toggle={toggle} close={<button className="close" onClick={toggle}><i className='nc-icon nc-simple-remove'/></button>}> 
+          <p className="card-category">Assignment History {value} <i className="nc-icon nc-chat-33 text-info" /></p></ModalHeader>
+
+          <ModalBody className="modal-container">
+            <div className="modal-card">
+            <CardTitle className="card-title card-category"> Assignment <span className="text-info">sent on {value}</span>  <i className="nc-icon nc-email-85 text-info"/></CardTitle>
+          {/*console.log(formDate)*/}
+          {formDate.length == 0 && <p className="card-category">There is no Assignment message</p>} 
+          {formDate.map(m=>
+              <Card>
+              <CardHeader><div className="form-color card-category">Assignment: {m.title} </div></CardHeader>
+              <ul className="card-list text-justify">
+              <li> <span><i className="nc-icon nc-circle-10 text-primary"/> Recieved Planner: </span>{m.planner}</li> 
+              <li> <span className="text-info"><i className="nc-icon nc-email-85 text-info"/> Assigned date:</span> <span>{m.date}</span></li>
+              </ul>
+              </Card>
+              )
+            }
+            </div>
           </ModalBody>
           <ModalFooter>
-          <Link to = '/admin/evaluation/schedule'>
-            <Button color="info" onClick={toggle}>See more</Button>
-            </Link>
-            <Button onClick={toggle}>Cancle</Button>
+          <p className="card-category">Switch to:</p>
+            <Button color="primary" onClick={formToSchedule}>Schedule</Button>{' '}
+            <Button color="secondary" onClick={toggle}>Cancel</Button>
           </ModalFooter>
-        </Modal>
+          </Modal>
+          }</>
+     
+   
+     : <><Modal isOpen={modal} toggle={toggle} scrollable size="lg"> 
+     <ModalHeader className="modal-header" toggle={toggle} close={<button className="close" onClick={toggle}><i className='nc-icon nc-simple-remove'/></button>}>
+     <p className="card-category"> Projects {value} <i className="nc-icon nc-chart-bar-32 text-success" /></p></ModalHeader>
+     {console.log(new Date())}
+     {console.log(day)}
+     
+     <ModalBody className="modal-container">
+     <div className="modal-card">
+            
+            <CardTitle className="card-category"> Projects that {Number(dateformat(new Date()).replace(/\-/g,''))>Number(value.replace(/\-/g,'')) ? <span className="text-secondary">Ended on: {value} <i className="nc-icon nc-button-power"/></span>:<span className="text-danger">Will end on: {value} <i className="nc-icon nc-button-power"/></span>}
+            </CardTitle>
+          
+         
+          
+        {endDate.length == 0 && <p className="card-category">There is no Project</p>} 
+        
+        {endDate.sort((a,b)=>{
+            return Number(new Date(b.startdate))-Number(new Date(a.startdate))}).map(m=>
+      <Card>
+          <CardHeader>{Number(new Date())>Number(getEndTime(m.startdate, m.timelength)) ? <div className="finish-color card-category">Project: {m.name} (finished) </div>:<div className="end-color card-category">Project: {m.name} (ongoing)</div>}</CardHeader>
+          <ul className="card-list text-justify">
+          <li> <span><i className="nc-icon nc-circle-10 text-primary"/> Responsible planner:</span> {m.user}</li> 
+          <li> <span><i className="nc-icon nc-button-play text-success"/> Project start date:</span> {dateformat2(new Date(m.startdate))}</li>
+          <li> <i className="nc-icon nc-button-power text-danger"/> {Number(new Date())>Number(getEndTime(m.startdate, m.timelength)) ? <span className="text-secondary">End date</span>: <span className="text-danger">Expected end date</span>}: <span>{dateformat2(getEndTime(m.startdate,m.timelength))}</span></li> 
+          </ul>
+          </Card>
+          )
+          
+        }
+    </div>
+    </ModalBody>
+    <ModalFooter>
+            <Button color="secondary" onClick={toggle}>Cancel</Button>
+          </ModalFooter>
+          
+          </Modal>
+       
+</>}
       </div>
         
-  
+            {/* need to modify*/}
         <Col>
         <Card className="form-history">
           <CardBody>
             <Row>
             <Col>
                 <div className="numbers">
-                  <p className="card-category">Form History <i className="nc-icon nc-chat-33 text-info" /></p>
+                  <p className="card-category">Assignment History <i className="nc-icon nc-chat-33 text-info" /></p>
                   <CardTitle tag="p"></CardTitle>
               </div>
               </Col>
               </Row>
-              {sample_data.sort((a,b)=>{
+              {sample_data2.sort((a,b)=>{
                 return Number(b.endtime.replace(/\-/g,''))-Number(a.endtime.replace(/\-/g,''))})
                         .slice(0,5).map((m)=>(
                             <ul className="list-element">
-                            <li ><button type="button" class="link-btn"> Form: {m.project}</button></li>
+                            <li ><button type="button" class="link-btn"> Assignment: {m.project}</button></li>
                             <li >Assigned to <span className="name">{m.first_name}</span> Started on: {m.endtime}</li>
                             </ul> 
                         )
                         )
                       }
-                         {sample_data.length == 0 && <h6>No Forms</h6>} 
+                         {sample_data2.length == 0 && <h6>No Assignments</h6>} 
                           
           </CardBody> 
           <CardFooter>
@@ -217,7 +375,7 @@ const noRefCheck = () =>{};
             </Row>
           
         
-            {sample_data.sort((a,b)=>{
+            {sample_data2.sort((a,b)=>{
                     return Number(b.endtime.replace(/\-/g,''))-Number(a.endtime.replace(/\-/g,''))})
                     .slice(0,5).map((m)=>(
                         <ul className="list-element">
@@ -227,7 +385,7 @@ const noRefCheck = () =>{};
                       )
                     )
                   }
-                     {sample_data.length == 0 && <h6>No Projects</h6>}    
+                     {sample_data2.length == 0 && <h6>No Projects</h6>}    
                   
             <Row>
            
