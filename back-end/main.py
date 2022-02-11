@@ -70,14 +70,17 @@ def tokengen():
 
 
 def purgetoken():
-    cur = database.cursor()
-    cur.execute("""
-    DELETE FROM token
-    WHERE disabled = 1
-    OR dateexpire < CURRENT_TIMESTAMP()
-    OR uses = 0;
-    """)
-    database.commit()
+    try:
+        cur = database.cursor()
+        cur.execute("""
+        DELETE FROM token
+        WHERE disabled = 1
+        OR dateexpire < CURRENT_TIMESTAMP()
+        OR uses = 0;
+        """)
+        database.commit()
+    except Exception as e:
+        print(e)
 
 
 def puttoken(token, dateexpire, rank, uses):
@@ -426,23 +429,36 @@ def getAllSchedule():
 # TODO
 def save_schedule():
     data = request.json
-
+    print(data)
     if data:
         try:
             cur = database.cursor(dictionary=True)
-            name = data["data"]["name"]
-            uid = session["uid"]
-            script = data["data"]["script"]
-            timelength = data["data"]["timelength"]
-            result = data["data"]["result"]
-            status = data["data"]["status"]
-            errlog = data["data"]["errlog"]
-            description = data["data"]["description"]
-            uuid = data["data"]["uuid"]
+            #name = data["name"]
+            #uid = session["uid"]
+            uid = "123"
+            script = data["script"]
+            timelength = data["timelength"]
+            result = data["result"]
+            status = data["status"]
+            errlog = data["errlog"]
+            description = data["description"]
+            uuid = data["uuid"]
+            aid = data["aid"]
+
+            cur.execute("SELECT name FROM schedule WHERE aid='%s';"%(aid))
+            account = cur.fetchone()
+            if account:
+                name = account["name"]
+            else:
+                return jsonify({"code": -2, "data": {}, "message": "aid doesn't exist!"})
+
             cur.execute("INSERT INTO schedule (name, uid, script, timelength, result, status, errlog, description, uuid) VALUES ( %s, %d, %s, %d, %s, %d, %s, %s, %s);",
                         (name, uid, script, timelength, result, status, errlog, description, uuid))
             # INSERT INTO schedule (name, uid, script, timelength, result, status, errlog, description, uuid) VALUES ('schedule 1',1,'i am handsome',3,"[{'start':0,'name':'Maachine 0','progress':0,'end':5,'id':'Machine 0','type':'project','hideChildren':false},{'start':0,'name':'job_0 task_0','progress':0,'project':'Machine 0','end':3,'id':'job_0|task_0','type':'task'},{'start':3,'name':'job_1 task_0','progress':0,'project':'Machine 0','end':5,'id':'job_1|task_0','type':'task'},{'start':0,'name':'Maachine 1','progress':0,'end':10,'id':'Machine 1','type':'project','hideChildren':false},{'start':0,'name':'job_2 task_0','progress':0,'project':'Machine 1','end':4,'id':'job_2|task_0','type':'task'},{'start':4,'name':'job_0 task_1','progress':0,'project':'Machine 1','end':6,'id':'job_0|task_1','type':'task','dependencies':['job_0|task_0']},{'start':6,'name':'job_1 task_2','progress':0,'project':'Machine 1','end':10,'id':'job_1|task_2','type':'task','dependencies':['job_1|task_1']},{'start':4,'name':'Maachine 2','progress':0,'end':9,'id':'Machine 2','type':'project','hideChildren':false},{'start':4,'name':'job_2 task_1','progress':0,'project':'Machine 2','end':7,'id':'job_2|task_1','type':'task','dependencies':['job_2|task_0']},{'start':7,'name':'job_0 task_2','progress':0,'project':'Machine 2','end':9,'id':'job_0|task_2','type':'task','dependencies':['job_0|task_1']},{'start':5,'name':'Maachine 12','progress':0,'end':6,'id':'Machine 12','type':'project','hideChildren':false},{'start':5,'name':'job_1 task_1','progress':0,'project':'Machine 12','end':6,'id':'job_1|task_1','type':'task','dependencies':['job_1|task_0']}]", -1, "none",'good schedule','8jug7g7g');
             database.commit()
+            cur.execute("UPDATE assignment SET _status = 1 WHERE aid = %s;",(aid))
+            database.commit()
+            return jsonify({"code": 1, "data": "", "message": "Successfully stored schedule and update assignment!"})
         except Exception as e:
             database.rollback()
             return jsonify({"code": -2, "data": {}, "message": e})
@@ -532,8 +548,8 @@ def genToken():
         role = json_data["rank"]  # 0 for planner 1 for manager
         uses = json_data["uses"]
 
-        cur = database.cursor()
-        #purgetoken()
+        
+        purgetoken()
         token = ''.join(secrets.choice(string.ascii_letters + string.digits)
                 for _ in range(8))
 
@@ -545,15 +561,22 @@ def genToken():
         if uses=="":
             uses = str(-1)
         #print("type: ",type(uses))
-        if dateexpire=="":
-            cur.execute("""
-            INSERT INTO token (tokenid, dateexpire, role, uses) VALUES (%s, NULL, %s, %s);""", (token, role, uses))
-        else:
-            cur.execute("""
-            INSERT INTO token (tokenid, dateexpire, role, uses)
-            VALUES (%s, %s, %s, %s);
-            """, (token, dateexpire, role, int(uses)))
-            database.commit()
+        try:
+            cur = database.cursor()
+            if dateexpire=="":
+                
+                cur.execute("""
+                INSERT INTO token (tokenid, dateexpire, role, uses) VALUES (%s, NULL, %s, %s);""", (token, role, uses))
+            else:
+                cur.execute("""
+                INSERT INTO token (tokenid, dateexpire, role, uses)
+                VALUES (%s, %s, %s, %s);
+                """, (token, dateexpire, role, int(uses)))
+                database.commit()
+        except Exception as e:
+            return jsonify({"code": -2, "data": {}, "message": e})
+        finally:
+            cur.close()
 
         if token is None:
             return jsonify({"code": -1, "data": "", "message": "Not successfully generating token!"})
