@@ -87,13 +87,11 @@ class DefForm extends React.Component {
             modalImport: false,
             showGantt: false,
             selectedOption:"Basic Type",
-            scheduleName:"New Schedule",
+            assignmentId:"",
             description:"",
-            script:"",
-            user_json:{
-                timelength:-1,
-                result:{}
-            },
+            
+            
+            timelength:-1,
             uuid:"",
             result:"",
             
@@ -180,12 +178,12 @@ class DefForm extends React.Component {
         })        
     };
 
-    changeScheduleName = changeEvent =>{
+    changeAssignmentId = changeEvent =>{
 
         this.setState({
-          scheduleName:changeEvent.target.value
+          assignmentId:changeEvent.target.value
       })
-        console.log(this.state.scheduleName)
+        console.log(this.state.assignmentId)
     };
 
     changeDescription = changeEvent =>{
@@ -204,6 +202,7 @@ class DefForm extends React.Component {
       }
     
       handleRun = event=> {
+        
         event.preventDefault();
         var mydata={
             script:this.state.code
@@ -268,6 +267,7 @@ class DefForm extends React.Component {
                     console.log(data.data.mid_msg)
                     this.setState({
                         result: data.data.mid_msg,
+                        timelength: data.data.timelength,
                         result_gantt: data.data.result,
                         showGantt: true,
                         flag: 0
@@ -296,37 +296,41 @@ class DefForm extends React.Component {
     runModel() {}
 
     //invoke /saveSchedule
-    saveSchedule(){
+    saveSchedule = () => {
         this.setState({
             showGantt: !this.state.showGantt
         })
         var mydata={
-            name:this.state.scheduleName,
-            script:this.state.script,
-            timelength:this.state.user_json==null?-1:this.state.user_json.timelength,
-            result:this.state.user_json==null?"":this.state.user_json.result,
+            //name:this.state.scheduleName,
+            script:this.state.code,
+            timelength: this.state.timelength,
+            result:this.state.result,
             //0 for new, 1 for compelete, -1 for err
             status:this.state.user_json==null?-1:0,
             errlog:"",
             description:this.state.description,
             uuid:this.state.uuid,
             //uid TODO
-            uid:this.state.uid
+            //uid:this.state.uid,
+            aid: this.state.assignmentId
         }
         fetch(this.domain+'/saveSchedule',{
-          method:'POST',
-          data:mydata,
-          headers:{
-            'Content-Type':'application/json;charset=UTF-8'
-          },
-          mode:'cors',
-          cache:'default'
+            body: JSON.stringify(mydata),
+            cache: 'no-cache',
+            headers: new Headers({
+                'Content-Type': 'application/json'
+              }),
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, cors, *same-origin
+            redirect: 'follow', // manual, *follow, error
+            referrer: 'no-referrer', // *client, no-referrer
         })
          .then(res =>res.json())
          .then((data) => {
            console.log(data)
          })
       }
+
       fileSelectedHandler = (event=>{
         console.log(event.target.files[0])
         if(event.target.files[0].type==="text/plain"){
@@ -500,7 +504,7 @@ class DefForm extends React.Component {
                                     </Label>
                                     <Input
                                         name="schedulename"
-                                        onChange={this.changeScheduleName}
+                                        onChange={this.changeAssignmentId}
                                         placeholder="Please specify the Assignment ID"
                                         //disabled
                                     />

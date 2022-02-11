@@ -1,7 +1,7 @@
 import "./LoginSignup.css";
 import {Button} from "reactstrap";
 import React, { useState, useEffect } from "react";
-
+import Auth from "./Auth";
 import { useHistory } from 'react-router-dom';
 // import Registration from "./RegTemp";
 // import Login from "./LogTemp";
@@ -58,6 +58,7 @@ function LoginSignup() {
     const [tokenError, setTokenError] = useState('');
 
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [isLogin, setIsLogin] = useState(false);
     const domain = "http://127.0.0.1:5000"
 
     const submitRegister = e => {
@@ -73,6 +74,7 @@ function LoginSignup() {
 
         if (isValid) {
             setIsSubmitted(true);
+            insertData2()
         } else {
             setIsSubmitted(false);
         }
@@ -102,7 +104,39 @@ function LoginSignup() {
         data=>{
           if(data["code"]===1){
             console.log(data)
-            history.push("/main")
+            console.log(Auth.isLogin)
+            Auth.login()
+            history.push("/admin/dashboard")
+          }
+          
+        }
+      )
+    }
+    const insertData2= (body)=>{
+        fetch(domain+"/registration", {
+          body: JSON.stringify(body),
+          cache: 'no-cache',
+          headers: new Headers({
+              'Content-Type': 'application/json'
+            }),
+          method: 'POST', // *GET, POST, PUT, DELETE, etc.
+          mode: 'cors', // no-cors, cors, *same-origin
+          redirect: 'follow', // manual, *follow, error
+          referrer: 'no-referrer', // *client, no-referrer
+        })
+      .then(response=>{
+        if(response.ok){
+          return response.json()
+          }
+        }
+        
+      ).then(
+        data=>{
+          if(data["code"]===1){
+            console.log(data)
+            
+            history.push("/login")
+            
           }
           
         }

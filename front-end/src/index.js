@@ -27,13 +27,17 @@ import "perfect-scrollbar/css/perfect-scrollbar.css";
 
 import AdminLayout from "layouts/Admin.js";
 import LoginSignup from 'views/registration/LoginSignup';
+import ProtectedRoute from "views/registration/ProtectedRoute";
+import Auth from "views/registration/Auth";
+
+//<ProtectedRoute path="/admin" render={(props) => <AdminLayout {...props} />} />
 
 ReactDOM.render(
   <BrowserRouter>
     <Switch>
-      <Route path="/login" component={LoginSignup} />
-      <Route path="/admin" render={(props) => <AdminLayout {...props} />} />
-      <Redirect to="/admin/dashboard" />
+      <Route exact path="/login" component={LoginSignup} />
+      <ProtectedRoute path="/admin" component = {AdminLayout} isLogin = {Auth.isLogin} />
+      <Redirect to="/login" />
     </Switch>
   </BrowserRouter>,
   document.getElementById("root")

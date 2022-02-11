@@ -62,6 +62,8 @@ CREATE TABLE `assignment` (
   `planner` varchar(16) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+INSERT INTO assignment (title, description, manager, planner) VALUES
+('Try for assignment', 'jimmy is handsome', "Jimmy", "Claire");
 --
 -- Table structure for table `schedules`
 --
@@ -80,6 +82,7 @@ CREATE TABLE `schedule` (
   `uuid` varchar(64) NOT NULL,
   FOREIGN KEY(aid) REFERENCES assignment(aid)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
 
 -- --------------------------------------------------------
 
@@ -130,6 +133,7 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (`uid`, `username`, `displayname`, `password`, `rank`, `disabled`) VALUES
 (1, 'Shawn123', 'shawn', '123456', 1, 0);
+
 
 --
 -- Indexes for dumped tables
