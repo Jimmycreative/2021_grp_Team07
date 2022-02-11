@@ -104,8 +104,9 @@ function LoginSignup() {
         data=>{
           if(data["code"]===1){
             console.log(data)
-            console.log(Auth.isLogin)
+            
             Auth.login()
+            console.log(Auth.isLogin)
             history.push("/admin/dashboard")
           }
           
