@@ -158,6 +158,9 @@ def modify_token(uses, token):
 
 # for manager
 # Assign Schedules page
+'''
+get all planners from database
+'''
 @app.route('/getAllPlanners', methods=['GET'])
 def getAllPlanners():
     res_json = {}
@@ -180,9 +183,12 @@ def getAllPlanners():
         return jsonify({"code": -2, "data": {}, "message": e})
 
 # Assign Schedules page
-# 字段
-# manager username从session取
+# field
 # planner, title, description
+'''
+manager send assignment to planners
+@param json for assignment
+'''
 @app.route('/sendAssignment', methods=['POST'])
 def sendAssignment():
     res_json = {}
@@ -195,7 +201,6 @@ def sendAssignment():
             planner=data['planner']
             title=data['title']
             description=data['description']
-            # TODO, get from session
             manager = session["username"]
 
             cur = database.cursor(dictionary=True)
@@ -212,7 +217,9 @@ def sendAssignment():
 
 # View Messages page
 
-
+'''
+get all assigned schedules of manager
+'''
 @app.route('/getAssignedSchedules', methods=['GET'])
 def getAssignedSchedules():
     res_json = {}
@@ -242,6 +249,9 @@ def getAssignedSchedules():
 
 # for planner
 # sorted by manager
+'''
+get all schedules of one planner
+'''
 @app.route('/getMySchedules', methods=['GET'])
 def getMySchedules():
     res_json = {}
@@ -277,8 +287,9 @@ def getMySchedules():
         return res_json
 
 # auxiliary function
-
-
+'''
+generate json list for messages of one planner
+'''
 def sortPlannerList(my_list):
     result = []
     for my_json in my_list:
@@ -318,6 +329,11 @@ def getAttributeList(concat_str):
 
 # definition section
 # for receiving the data from front end. After front end finish the definition page, api will be created in the frontend.
+
+'''
+get uuid from script language
+@param script the code snippet to define JSSP
+'''
 @app.route('/getuuid', methods=['POST'])
 def get_script():
     data = request.json
@@ -350,7 +366,10 @@ def post_script(data):  # string will replace the variable s below
     print(uuid)
     return uuid
 
-
+'''
+get result from script language
+@param uuid to find the schedule
+'''
 @app.route('/getres', methods=['POST'])
 def post_uid():
     data = request.json

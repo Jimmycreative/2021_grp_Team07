@@ -8,3 +8,4 @@
 6. login permission
 7. definition page access
 8. report (ch5, 6, 7, appendix C)
+9. session
