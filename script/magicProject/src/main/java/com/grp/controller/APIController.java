@@ -242,6 +242,10 @@ public class APIController {
             String uuid= MyThreadLocal.get();
             MyThreadLocal.remove();
 
+            if (uuid==null) {
+                return Result.fail("Fail to get UUID");
+            }
+
             if (result==null) {
                 if (code.contains("model.run")) {
                     Result r=Result.succeed(uuid);

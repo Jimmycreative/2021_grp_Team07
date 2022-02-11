@@ -90,8 +90,11 @@ public class ModelFunction implements MagicModule {
      * @return result which contains uuid or error
      */
     @Comment("run dynamic model")
-    public Result runDynamic(RuntimeContext context, @Comment("jobs")List<ArrayList<ArrayList>> jobs, @Comment("expected duration")List<Integer> expected_duration) {
+    public Result runDynamic(RuntimeContext context, @Comment("jobs")List<ArrayList<ArrayList>> jobs, @Comment("expected duration")List<Integer> expected_duration) throws Exception {
         FuncVariable funcVariable=new FuncVariable();
+        if (expected_duration==null) {
+            throw new Exception("Please define expected duration for each job");
+        }
         try {
             funcVariable.setRuntimeContext(context);
             initialize(jobs, funcVariable);
