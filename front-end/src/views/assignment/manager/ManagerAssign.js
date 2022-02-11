@@ -7,6 +7,7 @@ import React, { useEffect } from "react";
 import TextField from '@mui/material/TextField';
 import './ManagerAssign.css';
 import infoPlanner from "./infoPlanner.json";
+
 import { useState } from 'react';
 import {InputGroup,InputGroupAddon,InputGroupText} from "reactstrap"; {/* npm install --save react-tabs */}
 
@@ -17,9 +18,11 @@ function ManagerAssign() {
   const [modal, setModal] = React.useState(false);      {/* popup */}
   const toggle = () => setModal(!modal);                {/* popup */}
   const[searchMessage,setSearchMessage] = useState(""); {/* Searching function */}
-  
+  const [Title, setTitle] = useState("")
+  const [Plannername, setPlannername] = useState("")
+  const [Message, setMessage] = useState("")
 
- {/*validation */}
+ {/*validation 
   const [Title, setTitle] = useState("")
   const [Plannername, setPlannername] = useState("")
   const [Message, setMessage] = useState("")
@@ -47,7 +50,66 @@ function ManagerAssign() {
 
          const onSubmitHandler = (e) => {
                   e.preventDefault();
-                }
+                }*/}
+    
+const [data,setdata] = useState(null);
+const [loading,setloading] = useState(true);
+const [error,seterror] = useState(null);
+const [snddata,sndsetdata] = useState(null);
+const [sndloading,sndsetloading] = useState(true);
+const [snderror,sndseterror] = useState(null);
+
+let domain = "http://127.0.0.1:5000"
+
+
+ useEffect(()=> {
+  fetch("domain + '/getAllPlanners'")
+  .then(response => {
+    if(response.ok){
+      return response.json()
+    }
+    throw response;
+  })
+  .then(res => {
+    setdata(res);
+  })
+  .catch(error => {
+    console.error("Error fetching data: ",error);
+    seterror(error)
+  })
+  .finally(()=>{
+    setloading(false);
+  })
+},[])
+
+
+
+useEffect(()=> {
+  
+  fetch("domain + /sendAssignment'",{
+    method : 'post'
+  })
+ 
+  .then(response => {
+    if(response.ok){
+      return response.json()
+    }
+    throw response;
+  })
+  .then(res => {
+    sndsetdata(res);
+  })
+  .catch(snderror => {
+    console.error("Error fetching data: ",snderror);
+    sndseterror(error)
+  })
+  .finally(()=>{
+    sndsetloading(false);
+  })
+},[])
+
+
+ 
 
     return (
     <>
@@ -133,23 +195,15 @@ function ManagerAssign() {
                      <ModalHeader toggle={toggle}> <CardTitle tag="h8">Assgin Schedules </CardTitle> </ModalHeader>
                       <ModalBody>
                       
-                          <div onSubmit={onSubmitHandler}>
+                          <div >
                          <FormGroup>
                                   <label htmlFor="AssignTitle">Title</label>
-                                  <TextField
-                                   variant="filled"
+                                  <Input
                                     placeholder="Title..."
                                     type="text"
-                                    className='mytext'
                                     id='AssignTitle'
-                                    value={Title}
-                                   onChange={onTitleHandler}
-                                   error={TitleError('title')} 
-                                   
-                                   label="Title is required"
-                                   color="success"
-                                   focused 
                                     />
+
 
                           
                                 </FormGroup>
@@ -157,40 +211,24 @@ function ManagerAssign() {
                                 <FormGroup>
                                   
                                   <label htmlFor="username" >Username</label>
-                                  <TextField
-                                   variant="filled"
-                                    placeholder="username..."
+                                  <Input
+                                    placeholder={val.username}
                                     type="text"
-                                    className='mytext'
-                                    value={val.username}
                                     id='username'
-                                    
-                                    onChange={onPlannerHandler}
-                                    label="Filled success"
-                                    color="success"
-                                    focused 
-                                   
-                                  />
-                                  
+                                    />
+
                                                             
                                 </FormGroup>
 
                                 <FormGroup >
                                   <label htmlFor="message">Schedule Description</label>
                                   
-                                  <TextField
-                                   variant="filled"
-                                    placeholder="Message..."
+                                  <Input
+                                    placeholder="message.."
                                     type="textarea"
-                                    className='TextBox'
                                     id='message'
-                                    value={Message}
-                                    onChange={onMessageHandler}
-                                    error={MessageError('message')} 
-                                    label="Message is required"
-                                    color="success"
-                                    focused 
-                                  />
+                                    />
+
                                  
                          
                                 </FormGroup>
@@ -199,7 +237,7 @@ function ManagerAssign() {
                       </ModalBody>
                                                     
                        <ModalFooter>
-                       <Button color="primary" type='submit' onClick={toggle} onSubmit={onSubmitHandler} >Send</Button>                    
+                       <Button color="primary" type='submit' onClick={toggle}  >Send</Button>                    
                        </ModalFooter>
                        </Modal>
                    
