@@ -99,7 +99,7 @@ export default function PlannerAssign() {
           <Col md="2" xs="2"> 
           <div className= "img" >
           <img alt="..."
-          src={require("assets/img/User.png").default} className='image'></img>
+          src={require("assets/img/User.png").default} className='image2'></img>
 
           </div>
           </Col>

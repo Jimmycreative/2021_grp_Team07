@@ -4,10 +4,10 @@
 from distutils.cygwinccompiler import CygwinCCompiler
 from turtle import title
 from click.types import convert_type
-from flask import Flask, render_template, request, redirect, session, url_for, flash
+from flask import Flask, request, session
 import mysql.connector
 from flask import jsonify
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 import json
 import requests
 import secrets
@@ -16,6 +16,7 @@ import datetime
 import json
 import decimal
 import re
+
 
 
 class MyEncoder(json.JSONEncoder):
@@ -59,6 +60,7 @@ def tokengen():
     purgetoken()
     token = ''.join(secrets.choice(string.ascii_letters + string.digits)
                     for _ in range(8))
+    print(token)
     while checktoken(token):
         token = ''.join(secrets.choice(string.ascii_letters +
                                        string.digits) for _ in range(8))
@@ -89,12 +91,12 @@ def puttoken(token, dateexpire, rank, uses):
 
     if dateexpire is None:
         cur.execute("""
-        INSERT INTO token (token, dateexpire, rank, uses)
+        INSERT INTO token (token, dateexpire, role, uses)
         VALUES (%s, NULL, %s, %s);
         """, (token, rank, uses))
     else:
         cur.execute("""
-        INSERT INTO token (token, dateexpire, rank, uses)
+        INSERT INTO token (token, dateexpire, role, uses)
         VALUES (%s, %s, %s, %s);
         """, (token, dateexpire, rank, uses))
 
@@ -122,17 +124,20 @@ def checkusername(username):
 def checktoken(token):
     cur = database.cursor(dictionary=True)
     cur.execute("""
-    SELECT uses, rank
+    SELECT *
     FROM token
-    WHERE token = %s
+    WHERE tokenid = %s
     AND disabled = 0
     AND (dateexpire IS NULL OR dateexpire > CURRENT_TIMESTAMP()) 
     AND uses <> 0;
     """, (token,))
 
     tokendata = cur.fetchone()
-    return tokendata
-
+    if tokendata:
+        return True
+    else:
+        return False
+    
 
 def modify_info(isLogin, message):
     login_info["isLogin"] = isLogin
@@ -153,46 +158,50 @@ def modify_token(uses, token):
 
 # for manager
 # Assign Schedules page
+'''
+get all planners from database
+'''
 @app.route('/getAllPlanners', methods=['GET'])
 def getAllPlanners():
-    res_json={}
-    res_json['code']=1
-    res_json['message']="success"
+    res_json = {}
+    res_json['code'] = 1
+    res_json['message'] = "success"
 
-    planners=[]
+    planners = []
     try:
         cur = database.cursor(dictionary=True)
         cur.execute("SELECT * FROM `user` WHERE rank=0")
         for planner in cur:
             planner_str = json.dumps(planner, cls=MyEncoder)
-            planner_json=json.loads(planner_str)
+            planner_json = json.loads(planner_str)
             planners.append(planner_json)
         cur.close()
 
-        
-        res_json['result']=planners
+        res_json['result'] = planners
         return res_json
     except Exception as e:
         return jsonify({"code": -2, "data": {}, "message": e})
-    
+
 # Assign Schedules page
-# 字段
-# planner username从session取
-# manager, title, description
+# field
+# planner, title, description
+'''
+manager send assignment to planners
+@param json for assignment
+'''
 @app.route('/sendAssignment', methods=['POST'])
 def sendAssignment():
-    res_json={}
-    res_json['code']=1
-    res_json['data']={}
-    res_json['message']="success"
+    res_json = {}
+    res_json['code'] = 1
+    res_json['data'] = {}
+    res_json['message'] = "success"
     try:
         data = request.json
         if data:
-            manager=data['manager']
+            planner=data['planner']
             title=data['title']
             description=data['description']
-            # TODO, get from session
-            planner="xiaowanzi"
+            manager = session["username"]
 
             cur = database.cursor(dictionary=True)
             cur.execute("INSERT INTO assignment (title, description, manager, planner) VALUES ( %s, %s, %s, %s);",
@@ -200,35 +209,39 @@ def sendAssignment():
             database.commit()
     except Exception as e:
         database.rollback()
-        res_json['code']=-2
-        res_json['message']=e
+        res_json['code'] = -2
+        res_json['message'] = e
     finally:
         cur.close()
         return res_json
 
 # View Messages page
+
+'''
+get all assigned schedules of manager
+'''
 @app.route('/getAssignedSchedules', methods=['GET'])
 def getAssignedSchedules():
-    res_json={}
-    res_json['code']=1
-    res_json['data']={}
-    res_json['message']="success"
+    res_json = {}
+    res_json['code'] = 1
+    res_json['data'] = {}
+    res_json['message'] = "success"
     try:
-        assignments=[]
+        assignments = []
         cur = database.cursor(dictionary=True)
         # TODO get manager from session
-        manager='fyyc'
-        sql="SELECT * FROM assignment WHERE manager='%s';"%(manager)
+        manager = 'fyyc'
+        sql = "SELECT * FROM assignment WHERE manager='%s';" % (manager)
         cur.execute(sql)
         for assignement in cur:
             assignement_str = json.dumps(assignement, cls=MyEncoder)
-            assignement_json=json.loads(assignement_str)
+            assignement_json = json.loads(assignement_str)
             assignments.append(assignement_json)
 
-        res_json['result']=assignments
+        res_json['result'] = assignments
     except Exception as e:
-        res_json['code']=-2
-        res_json['message']=e
+        res_json['code'] = -2
+        res_json['message'] = e
     finally:
         cur.close()
         return res_json
@@ -236,80 +249,91 @@ def getAssignedSchedules():
 
 # for planner
 # sorted by manager
+'''
+get all schedules of one planner
+'''
 @app.route('/getMySchedules', methods=['GET'])
 def getMySchedules():
-    res_json={}
-    res_json['code']=1
-    res_json['data']={}
-    res_json['message']="success"
+    res_json = {}
+    res_json['code'] = 1
+    res_json['data'] = {}
+    res_json['message'] = "success"
     try:
-        temp_list=[]
+        temp_list = []
         cur = database.cursor(dictionary=True)
         # TODO, get from session
-        planner="xiaowanzi"
+        planner=session["username"]
         sql="""
             SELECT manager, COUNT(IF(_status=0,1,NULL)) AS unfinished_assignment, GROUP_CONCAT(title) AS title,
             GROUP_CONCAT(_status) AS status,
             GROUP_CONCAT(description) AS description,
             GROUP_CONCAT(datecreated) AS datecreated
             FROM assignment WHERE planner='%s' GROUP BY manager
-        """%planner
+        """ % planner
         cur.execute(sql)
 
         for record in cur:
             record_str = json.dumps(record, cls=MyEncoder)
-            record_json=json.loads(record_str)
+            record_json = json.loads(record_str)
             temp_list.append(record_json)
 
-        res_json['data']=sortPlannerList(temp_list)
+        res_json['data'] = sortPlannerList(temp_list)
 
     except Exception as e:
-        res_json['code']=-2
-        res_json['message']=e
+        res_json['code'] = -2
+        res_json['message'] = e
     finally:
         cur.close()
         return res_json
 
 # auxiliary function
+'''
+generate json list for messages of one planner
+'''
 def sortPlannerList(my_list):
-    result=[]
+    result = []
     for my_json in my_list:
-        this_manager_json={}
-        this_manager_list=[]
-        manager=my_json['manager']
-        titles=my_json['title']
-        status=my_json['status']
-        description=my_json['description']
-        start=my_json['datecreated']
+        this_manager_json = {}
+        this_manager_list = []
+        manager = my_json['manager']
+        titles = my_json['title']
+        status = my_json['status']
+        description = my_json['description']
+        start = my_json['datecreated']
 
-        title_list=getAttributeList(titles)
-        status_list=getAttributeList(status)
-        description_list=getAttributeList(description)
-        start_list=getAttributeList(start)
+        title_list = getAttributeList(titles)
+        status_list = getAttributeList(status)
+        description_list = getAttributeList(description)
+        start_list = getAttributeList(start)
 
         for i in range(len(title_list)):
-            temp_json={}
-            temp_json['title']=title_list[i]
-            temp_json['status']=status_list[i]
-            temp_json['description']=description_list[i]
-            temp_json['start']=start_list[i]
+            temp_json = {}
+            temp_json['title'] = title_list[i]
+            temp_json['status'] = status_list[i]
+            temp_json['description'] = description_list[i]
+            temp_json['start'] = start_list[i]
             this_manager_list.append(temp_json)
 
-        this_manager_json['manager']=manager
-        this_manager_json['unfinished_assignment']=my_json['unfinished_assignment']
-        this_manager_json['assignment']=this_manager_list
+        this_manager_json['manager'] = manager
+        this_manager_json['unfinished_assignment'] = my_json['unfinished_assignment']
+        this_manager_json['assignment'] = this_manager_list
         result.append(this_manager_json)
-    
+
     return result
 
 
 def getAttributeList(concat_str):
-    seperate_list=re.split(r'[,]s*', concat_str)
+    seperate_list = re.split(r'[,]s*', concat_str)
     return seperate_list
 
 
 # definition section
 # for receiving the data from front end. After front end finish the definition page, api will be created in the frontend.
+
+'''
+get uuid from script language
+@param script the code snippet to define JSSP
+'''
 @app.route('/getuuid', methods=['POST'])
 def get_script():
     data = request.json
@@ -342,7 +366,10 @@ def post_script(data):  # string will replace the variable s below
     print(uuid)
     return uuid
 
-
+'''
+get result from script language
+@param uuid to find the schedule
+'''
 @app.route('/getres', methods=['POST'])
 def post_uid():
     data = request.json
@@ -366,7 +393,7 @@ def getAllSchedule():
             #res_str=res_str.replace("\\", '')
 
             res_json = json.loads(res_str)
-            modify_result = eval(res_json["result"].replace("false","False"))
+            modify_result = eval(res_json["result"].replace("false", "False"))
             res_json["result"] = modify_result
             # print(res_json["result"])
             print("--------------------------")
@@ -374,7 +401,7 @@ def getAllSchedule():
     except Exception as e:
         # print(e)
         return jsonify({"code": -2, "data": {}, "message": e})
-        
+
     finally:
         cur.close()
     #data = request.json
@@ -425,24 +452,26 @@ def save_schedule():
 def test():
 
     data = request.json
+    print(data)
     try:
         if data:
-            print(data)
+            
             username = data['username']
             password = data['password']
             cur = database.cursor(dictionary=True)
             cur.execute(
-                "SELECT uid, username, password FROM user WHERE username = %s AND password = %s;", (username, password))
+                "SELECT username,password FROM user WHERE username = %s AND password = %s;", (username, password))
             #cur.execute("SELECT uid, displayname, rank, disabled FROM user WHERE username = %s AND password = %s;", (username, password,))
             #cur.execute("SELECT uid, displayname, rank, disabled FROM user WHERE username = %s AND password = AES_ENCRYPT(%s, UNHEX(SHA2('', )));", (username, password,))
     except Exception as e:
         return jsonify({"code": -2, "data": {}, "message": e})
     finally:
         account = cur.fetchone()
-        session["uid"] = account["uid"]
+        session["username"] = account["username"]
         cur.close()
 
     if account:
+        
         modify_info(1, "Login successfully!")
     else:
         modify_info(0, "Login not successful")
@@ -471,7 +500,7 @@ def registration():
                     displayname = json_data["data"]["displayname"]
                     password = json_data["data"]["password"]
                     cur.execute(
-                        "SELECT ranks FROM token WHERE token = %s;", (tokendata))
+                        "SELECT ranks FROM token WHERE tokenid = %s;", (tokendata))
                     rank = cur.fetchone()["ranks"]
                     database.commit()
 
@@ -496,18 +525,42 @@ def registration():
 @app.route('/genToken', methods=['POST'])
 def genToken():
     json_data = request.json
+    print(json_data)
     if json_data:
+        print("you get it!")
+        dateexpire = json_data["expirationDate"]
+        role = json_data["rank"]  # 0 for planner 1 for manager
+        uses = json_data["uses"]
 
-        dateexpire = json_data["data"]["dateexpire"]
-        rank = json_data["data"]["rank"]  # 0 for planner 1 for manager
-        uses = json_data["data"]["uses"]
+        cur = database.cursor()
+        #purgetoken()
+        token = ''.join(secrets.choice(string.ascii_letters + string.digits)
+                for _ in range(8))
 
-        token = tokengen()
+        print(token)
+        while checktoken(token):
+            token = ''.join(secrets.choice(string.ascii_letters +
+                            string.digits) for _ in range(8))
+        print(token)
+        if uses=="":
+            uses = str(-1)
+        #print("type: ",type(uses))
+        if dateexpire=="":
+            cur.execute("""
+            INSERT INTO token (tokenid, dateexpire, role, uses) VALUES (%s, NULL, %s, %s);""", (token, role, uses))
+        else:
+            cur.execute("""
+            INSERT INTO token (tokenid, dateexpire, role, uses)
+            VALUES (%s, %s, %s, %s);
+            """, (token, dateexpire, role, int(uses)))
+            database.commit()
+
         if token is None:
             return jsonify({"code": -1, "data": "", "message": "Not successfully generating token!"})
         else:
-            puttoken(token, dateexpire, rank, uses)
+            #puttoken(token, dateexpire, role, uses)
             return jsonify({"code": 1, "data": token, "message": "Successfully generating token!"})
+    return
 
 
 @app.route("/")

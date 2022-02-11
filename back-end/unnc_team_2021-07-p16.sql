@@ -88,10 +88,10 @@ CREATE TABLE `schedule` (
 --
 
 CREATE TABLE `token` (
-  `token` varchar(128) COLLATE utf8_bin NOT NULL PRIMARY KEY,
-  `datecreated` timestamp NOT NULL DEFAULT current_timestamp(),
-  `dateexpire` timestamp NULL DEFAULT NULL,
-  `rank` int(1) NOT NULL,
+  `tokenid` varchar(128) COLLATE utf8_bin NOT NULL PRIMARY KEY,
+  `datecreated` datetime NOT NULL DEFAULT current_timestamp(),
+  `dateexpire` datetime NULL DEFAULT NULL,
+  `role` int(1) NOT NULL,
   `uses` int(11) DEFAULT 1,
   `disabled` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
@@ -100,7 +100,7 @@ CREATE TABLE `token` (
 -- Dumping data for table `tokens`
 --
 
-INSERT INTO `tokens` (`token`, `datecreated`, `dateexpire`, `rank`, `uses`, `disabled`) VALUES
+INSERT INTO `token` (`tokenid`, `datecreated`, `dateexpire`, `rank`, `uses`, `disabled`) VALUES
 ('aaaaa', '2022-01-08 12:55:22', NULL, 0, 0, 0),
 ('aaaaaa', '2022-01-08 14:01:49', NULL, 0, 0, 0),
 ('abc', '2022-01-08 13:20:21', NULL, 0, 1, 0),
@@ -128,9 +128,8 @@ CREATE TABLE `user` (
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`uid`, `username`, `displayname`, `password`, `datecreated`, `rank`, `disabled`) VALUES
-(1, 'admin', 'admin', 'admin', '2022-01-07 18:47:37', 3, 0),
-(2, 'asdas', 'sadasd', '?l?ԤIA?R?<r?p', '2022-01-14 17:42:00', 0, 0);
+INSERT INTO `user` (`uid`, `username`, `displayname`, `password`, `rank`, `disabled`) VALUES
+(1, 'Shawn123', 'shawn', '123456', 1, 0);
 
 --
 -- Indexes for dumped tables

@@ -18,40 +18,45 @@ function Invatation() {
 
     const [isConfirmed, setIsConfirmed] = useState(false);
 
-    //domain = "http://127.0.0.1:5000"
+    const domain = "http://127.0.0.1:5000"
 
 
     //link to backend
 
-    // useEffect(() => {
+    const getToken = () => {
+        let date = JSdatetimeToMySQLdatetime();
+         var mydata = {
+             expirationDate: date,
+             rank: 0,
+             uses: uses
+         }
+        console.log(mydata)
+         fetch(domain +"/genToken", {
 
-    //     var mydata = {
-    //         expirationDate: expirationDate,
-    //         uses: uses
-    //     }
+             body: JSON.stringify(mydata),
+             cache: 'no-cache',
 
-    //     fetch(domain + '/genToken', {
-
-    //         body: JSON.stringify(mydata),
-    //         cache: 'no-cache',
-
-    //         headers: {
-    //             'Accept': 'application/json'
-    //         }
-    //     }).then(response => {
-    //         if (response.ok) {
-    //             return response.json()
-    //         }
-    //     }
-    //     ).then(
-    //         data => {
-    //             //console.log("line 143", data)
-    //             if (data.code === 1) {
-    //                 setToken(data.data);
-    //             }
-    //         }
-    //     )
-    // });
+             headers: new Headers({
+                'Content-Type': 'application/json'
+              }),
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, cors, *same-origin
+            redirect: 'follow', // manual, *follow, error
+            referrer: 'no-referrer', // *client, no-referrer
+         }).then(response => {
+             if (response.ok) {
+                 return response.json()
+             }
+         }
+         ).then(
+             data => {
+                 //console.log("line 143", data)
+                 if (data.code === 1) {
+                     setToken(data.data);
+                 }
+            }
+         )
+     };
 
 
     // show token form backend
@@ -70,13 +75,14 @@ function Invatation() {
 
         if (isValid) {
             setIsConfirmed(true);
-            JSdatetimeToMySQLdatetime();
             setUsesNull();
+            getToken();
+
         } else {
             setIsConfirmed(false);
         }
 
-        return isConfirmed;
+        //return isConfirmed;
     };
 
 
@@ -116,7 +122,7 @@ function Invatation() {
         } else if (expiration == null) {
             setExpirationError('Please input a number');
             return false;
-        } else if (expiration == 0) {
+        } else if (expiration === 0) {
             setExpirationError('Please input a number greater than 0');
             return false;
         } else if (expiration >= 10000000000) {
@@ -143,13 +149,13 @@ function Invatation() {
         } else if (uses < 0) {
             setUsesError('Please input a positive number');
             return false;
-        } else if (uses % 1 != 0) {
+        } else if (uses % 1 !== 0) {
             setUsesError('Please input a non decimal number');
             return false;
         } else if (uses == null) {
             setUsesError('Please input a number');
             return false;
-        } else if (uses == 0) {
+        } else if (uses === 0) {
             setUsesError('Please input a number greater than 0');
             return false;
         } else if (uses >= 10000000000) {
@@ -166,34 +172,44 @@ function Invatation() {
 
     // conversion
     const convertReceivedTimeToSconeds = (time) => {
-
+        var seconds
         switch (time) {
             case "minutes":
-                var seconds = Math.floor(expiration * 60);
+                seconds = Math.floor(expiration * 60);
                 break;
             case "hours":
-                var seconds = Math.floor(expiration * 60 * 60);
+                seconds = Math.floor(expiration * 60 * 60);
                 break;
             case "days":
-                var seconds = Math.floor(expiration * 24 * 60 * 60);
+                seconds = Math.floor(expiration * 24 * 60 * 60);
                 break;
             default:
         }
 
-        var receivedTimeInSeconds = seconds;
-
-        return receivedTimeInSeconds;
+        
+        return seconds;
     }
 
 
 
     const JSdatetimeToMySQLdatetime = () => {
+        
+        if (time === "Unlimited") {
+            setExpiration('');
+            setExpirationError('');
+            setTime("Unlimited");
+            document.getElementById("dateexpire").disabled = true;
+        }
+        else {
+            document.getElementById("dateexpire").disabled = false;
+        }
 
+        
         // get current datetime in sconeds
-        var currentTimeInSeconds = (new Date().getTime() / 1000) + (new Date().getTimezoneOffset() * -60);
+        let currentTimeInSeconds = (new Date().getTime() / 1000) + (new Date().getTimezoneOffset() * -60);
 
         // get received time in sconeds
-        var receivedTimeInSeconds = convertReceivedTimeToSconeds(time);
+        let receivedTimeInSeconds = convertReceivedTimeToSconeds(time);
 
         if (receivedTimeInSeconds == null) {
             setExpirationDate(null);
@@ -201,10 +217,15 @@ function Invatation() {
         }
 
         // add it to current datetime
-        var addedTime = (currentTimeInSeconds + receivedTimeInSeconds) * 1000;
+        let addedTime = (currentTimeInSeconds + receivedTimeInSeconds) * 1000;
+        console.log(addedTime)
 
         // convert added datetime to MySQL datetime
-        setExpirationDate(new Date(addedTime).toISOString().slice(0, 19).replace('T', ' '));
+        //setExpirationDate(new Date(addedTime).toISOString().slice(0, 19).replace('T', ' '));
+        let date = new Date(addedTime).toISOString().slice(0, 19).replace('T', ' ');
+        setExpirationDate(date)
+        return date
+
     }
 
 
@@ -215,27 +236,6 @@ function Invatation() {
     }
 
 
-
-    const changeSelectBox = () => {
-
-        if (document.getElementById("dateexpireSelect").value === "Unlimited") {
-            setExpiration('');
-            setExpirationError('');
-            setTime("Unlimited");
-            document.getElementById("dateexpire").disabled = true;
-        }
-        else {
-            document.getElementById("dateexpire").disabled = false;
-        }
-
-        if (document.getElementById("dateexpireSelect").value === "minutes")
-            setTime("minutes");
-        else if (document.getElementById("dateexpireSelect").value === "hours")
-            setTime("hours");
-        else if (document.getElementById("dateexpireSelect").value === "days")
-            setTime("days");
-
-    }
 
     const changeCheckBox = () => {
 
@@ -326,7 +326,7 @@ function Invatation() {
                         <select
                             id="dateexpireSelect"
                             name="dateexpireSelect"
-                            onChange={() => { changeSelectBox(); }}
+                            onChange={(e) => setTime(e.target.value) }
                         >
                             <option
                                 value="minutes"
