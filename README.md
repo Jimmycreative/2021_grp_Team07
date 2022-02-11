@@ -1,4 +1,5 @@
-# front end branch 
+# front end branch
+# do not modify script folder
 ### TODO
 1. Software documentation: each file should have docs in front of the code (each function for back end / script / algorithm)
 2. code license

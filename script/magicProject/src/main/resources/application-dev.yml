@@ -1,0 +1,18 @@
+logging:
+  level:
+    root: info
+    com.bootdo: debug
+
+
+
+
+spring:
+  datasource:
+    dynamic:
+      primary: mysql
+      datasource:
+        mysql:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://127.0.0.1:3306/grp?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
+          username: root
+          password:
