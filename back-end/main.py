@@ -483,7 +483,9 @@ def test():
         return jsonify({"code": -2, "data": {}, "message": e})
     finally:
         account = cur.fetchone()
-        session["username"] = account["username"]
+        account_str = json.dumps(account, cls=MyEncoder)
+        account_json = json.loads(account_str)
+        session["username"] = account_json["username"]
         cur.close()
 
     if account:
