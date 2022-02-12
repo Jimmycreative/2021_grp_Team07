@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import { domain } from "../../../global"
 
 // Uk.JgBsQn]bQp[2u
 function Invatation() {
@@ -17,8 +18,6 @@ function Invatation() {
     const [time, setTime] = useState('minutes');
 
     const [isConfirmed, setIsConfirmed] = useState(false);
-
-    const domain = "http://127.0.0.1:5000"
 
 
     //link to backend

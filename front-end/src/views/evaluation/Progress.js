@@ -9,6 +9,7 @@ import {
     Legend,
   } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
+import { domain } from "../../global"
 
 
 ChartJS.register(
@@ -50,7 +51,6 @@ const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 
   },[])
 
 const getAllSchedules = () => {
-  var domain = `http://127.0.0.1:5000`;
     fetch(domain+"/getAllSchedules", {
         cache: 'no-cache',
         headers: new Headers({

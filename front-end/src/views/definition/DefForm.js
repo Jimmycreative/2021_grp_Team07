@@ -4,7 +4,6 @@ import CodeEditor from './controls/CodeEditor';
 
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { Form, FormGroup, Input, Label } from 'reactstrap';
-import axios from 'axios';
 import {
     Card,
     CardBody,
@@ -15,7 +14,7 @@ import {
     Col,
   } from "reactstrap";
 
-
+  import { domain } from "../../global"
 
 const basic = `//task=[machine_id, duration]
 job1=[[0, 3], [1, 2], [2, 2]]
@@ -107,7 +106,6 @@ class DefForm extends React.Component {
               flag: 1,
               selectedFile: null
         };
-        this.domain="http://127.0.0.1:5000"
         this.toggle = this.toggle.bind(this);
         this.toggleImport = this.toggleImport.bind(this);
         this.updateSolution = this.updateSolution.bind(this);
@@ -208,13 +206,13 @@ class DefForm extends React.Component {
             script:this.state.code
         }
         console.log(mydata)
-        fetch(this.domain+"/getuuid", {
+        fetch(domain+"/getuuid", {
             body: JSON.stringify(mydata),
-            cache: 'no-cache',
             headers: new Headers({
                 'Content-Type': 'application/json'
               }),
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            credentials: 'include',
             mode: 'cors', // no-cors, cors, *same-origin
             redirect: 'follow', // manual, *follow, error
             referrer: 'no-referrer', // *client, no-referrer

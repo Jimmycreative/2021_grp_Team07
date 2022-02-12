@@ -38,6 +38,8 @@ ReactDOM.render(
       <Route exact path="/login" component={LoginSignup} />
       <ProtectedRoute path="/admin/" component = {AdminLayout} />
       <Redirect to="/login" />
+      {/* <Route path="/admin" component = {AdminLayout} />
+      <Redirect to="/admin/dashboard" /> */}
     </Switch>
   </BrowserRouter>,
   document.getElementById("root")

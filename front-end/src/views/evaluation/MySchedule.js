@@ -11,6 +11,7 @@ import NotificationAlert from "react-notification-alert";
 import GanttDay from "views/gantt/day/GanttDay";
 import sample_data from '../../variables/data/saved_data.json';
 import "./mySchedule.css"
+import { domain } from "../../global"
 
 class MySchedule extends Component {
     constructor(props) {
@@ -22,8 +23,6 @@ class MySchedule extends Component {
         this.pageSize = 10;
         this.pagesCount = Math.ceil(sample_data.length / this.pageSize);
         
-    
-        this.domain = `http://127.0.0.1:5000`;
         this.state = {
             currentPage: 0,
             searchSchedule:"",
@@ -87,7 +86,7 @@ class MySchedule extends Component {
       //invoke /getAllSchedules
       //planner 0, manager 1
       getAllSchedules () {
-        fetch(this.domain+"/getAllSchedules", {
+        fetch(domain+"/getAllSchedules", {
             cache: 'no-cache',
             headers: new Headers({
                 'Content-Type': 'application/json'
