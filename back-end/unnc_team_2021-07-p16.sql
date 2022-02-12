@@ -123,7 +123,7 @@ CREATE TABLE `user` (
   `displayname` varchar(64) COLLATE utf8_bin NOT NULL,
   `password` varchar(256) COLLATE utf8_bin NOT NULL,
   `datecreated` datetime NOT NULL DEFAULT current_timestamp(),
-  `rank` int(1) NOT NULL DEFAULT 0,
+  `role` int(1) NOT NULL DEFAULT 0,
   `disabled` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
@@ -132,7 +132,7 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`uid`, `username`, `displayname`, `password`, `rank`, `disabled`) VALUES
-(1, 'Shawn123', 'shawn', '123456', 1, 0);
+(2, 'Peter', 'peter', '123456', 0, 0);
 
 
 --

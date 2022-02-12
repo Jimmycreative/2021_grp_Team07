@@ -18,11 +18,11 @@ function ManagerAssign() {
   const [modal, setModal] = React.useState(false);      {/* popup */}
   const toggle = () => setModal(!modal);                {/* popup */}
   const[searchMessage,setSearchMessage] = useState(""); {/* Searching function */}
-  const [Title, setTitle] = useState("")
-  const [Plannername, setPlannername] = useState("")
-  const [Message, setMessage] = useState("")
+  const [title, setTitle] = useState("")
+  const [plannername, setPlannername] = useState("")
+  const [description, setDescription] = useState("") 
 
- {/*validation 
+ /*validation 
   const [Title, setTitle] = useState("")
   const [Plannername, setPlannername] = useState("")
   const [Message, setMessage] = useState("")
@@ -50,9 +50,9 @@ function ManagerAssign() {
 
          const onSubmitHandler = (e) => {
                   e.preventDefault();
-                }*/}
+                }*/
     
-const [data,setdata] = useState(null);
+const [tableData,setTableData] = useState(null);
 const [loading,setloading] = useState(true);
 const [error,seterror] = useState(null);
 const [snddata,sndsetdata] = useState(null);
@@ -62,7 +62,7 @@ const [snderror,sndseterror] = useState(null);
 let domain = "http://127.0.0.1:5000"
 
 
- useEffect(()=> {
+ /* const getAllPlanners = ()=> {
   fetch("domain + '/getAllPlanners'")
   .then(response => {
     if(response.ok){
@@ -80,35 +80,67 @@ let domain = "http://127.0.0.1:5000"
   .finally(()=>{
     setloading(false);
   })
-},[])
+} */
 
-
-
-useEffect(()=> {
-  
-  fetch("domain + /sendAssignment'",{
-    method : 'post'
-  })
- 
-  .then(response => {
-    if(response.ok){
-      return response.json()
+  useEffect(()=> {
+    fetch(domain+"/getAllPlanners", {
+      cache: 'no-cache',
+      headers: new Headers({
+          'Content-Type': 'application/json'
+      }),
+      method: 'GET', // *GET, POST, PUT, DELETE, etc.
+      mode: 'cors'
+    })
+    .then(response => {
+              
+      if(response.ok) {
+        return response.json();
+      }
+    }).then((data)=>{
+      if (data.code===1) {
+        setTableData(data.result)
+      }
+      console.log(tableData)
     }
-    throw response;
-  })
-  .then(res => {
-    sndsetdata(res);
-  })
-  .catch(snderror => {
-    console.error("Error fetching data: ",snderror);
-    sndseterror(error)
-  })
-  .finally(()=>{
-    sndsetloading(false);
-  })
-},[])
 
+    )
+  },[]);
 
+  const sendAssignment = ()=> {
+    let mydata = {
+      title: title,
+      planner: plannername,
+      description: description
+    }
+    console.log(mydata)
+    fetch(domain + "/sendAssignment",{
+      body: JSON.stringify(mydata),
+      cache: 'no-cache',
+
+      headers: new Headers({
+          'Content-Type': 'application/json'
+      }),
+      method: 'POST', // *GET, POST, PUT, DELETE, etc.
+      mode: 'cors', // no-cors, cors, *same-origin
+      redirect: 'follow', // manual, *follow, error
+      referrer: 'no-referrer', // *client, no-referrer
+    })
+  
+    .then(response => {
+      if(response.ok){
+        return response.json()
+      }
+      else{
+        console.log("Error fetching")
+      }
+    })
+   
+  }
+
+  const changeDescription = changeEvent =>{
+    setDescription(changeEvent.target.value)
+    console.log(description)
+  }
  
 
     return (
@@ -178,7 +210,7 @@ useEffect(()=> {
                             <td> <Button className="btn-round btn-icon"
                       color="success"
                       size="sm"
-                      onClick={toggle}
+                      onClick={() => {setModal(!modal);setPlannername(val.name)}}
                       >  {/*pop up function */}
                     <i className="fa fa-envelope" /> </Button>
 
@@ -201,7 +233,9 @@ useEffect(()=> {
                                   <Input
                                     placeholder="Title..."
                                     type="text"
+                                    onChange={changeEvent=>setTitle(changeEvent.target.value)}
                                     id='AssignTitle'
+
                                     />
 
 
@@ -215,6 +249,7 @@ useEffect(()=> {
                                     placeholder={val.username}
                                     type="text"
                                     id='username'
+                                    readOnly
                                     />
 
                                                             
@@ -226,6 +261,7 @@ useEffect(()=> {
                                   <Input
                                     placeholder="message.."
                                     type="textarea"
+                                    onChange={changeDescription}
                                     id='message'
                                     />
 
@@ -237,7 +273,7 @@ useEffect(()=> {
                       </ModalBody>
                                                     
                        <ModalFooter>
-                       <Button color="primary" type='submit' onClick={toggle}  >Send</Button>                    
+                       <Button color="primary" type='submit' onClick={sendAssignment}  >Send</Button>                    
                        </ModalFooter>
                        </Modal>
                    

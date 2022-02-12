@@ -9,6 +9,7 @@ import mysql.connector
 from flask import jsonify
 from flask_cors import CORS
 import json
+from mysqlx import Session
 import requests
 import secrets
 import string
@@ -16,8 +17,7 @@ import datetime
 import json
 import decimal
 import re
-
-
+import random
 
 class MyEncoder(json.JSONEncoder):
 
@@ -36,16 +36,15 @@ class MyEncoder(json.JSONEncoder):
 
 
 app = Flask(__name__)
-app.secret_key = "hello"
+app.config['SECRET_KEY']=random._urandom(24)
 CORS(app, supports_credentials=True)
+
 
 database = mysql.connector.connect(
   host="127.0.0.1",
   user="root",
-  password="",
-  database="grp"
-#   password="12345678",
-#   database="try"
+  password="12345678",
+  database="try"
 )
 login_info = {
     "code": -1,
@@ -173,7 +172,7 @@ def getAllPlanners():
     planners = []
     try:
         cur = database.cursor(dictionary=True)
-        cur.execute("SELECT * FROM `user` WHERE rank=0")
+        cur.execute("SELECT * FROM user WHERE rank = 0;")
         for planner in cur:
             planner_str = json.dumps(planner, cls=MyEncoder)
             planner_json = json.loads(planner_str)
@@ -181,6 +180,7 @@ def getAllPlanners():
         cur.close()
 
         res_json['result'] = planners
+        print(res_json)
         return res_json
     except Exception as e:
         return jsonify({"code": -2, "data": {}, "message": e})
@@ -194,29 +194,32 @@ manager send assignment to planners
 '''
 @app.route('/sendAssignment', methods=['POST'])
 def sendAssignment():
+    
     res_json = {}
     res_json['code'] = 1
     res_json['data'] = {}
     res_json['message'] = "success"
     try:
         data = request.json
+        print(data)
         if data:
             planner=data['planner']
             title=data['title']
             description=data['description']
-            manager = session["username"]
-
+            manager = session.get("username")
+            print(manager)
             cur = database.cursor(dictionary=True)
             cur.execute("INSERT INTO assignment (title, description, manager, planner) VALUES ( %s, %s, %s, %s);",
                         (title, description, manager, planner))
             database.commit()
     except Exception as e:
         database.rollback()
+        print(e)
         res_json['code'] = -2
         res_json['message'] = e
     finally:
         cur.close()
-        return res_json
+    return res_json
 
 # View Messages page
 
@@ -243,6 +246,7 @@ def getAssignedSchedules():
 
         res_json['result'] = assignments
     except Exception as e:
+        
         res_json['code'] = -2
         res_json['message'] = e
     finally:
@@ -483,7 +487,11 @@ def test():
         return jsonify({"code": -2, "data": {}, "message": e})
     finally:
         account = cur.fetchone()
-        session["username"] = account["username"]
+        account_str = json.dumps(account, cls=MyEncoder)
+        account_json = json.loads(account_str)
+        if session.get("username") is None:
+            session["username"] = account_json["username"]
+        print(session["username"])
         cur.close()
 
     if account:
