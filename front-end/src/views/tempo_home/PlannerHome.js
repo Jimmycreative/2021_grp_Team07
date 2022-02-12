@@ -7,6 +7,7 @@ import 'react-calendar/dist/Calendar.css';
 import sample_data from './schedule_data.json';
 import sample_form from './form_data.json';
 import sample_data2 from '../../variables/data/saved_data.json';
+import { domain } from "../../global"
 
 import {
     Card,
@@ -50,8 +51,6 @@ const [change, setChange] = useState(true); //calendar - schedule /form switch
 const [startDate, setStartDate] = useState([{}]);
 const [endDate, setEndDate] = useState([{}]);
 const [formDate, setFormDate] = useState([{}]);
-
-let domain = "http://127.0.0.1:5000";
 
 
 const toggle = () => {

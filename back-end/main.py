@@ -3,6 +3,7 @@
 # from the flask and sqlite3 modules
 from distutils.cygwinccompiler import CygwinCCompiler
 from turtle import title
+from unicodedata import name
 from click.types import convert_type
 from flask import Flask, request, session
 import mysql.connector
@@ -16,6 +17,7 @@ import datetime
 import json
 import decimal
 import re
+from flask_session import Session
 
 
 
@@ -36,8 +38,13 @@ class MyEncoder(json.JSONEncoder):
 
 
 app = Flask(__name__)
-app.secret_key = "hello"
+app.config['SESSION_TYPE'] = 'filesystem'
+app.config['SECRET_KEY']='123456'
+app.config['SESSION_PERMANENT']=False
+app.config['SESSION_USE_SIGNER']=True
+#app.secret_key = "hello"
 CORS(app, supports_credentials=True)
+Session(app)
 
 database = mysql.connector.connect(
   host="127.0.0.1",
@@ -241,7 +248,7 @@ def getAssignedSchedules():
             assignement_json = json.loads(assignement_str)
             assignments.append(assignement_json)
 
-        res_json['result'] = assignments
+        res_json['data'] = assignments
     except Exception as e:
         res_json['code'] = -2
         res_json['message'] = e
@@ -265,7 +272,8 @@ def getMySchedules():
         temp_list = []
         cur = database.cursor(dictionary=True)
         # TODO, get from session
-        planner=session["username"]
+        # planner=session["username"]
+        planner="penny"
         sql="""
             SELECT manager, COUNT(IF(_status=0,1,NULL)) AS unfinished_assignment, GROUP_CONCAT(title) AS title,
             GROUP_CONCAT(_status) AS status,
@@ -337,8 +345,10 @@ def getAttributeList(concat_str):
 get uuid from script language
 @param script the code snippet to define JSSP
 '''
-@app.route('/getuuid', methods=['POST'])
+@app.route('/getuuid', methods=['GET', 'POST'])
 def get_script():
+    manager = session.get("username")
+    print(manager)
     data = request.json
     print(data)
     if data:
@@ -464,9 +474,9 @@ def save_schedule():
             return jsonify({"code": -2, "data": {}, "message": e})
 
 
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['GET','POST'])
 def test():
-
+    # session.pop("username")
     data = request.json
     print(data)
     try:

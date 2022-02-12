@@ -13,6 +13,16 @@ import {InputGroup,InputGroupAddon,InputGroupText} from "reactstrap"; {/* npm in
 
 
 function ManagerAssign() {
+  useEffect(() => {
+    async function fetchData() {
+      let res=await getAssignedSchedules()
+      setmyHistory({"a":1})
+      console.log(myHistory)
+    }
+    fetchData()
+    
+    // getAssignedSchedules()
+  },[])
 
   const[searchPlanner,setSearchPlanner] = useState(""); {/* Searching function */}
   const [modal, setModal] = React.useState(false);      {/* popup */}
@@ -21,6 +31,7 @@ function ManagerAssign() {
   const [Title, setTitle] = useState("")
   const [Plannername, setPlannername] = useState("")
   const [Message, setMessage] = useState("")
+  const [myHistory,setmyHistory] = useState({});
 
  {/*validation 
   const [Title, setTitle] = useState("")
@@ -59,54 +70,86 @@ const [snddata,sndsetdata] = useState(null);
 const [sndloading,sndsetloading] = useState(true);
 const [snderror,sndseterror] = useState(null);
 
-let domain = "http://127.0.0.1:5000"
+const domain = "/mygrp-backend"
 
 
- useEffect(()=> {
-  fetch("domain + '/getAllPlanners'")
-  .then(response => {
-    if(response.ok){
-      return response.json()
-    }
-    throw response;
-  })
-  .then(res => {
-    setdata(res);
-  })
-  .catch(error => {
-    console.error("Error fetching data: ",error);
-    seterror(error)
-  })
-  .finally(()=>{
-    setloading(false);
-  })
-},[])
+//  useEffect(()=> {
+//   fetch("domain + '/getAllPlanners'")
+//   .then(response => {
+//     if(response.ok){
+//       return response.json()
+//     }
+//     throw response;
+//   })
+//   .then(res => {
+//     setdata(res);
+//   })
+//   .catch(error => {
+//     console.error("Error fetching data: ",error);
+//     seterror(error)
+//   })
+//   .finally(()=>{
+//     setloading(false);
+//   })
+// },[])
 
 
 
-useEffect(()=> {
+// useEffect(()=> {
   
-  fetch("domain + /sendAssignment'",{
-    method : 'post'
-  })
+//   fetch("domain + /sendAssignment'",{
+//     method : 'post'
+//   })
  
-  .then(response => {
-    if(response.ok){
-      return response.json()
-    }
-    throw response;
+//   .then(response => {
+//     if(response.ok){
+//       return response.json()
+//     }
+//     throw response;
+//   })
+//   .then(res => {
+//     sndsetdata(res);
+//   })
+//   .catch(snderror => {
+//     console.error("Error fetching data: ",snderror);
+//     sndseterror(error)
+//   })
+//   .finally(()=>{
+//     sndsetloading(false);
+//   })
+// },[])
+
+
+
+const getAssignedSchedules = () => {
+  fetch(domain+"/getAssignedSchedules", {
+    cache: 'no-cache',
+    headers: new Headers({
+        'Content-Type': 'application/json'
+    }),
+    credentials:'include',
+    method: 'GET', // *GET, POST, PUT, DELETE, etc.
+    mode: 'cors',
   })
-  .then(res => {
-    sndsetdata(res);
+ .then(res =>res.json())
+ .then((data) => {
+   console.log("line 133", data)
+   return data
+    // if (data.code==1) {
+    //   var res={"a":1}
+    //   test(res)
+    //   console.log("line 135", myHistory)
+    // }
   })
-  .catch(snderror => {
-    console.error("Error fetching data: ",snderror);
-    sndseterror(error)
+  .catch(err =>{
+    console.log("err",err)
   })
-  .finally(()=>{
-    sndsetloading(false);
-  })
-},[])
+}
+
+const test =(res) =>{
+  setmyHistory(res)
+}
+
 
 
  
@@ -341,7 +384,7 @@ useEffect(()=> {
                                   <Input
                                     placeholder="Message..."
                                     type="textarea"
-                                    value={val.message}
+                                    value={val.description}
                                   />    {/* need to modify */}
                                 </FormGroup>
 

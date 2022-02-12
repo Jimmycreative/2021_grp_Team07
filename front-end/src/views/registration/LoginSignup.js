@@ -3,6 +3,7 @@ import {Button} from "reactstrap";
 import React, { useState, useEffect } from "react";
 import Auth from "./Auth";
 import { useHistory } from 'react-router-dom';
+import { domain } from "../../global"
 // import Registration from "./RegTemp";
 // import Login from "./LogTemp";
 
@@ -59,7 +60,6 @@ function LoginSignup() {
 
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [isLogin, setIsLogin] = useState(false);
-    const domain = "http://127.0.0.1:5000"
 
     const submitRegister = e => {
         e.preventDefault();
@@ -90,7 +90,7 @@ function LoginSignup() {
         }
         fetch(domain+"/login", {
           body: JSON.stringify(mydata),
-          cache: 'no-cache',
+          credentials:"include",
           headers: new Headers({
               'Content-Type': 'application/json'
             }),
