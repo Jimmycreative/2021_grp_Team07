@@ -5,6 +5,7 @@ import * as ReactTable from 'react-table';
 import {useTable} from "react-table";
 import "./PlannerAssign.css";
 import Contact from "./contact.json";
+import { domain } from "../../../global"
 import {Button,Card,CardHeader,CardBody,CardTitle,Table,Row,Col,FormGroup,Form,Input,UncontrolledAlert} from "reactstrap";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import {InputGroup,InputGroupAddon,InputGroupText} from "reactstrap";
@@ -22,17 +23,21 @@ export default function PlannerAssign() {
   const [viewForm, setViewForm] = React.useState(false);      {/* popup */}
   const toggleView = () => setViewForm(!viewForm);                {/* popup */}
   let countmessages = 0;
-      Contact.map((i) => {
-        countmessages = countmessages + i.countmessages;
+    plannerdata && plannerdata.map((i) => {
+      console.log("line 27", i)
+        countmessages = countmessages + i.unfinished_assignment;
     });
 
-    const [plannerdata,plannersetdata] = useState(null);
+    const [plannerdata,plannersetdata] = useState([]);
     const [plannerloading,plannersetloading] = useState(true);
     const [plannererror,plannerseterror] = useState(null);
 
     useEffect(()=> {
-  
-      fetch("domain + /getMySchedules'")
+      getMyschedules()
+    },[])
+    
+  const getMyschedules= () => {
+    fetch(domain+"/getMySchedules")
      
       .then(response => {
         if(response.ok){
@@ -40,8 +45,13 @@ export default function PlannerAssign() {
         }
         throw response;
       })
-      .then(res => {
-        plannersetdata(res);
+      .then(data => {
+        console.log(data)
+        if (data.code==1) {
+          plannersetdata(data.data);
+        }
+        
+        
       })
       .catch(plannererror => {
         console.error("Error fetching data: ",plannererror);
@@ -50,9 +60,7 @@ export default function PlannerAssign() {
       .finally(()=>{
         plannersetloading(false);
       })
-    },[])
-    
-  
+  }
   return (
     <>
     
@@ -78,13 +86,13 @@ export default function PlannerAssign() {
         <div className='contentbody'>
 
 
-          {Contact.filter((val)=>{
+          {plannerdata && plannerdata.filter((val)=>{
             if(searchManager === ""){
               return val;
 
           } 
           else if(
-              val.name.toLowerCase().includes(searchManager.toLowerCase())
+              val.manager.toLowerCase().includes(searchManager.toLowerCase())
               
               
           )
@@ -93,7 +101,7 @@ export default function PlannerAssign() {
 
           } 
           }).map((val)=>(
-        <ul className="list-unstyled team-members">
+            <ul className="list-unstyled team-members">
           <li>
           <Row>
           <Col md="2" xs="2"> 
@@ -104,7 +112,7 @@ export default function PlannerAssign() {
           </div>
           </Col>
                     <Col md="7" xs="7">
-                       {val.name} <br />
+                       {val.manager} <br />
                         <span className="text-muted">
                           <small>Manager</small>
                         </span>
@@ -120,13 +128,13 @@ export default function PlannerAssign() {
                       </Col>
           </Row>
                       <Modal
-                      isOpen={modal}
-                      toggle={toggle}
-                      backdrop={false}
-                      size="xl"
-                      centered
-                      scrollable
-                      className="popup">
+                        isOpen={modal}
+                        toggle={toggle}
+                        backdrop={false}
+                        size="xl"
+                        centered
+                        scrollable
+                        className="popup">
                         
                       
 
@@ -134,7 +142,7 @@ export default function PlannerAssign() {
                         <ModalHeader
                             toggle={toggle}>
                               
-                                <CardTitle tag="h5">Message </CardTitle>
+                                <CardTitle tag="h5">Description </CardTitle>
                               
                             </ModalHeader>
                         <ModalBody>
@@ -142,18 +150,48 @@ export default function PlannerAssign() {
                                 <Table>
                                 <thead className="text-primary">
                                       <tr>
-                                        <th>Name</th>
+                                        <th>Title</th>
                                         <th>Date</th>
-                                        <th>Message</th>
+                                        <th>Description</th>
                                         
                                       </tr>
                                     </thead>
                                     <tbody>
+                                      {console.log(val.assignment)}
+                                      {val.assignment.map((m)=>(
+                                        <tr>
+                                          <td>{m.title}</td>
+                                          <td> {new Date(m.start).toLocaleDateString()} </td>
+                                          <td><Button onClick={toggleView} >View Description</Button></td>
+                                          <Modal
+                                            isOpen={viewForm}
+                                            toggle={toggleView}
+                                            backdrop={false}
+                                            size="xl"
+                                            centered
+                                            scrollable
+                                            className="popup">
+                                            
+                                            <ModalHeader
+                                              toggle={toggleView}
+                                              >
+                                              <CardTitle tag="h7"> Assignment from {val.manager} </CardTitle>
+                                            </ModalHeader>
+                                            
+                                            <ModalBody>
+                                              {m.description}
+                                            </ModalBody>
+                                            <ModalFooter>
+                                              <Link to="/admin/definition">
+                                                <Button>Go to Definition page</Button>   {/*click and go to definition page */}
+                                              </Link>
+                                            </ModalFooter>
+                                          </Modal>
+                                        </tr>
+                                    ))}
                                       <tr>
                                         
-                                        <td>{val.name}</td>
-                                        <td> {val.date} </td>
-                                        <td><Button onClick={toggleView} >View Message</Button></td>
+                                        
                                         
                                       </tr>
                                       </tbody>
@@ -165,35 +203,7 @@ export default function PlannerAssign() {
    
                     </Modal>
                    
-                    <Modal
-                    data={Contact}
-                      isOpen={viewForm}
-                      toggle={toggleView}
-                      backdrop={false}
-                      size="xl"
-                      centered
-                      scrollable
-                      className="popup">
-                        
-                        {/*<TablePlanner/>*/}
-
-                      
-                        <ModalHeader
-                            toggle={toggleView}>
-                              
-                                <CardTitle tag="h7"> Message from {val.name} </CardTitle>
-                              
-                            </ModalHeader>
-
-                            <ModalBody>
-                              {val.message}
-                            </ModalBody>
-                                <ModalFooter>
-                              <Link to="/admin/definition">
-                              <Button>Go to Definition page</Button>   {/*click and go to definition page */}
-                            </Link> 
-                            </ModalFooter> 
-                            </Modal>
+                    
 
                 </li>
               </ul>

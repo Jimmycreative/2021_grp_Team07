@@ -7,32 +7,27 @@ import React, { useEffect } from "react";
 import TextField from '@mui/material/TextField';
 import './ManagerAssign.css';
 import infoPlanner from "./infoPlanner.json";
-
+import { domain } from "../../../global"
 import { useState } from 'react';
 import {InputGroup,InputGroupAddon,InputGroupText} from "reactstrap"; {/* npm install --save react-tabs */}
 
 
 function ManagerAssign() {
-  /* useEffect(() => {
-    async function fetchData() {
-      let res=await getAssignedSchedules()
-      setmyHistory({"a":1})
-      console.log(myHistory)
-    }
-    fetchData()
-    
-    // getAssignedSchedules()
-  },[])
- */
+
+
+  
   const[searchPlanner,setSearchPlanner] = useState(""); {/* Searching function */}
   const [modal, setModal] = React.useState(false);      {/* popup */}
   const toggle = () => setModal(!modal);                {/* popup */}
   const[searchMessage,setSearchMessage] = useState(""); {/* Searching function */}
-
   const [title, setTitle] = useState("")
   const [plannername, setPlannername] = useState("")
+  const [message, setMessage] = useState("")
+  const [myHistory,setmyHistory] = useState([]);
+
+
   const [description, setDescription] = useState("") 
-  const [myHistory,setmyHistory] = useState({});
+
  /*validation 
   const [Title, setTitle] = useState("")
   const [Plannername, setPlannername] = useState("")
@@ -70,9 +65,10 @@ const [snddata,sndsetdata] = useState(null);
 const [sndloading,sndsetloading] = useState(true);
 const [snderror,sndseterror] = useState(null);
 
-//const domain = "/mygrp-backend"
-const domain = "http://127.0.0.1:5000"
+useEffect(() => {
+  getAssignedSchedules()
 
+},[])
 
 
  /* const getAllPlanners = ()=> {
@@ -221,20 +217,18 @@ const getAssignedSchedules = () => {
  .then(res =>res.json())
  .then((data) => {
    console.log("line 133", data)
-   return data
-    // if (data.code==1) {
-    //   var res={"a":1}
-    //   test(res)
-    //   console.log("line 135", myHistory)
-    // }
+   //return data
+    if (data.code==1) {
+      setmyHistory(data.data)
+      console.log("line 135", myHistory)
+    }
+    else {
+      alert(data.message)
+    }
   })
   .catch(err =>{
     console.log("err",err)
   })
-}
-
-const test =(res) =>{
-  setmyHistory(res)
 }
 
   const changeDescription = changeEvent =>{
@@ -429,7 +423,10 @@ const test =(res) =>{
                     </tr>
                   </thead>
                   <tbody>
-                  {tableData===null?<></>:tableData.filter((val)=>{
+
+               
+                  {myHistory && myHistory.filter((val)=>{
+
                         if(searchMessage === ""){
                             return val;
 
@@ -446,8 +443,8 @@ const test =(res) =>{
                        
                     }).map((val)=>(
                         <tr>
-                            <td>{val.name}</td>
-                            <td>{val.date}</td>
+                            <td>{val.planner}</td>
+                            <td>{val.datecreated}</td>
                             <td> <Button 
                       color="success"
                       size="sm"
@@ -465,7 +462,7 @@ const test =(res) =>{
                         <ModalHeader
                             toggle={toggle}>
                               
-                                <CardTitle tag="h5">Planner: {val.name}</CardTitle>
+                                <CardTitle tag="h5">Planner: {val.planner}</CardTitle>
                               
                             </ModalHeader>
                         <ModalBody>
