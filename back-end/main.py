@@ -192,9 +192,8 @@ def getAllPlanners():
 
         res_json['result'] = planners
         print(res_json)
-        test = {}
-        test["result"] = planners
-        return test
+        
+        return res_json
     except Exception as e:
         return jsonify({"code": -2, "data": {}, "message": e})
 

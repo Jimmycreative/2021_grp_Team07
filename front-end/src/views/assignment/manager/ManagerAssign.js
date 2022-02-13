@@ -65,10 +65,10 @@ const [snddata,sndsetdata] = useState(null);
 const [sndloading,sndsetloading] = useState(true);
 const [snderror,sndseterror] = useState(null);
 
-useEffect(() => {
+/* useEffect(() => {
   getAssignedSchedules()
 
-},[])
+},[]) */
 
 
  /* const getAllPlanners = ()=> {
