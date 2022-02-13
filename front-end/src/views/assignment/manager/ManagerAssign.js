@@ -4,6 +4,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import {Button,Card,CardHeader,CardBody,CardTitle,Table,Row,Col,FormGroup,Form,Input} from "reactstrap";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import React, { useEffect } from "react";
+import { useModal } from 'react-hooks-use-modal';
 import TextField from '@mui/material/TextField';
 import './ManagerAssign.css';
 import infoPlanner from "./infoPlanner.json";
@@ -18,16 +19,26 @@ function ManagerAssign() {
   
   const[searchPlanner,setSearchPlanner] = useState(""); {/* Searching function */}
   const [modal, setModal] = React.useState(false);      {/* popup */}
-  const toggle = () => setModal(!modal);                {/* popup */}
+  const toggle = (row) => {
+    console.log("line 23", row)
+    setModal(!modal)
+    setThisPlanner(row.planner)
+    setThisDescription(row.description)
+  }; 
+  const toggle2 = (row) => {
+    setModal(!modal)
+    setThisPlanner(row.planner)
+    setThisDescription(row.description)
+  };                {/* popup */}
   const[searchMessage,setSearchMessage] = useState(""); {/* Searching function */}
   const [title, setTitle] = useState("")
   const [plannername, setPlannername] = useState("")
-  const [message, setMessage] = useState("")
-  const [myHistory,setmyHistory] = useState([]);
 
 
   const [description, setDescription] = useState("") 
-
+  const [myHistory,setmyHistory] = useState([]);
+  const [thisPlanner, setThisPlanner]=useState("")
+  const [thisDescription, setThisDescription]=useState("")
  /*validation 
   const [Title, setTitle] = useState("")
   const [Plannername, setPlannername] = useState("")
@@ -123,30 +134,30 @@ const [snderror,sndseterror] = useState(null);
       // make sure to catch any error
       .catch(console.error);
   }) */
-  useEffect(()=> {
-    console.log("ffdfdf")
-    fetch(domain+"/getAllPlanners", {
-      cache: 'no-cache',
-      headers: new Headers({
-          'Content-Type': 'application/json'
-      }),
-      method: 'GET', // *GET, POST, PUT, DELETE, etc.
-      mode: 'cors'
-    })
-    .then(response => {
-      console.log("jimmy")
-      if(response.ok) {
-        return response.json();
-      }
-    }).then((data)=>{
-      if (data.code===1) {
-        setTableData(data.result)
-        //console.log(tableData)
-      }
+  // useEffect(()=> {
+  //   console.log("ffdfdf")
+  //   fetch(domain+"/getAllPlanners", {
+  //     cache: 'no-cache',
+  //     headers: new Headers({
+  //         'Content-Type': 'application/json'
+  //     }),
+  //     method: 'GET', // *GET, POST, PUT, DELETE, etc.
+  //     mode: 'cors'
+  //   })
+  //   .then(response => {
+  //     console.log("jimmy")
+  //     if(response.ok) {
+  //       return response.json();
+  //     }
+  //   }).then((data)=>{
+  //     if (data.code===1) {
+  //       setTableData(data.result)
+  //       //console.log(tableData)
+  //     }
       
-    }
-    )
-  },[]);
+  //   }
+  //   )
+  // },[]);
   const sendAssignment = ()=> {
     let mydata = {
       title: title,
@@ -310,8 +321,8 @@ const getAssignedSchedules = () => {
 
                     
                     
-                     <Modal
-                      isOpen={modal}
+                     {/* <Modal
+                      isOpen={isOpen}
                       toggle={toggle}
                       backdrop={false}
                       size="md"
@@ -353,7 +364,7 @@ const getAssignedSchedules = () => {
                                   <label htmlFor="message">Schedule Description</label>
                                   
                                   <Input
-                                    placeholder="message.."
+                                    placeholder="Description.."
                                     type="textarea"
                                     onChange={changeDescription}
                                     id='message'
@@ -369,7 +380,7 @@ const getAssignedSchedules = () => {
                        <ModalFooter>
                        <Button color="primary" type='submit' onClick={sendAssignment}  >Send</Button>                    
                        </ModalFooter>
-                       </Modal>
+                       </Modal> */}
                    
                        </td>
 
@@ -432,7 +443,7 @@ const getAssignedSchedules = () => {
 
                         } 
                         else if(
-                            val.name.toLowerCase().includes(searchMessage.toLowerCase())
+                            val.planner.toLowerCase().includes(searchMessage.toLowerCase())
                           
                             
                         )
@@ -448,7 +459,7 @@ const getAssignedSchedules = () => {
                             <td> <Button 
                       color="success"
                       size="sm"
-                      onClick={toggle}
+                      onClick={()=>toggle(val)}
                       >  {/*pop up function */}
                     {val.title} </Button>
                     <Modal
@@ -459,10 +470,9 @@ const getAssignedSchedules = () => {
                       centered
                       scrollable
                       className="popupMessage">
-                        <ModalHeader
-                            toggle={toggle}>
+                        <ModalHeader>
                               
-                                <CardTitle tag="h5">Planner: {val.planner}</CardTitle>
+                                <CardTitle tag="h5">Planner: {thisPlanner}</CardTitle>
                               
                             </ModalHeader>
                         <ModalBody>
@@ -472,9 +482,10 @@ const getAssignedSchedules = () => {
                                   <label>Description</label>
                                   
                                   <Input
-                                    placeholder="Message..."
+                                    placeholder="Description..."
                                     type="textarea"
-                                    value={val.description}
+                                    readOnly
+                                    value={thisDescription}
                                   />    {/* need to modify */}
                                 </FormGroup>
 
