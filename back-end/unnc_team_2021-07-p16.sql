@@ -131,8 +131,8 @@ CREATE TABLE `user` (
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`uid`, `username`, `displayname`, `password`, `rank`, `disabled`) VALUES
-(2, 'Peter', 'peter', '123456', 0, 0);
+INSERT INTO `user` (`uid`, `username`, `displayname`, `password`, `role`, `disabled`) VALUES
+(1, 'shawn', 'shawn', '123456', 0, 0);
 
 
 --

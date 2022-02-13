@@ -85,8 +85,8 @@ function LoginSignup() {
     const insertData= (body)=>{
         console.log(body)
         var mydata={
-            username:"fyyc",
-            password:"123456"
+            username:username,
+            password:password
         }
         fetch(domain+"/login", {
           body: JSON.stringify(mydata),

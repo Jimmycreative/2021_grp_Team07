@@ -13,7 +13,7 @@ import {InputGroup,InputGroupAddon,InputGroupText} from "reactstrap"; {/* npm in
 
 
 function ManagerAssign() {
-  useEffect(() => {
+  /* useEffect(() => {
     async function fetchData() {
       let res=await getAssignedSchedules()
       setmyHistory({"a":1})
@@ -23,7 +23,7 @@ function ManagerAssign() {
     
     // getAssignedSchedules()
   },[])
-
+ */
   const[searchPlanner,setSearchPlanner] = useState(""); {/* Searching function */}
   const [modal, setModal] = React.useState(false);      {/* popup */}
   const toggle = () => setModal(!modal);                {/* popup */}
@@ -95,7 +95,40 @@ const domain = "http://127.0.0.1:5000"
   })
 } */
 
+  
+
+  /* useEffect(() => {
+    // declare the data fetching function
+    const fetchData = async () => {
+      
+      const data = await fetch(domain+"/getAllPlanners",{
+        cache: 'no-cache',
+        headers: new Headers({
+          'Content-Type': 'application/json'
+        }),
+        method: 'GET', // *GET, POST, PUT, DELETE, etc.
+        mode: 'cors'
+      }).then(response => {
+              
+        if(response.ok) {
+          return response.json();
+        }
+      }).then((data)=>{
+        if (data.code===1) {
+          setTableData(data.result)
+        }
+        console.log(tableData)
+      }
+      )
+    }
+  
+    // call the function
+    fetchData()
+      // make sure to catch any error
+      .catch(console.error);
+  }) */
   useEffect(()=> {
+    console.log("ffdfdf")
     fetch(domain+"/getAllPlanners", {
       cache: 'no-cache',
       headers: new Headers({
@@ -105,20 +138,19 @@ const domain = "http://127.0.0.1:5000"
       mode: 'cors'
     })
     .then(response => {
-              
+      console.log("jimmy")
       if(response.ok) {
         return response.json();
       }
     }).then((data)=>{
       if (data.code===1) {
         setTableData(data.result)
+        //console.log(tableData)
       }
-      console.log(tableData)
+      
     }
     )
   },[]);
-
-
   const sendAssignment = ()=> {
     let mydata = {
       title: title,
@@ -250,21 +282,21 @@ const test =(res) =>{
                 <Table responsive className='table' id='userList'>
                   <thead className="text-primary" >
                     <tr>
-                      <th>Name</th>
                       <th>Username</th>
+                      <th>Name</th>
                       <th>Send</th>
                     </tr>
                   </thead>
                   <tbody>
-                  
-                  {infoPlanner.filter((val)=>{
+                  {console.log(tableData)}
+                  {tableData===null?<></>:tableData.filter((val)=>{
                         if(searchPlanner === ""){
                             return val;
 
                         } 
                         else if(
-                            val.name.toLowerCase().includes(searchPlanner.toLowerCase()) ||
-                            val.username.toLowerCase().includes(searchPlanner.toLowerCase())
+                            val.username.toLowerCase().includes(searchPlanner.toLowerCase()) ||
+                            val.displayname.toLowerCase().includes(searchPlanner.toLowerCase())
                             
                         )
                         {
@@ -273,12 +305,12 @@ const test =(res) =>{
                         } 
                     }).map((val)=>(
                         <tr>
-                            <td>{val.name}</td>
                             <td>{val.username}</td>
+                            <td>{val.displayname}</td>
                             <td> <Button className="btn-round btn-icon"
                       color="success"
                       size="sm"
-                      onClick={() => {setModal(!modal);setPlannername(val.name)}}
+                      //onClick={() => {setModal(!modal);setPlannername(val.name)}}
                       >  {/*pop up function */}
                     <i className="fa fa-envelope" /> </Button>
 
@@ -397,7 +429,7 @@ const test =(res) =>{
                     </tr>
                   </thead>
                   <tbody>
-                  {infoPlanner.filter((val)=>{
+                  {tableData===null?<></>:tableData.filter((val)=>{
                         if(searchMessage === ""){
                             return val;
 
