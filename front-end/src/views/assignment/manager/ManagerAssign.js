@@ -134,30 +134,30 @@ useEffect(() => {
       // make sure to catch any error
       .catch(console.error);
   }) */
-  useEffect(()=> {
-    console.log("ffdfdf")
-    fetch(domain+"/getAllPlanners", {
-      cache: 'no-cache',
-      headers: new Headers({
-          'Content-Type': 'application/json'
-      }),
-      method: 'GET', // *GET, POST, PUT, DELETE, etc.
-      mode: 'cors'
-    })
-    .then(response => {
-      console.log("jimmy")
-      if(response.ok) {
-        return response.json();
-      }
-    }).then((data)=>{
-      if (data.code===1) {
-        setTableData(data.result)
-        //console.log(tableData)
-      }
+  // useEffect(()=> {
+  //   console.log("ffdfdf")
+  //   fetch(domain+"/getAllPlanners", {
+  //     cache: 'no-cache',
+  //     headers: new Headers({
+  //         'Content-Type': 'application/json'
+  //     }),
+  //     method: 'GET', // *GET, POST, PUT, DELETE, etc.
+  //     mode: 'cors'
+  //   })
+  //   .then(response => {
+  //     console.log("jimmy")
+  //     if(response.ok) {
+  //       return response.json();
+  //     }
+  //   }).then((data)=>{
+  //     if (data.code===1) {
+  //       setTableData(data.result)
+  //       //console.log(tableData)
+  //     }
       
-    }
-    )
-  },[]);
+  //   }
+  //   )
+  // },[]);
   const sendAssignment = ()=> {
     let mydata = {
       title: title,
@@ -364,7 +364,7 @@ const getAssignedSchedules = () => {
                                   <label htmlFor="message">Schedule Description</label>
                                   
                                   <Input
-                                    placeholder="message.."
+                                    placeholder="Description.."
                                     type="textarea"
                                     onChange={changeDescription}
                                     id='message'
@@ -443,7 +443,7 @@ const getAssignedSchedules = () => {
 
                         } 
                         else if(
-                            val.name.toLowerCase().includes(searchMessage.toLowerCase())
+                            val.planner.toLowerCase().includes(searchMessage.toLowerCase())
                           
                             
                         )
