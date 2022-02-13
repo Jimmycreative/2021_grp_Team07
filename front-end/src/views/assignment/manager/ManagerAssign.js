@@ -14,10 +14,9 @@ import {InputGroup,InputGroupAddon,InputGroupText} from "reactstrap"; {/* npm in
 
 
 function ManagerAssign() {
-  useEffect(() => {
-    getAssignedSchedules()
-  },[])
 
+
+  
   const[searchPlanner,setSearchPlanner] = useState(""); {/* Searching function */}
   const [modal, setModal] = React.useState(false);      {/* popup */}
   const toggle = (row) => {
@@ -32,9 +31,10 @@ function ManagerAssign() {
     setThisDescription(row.description)
   };                {/* popup */}
   const[searchMessage,setSearchMessage] = useState(""); {/* Searching function */}
-
   const [title, setTitle] = useState("")
   const [plannername, setPlannername] = useState("")
+
+
   const [description, setDescription] = useState("") 
   const [myHistory,setmyHistory] = useState([]);
   const [thisPlanner, setThisPlanner]=useState("")
@@ -76,6 +76,10 @@ const [snddata,sndsetdata] = useState(null);
 const [sndloading,sndsetloading] = useState(true);
 const [snderror,sndseterror] = useState(null);
 
+useEffect(() => {
+  getAssignedSchedules()
+
+},[])
 
 
  /* const getAllPlanners = ()=> {
@@ -98,30 +102,62 @@ const [snderror,sndseterror] = useState(null);
   })
 } */
 
-  // useEffect(()=> {
-  //   fetch(domain+"/getAllPlanners", {
-  //     cache: 'no-cache',
-  //     headers: new Headers({
-  //         'Content-Type': 'application/json'
-  //     }),
-  //     method: 'GET', // *GET, POST, PUT, DELETE, etc.
-  //     mode: 'cors'
-  //   })
-  //   .then(response => {
+  
+
+  /* useEffect(() => {
+    // declare the data fetching function
+    const fetchData = async () => {
+      
+      const data = await fetch(domain+"/getAllPlanners",{
+        cache: 'no-cache',
+        headers: new Headers({
+          'Content-Type': 'application/json'
+        }),
+        method: 'GET', // *GET, POST, PUT, DELETE, etc.
+        mode: 'cors'
+      }).then(response => {
               
-  //     if(response.ok) {
-  //       return response.json();
-  //     }
-  //   }).then((data)=>{
-  //     if (data.code===1) {
-  //       setTableData(data.result)
-  //     }
-  //     console.log(tableData)
-  //   }
-  //   )
-  // },[]);
-
-
+        if(response.ok) {
+          return response.json();
+        }
+      }).then((data)=>{
+        if (data.code===1) {
+          setTableData(data.result)
+        }
+        console.log(tableData)
+      }
+      )
+    }
+  
+    // call the function
+    fetchData()
+      // make sure to catch any error
+      .catch(console.error);
+  }) */
+  useEffect(()=> {
+    console.log("ffdfdf")
+    fetch(domain+"/getAllPlanners", {
+      cache: 'no-cache',
+      headers: new Headers({
+          'Content-Type': 'application/json'
+      }),
+      method: 'GET', // *GET, POST, PUT, DELETE, etc.
+      mode: 'cors'
+    })
+    .then(response => {
+      console.log("jimmy")
+      if(response.ok) {
+        return response.json();
+      }
+    }).then((data)=>{
+      if (data.code===1) {
+        setTableData(data.result)
+        //console.log(tableData)
+      }
+      
+    }
+    )
+  },[]);
   const sendAssignment = ()=> {
     let mydata = {
       title: title,
@@ -251,21 +287,21 @@ const getAssignedSchedules = () => {
                 <Table responsive className='table' id='userList'>
                   <thead className="text-primary" >
                     <tr>
-                      <th>Name</th>
                       <th>Username</th>
+                      <th>Name</th>
                       <th>Send</th>
                     </tr>
                   </thead>
                   <tbody>
-                  
-                  {infoPlanner.filter((val)=>{
+                  {console.log(tableData)}
+                  {tableData===null?<></>:tableData.filter((val)=>{
                         if(searchPlanner === ""){
                             return val;
 
                         } 
                         else if(
-                            val.name.toLowerCase().includes(searchPlanner.toLowerCase()) ||
-                            val.username.toLowerCase().includes(searchPlanner.toLowerCase())
+                            val.username.toLowerCase().includes(searchPlanner.toLowerCase()) ||
+                            val.displayname.toLowerCase().includes(searchPlanner.toLowerCase())
                             
                         )
                         {
@@ -274,12 +310,12 @@ const getAssignedSchedules = () => {
                         } 
                     }).map((val)=>(
                         <tr>
-                            <td>{val.name}</td>
                             <td>{val.username}</td>
+                            <td>{val.displayname}</td>
                             <td> <Button className="btn-round btn-icon"
                       color="success"
                       size="sm"
-                      onClick={() => {setModal(!modal);setPlannername(val.name)}}
+                      //onClick={() => {setModal(!modal);setPlannername(val.name)}}
                       >  {/*pop up function */}
                     <i className="fa fa-envelope" /> </Button>
 
@@ -398,7 +434,10 @@ const getAssignedSchedules = () => {
                     </tr>
                   </thead>
                   <tbody>
+
+               
                   {myHistory && myHistory.filter((val)=>{
+
                         if(searchMessage === ""){
                             return val;
 

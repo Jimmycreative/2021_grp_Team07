@@ -183,7 +183,7 @@ def getAllPlanners():
     planners = []
     try:
         cur = database.cursor(dictionary=True)
-        cur.execute("SELECT * FROM user WHERE rank = 0;")
+        cur.execute("SELECT * FROM user WHERE role = 0;")
         for planner in cur:
             planner_str = json.dumps(planner, cls=MyEncoder)
             planner_json = json.loads(planner_str)
@@ -192,7 +192,9 @@ def getAllPlanners():
 
         res_json['result'] = planners
         print(res_json)
-        return res_json
+        test = {}
+        test["result"] = planners
+        return test
     except Exception as e:
         return jsonify({"code": -2, "data": {}, "message": e})
 
@@ -498,14 +500,13 @@ def test():
                 "SELECT username,password FROM user WHERE username = %s AND password = %s;", (username, password))
             #cur.execute("SELECT uid, displayname, rank, disabled FROM user WHERE username = %s AND password = %s;", (username, password,))
             #cur.execute("SELECT uid, displayname, rank, disabled FROM user WHERE username = %s AND password = AES_ENCRYPT(%s, UNHEX(SHA2('', )));", (username, password,))
+            account = cur.fetchone()
+            account_str = json.dumps(account, cls=MyEncoder)
+            account_json = json.loads(account_str)
+            session["username"] = account_json["username"]
     except Exception as e:
         return jsonify({"code": -2, "data": {}, "message": e})
     finally:
-        account = cur.fetchone()
-        account_str = json.dumps(account, cls=MyEncoder)
-        account_json = json.loads(account_str)
-        session["username"] = account_json["username"]
-
         cur.close()
 
     if account:
