@@ -86,62 +86,8 @@ useEffect(() => {
   getAssignedSchedules()
 },[])
 
-
- /* const getAllPlanners = ()=> {
-  fetch("domain + '/getAllPlanners'")
-  .then(response => {
-    if(response.ok){
-      return response.json()
-    }
-    throw response;
-  })
-  .then(res => {
-    setdata(res);
-  })
-  .catch(error => {
-    console.error("Error fetching data: ",error);
-    seterror(error)
-  })
-  .finally(()=>{
-    setloading(false);
-  })
-} */
-
-  
-
-  /* useEffect(() => {
-    // declare the data fetching function
-    const fetchData = async () => {
-      
-      const data = await fetch(domain+"/getAllPlanners",{
-        cache: 'no-cache',
-        headers: new Headers({
-          'Content-Type': 'application/json'
-        }),
-        method: 'GET', // *GET, POST, PUT, DELETE, etc.
-        mode: 'cors'
-      }).then(response => {
-              
-        if(response.ok) {
-          return response.json();
-        }
-      }).then((data)=>{
-        if (data.code===1) {
-          setTableData(data.result)
-        }
-        console.log(tableData)
-      }
-      )
-    }
-  
-    // call the function
-    fetchData()
-      // make sure to catch any error
-      .catch(console.error);
-  }) */
-
   const getAllPlanners = async ()=> {
-     console.log("ffdfdf")
+     
      await sleep(1000);
      fetch(domain+"/getAllPlanners", {
        cache: 'no-cache',
@@ -196,32 +142,6 @@ useEffect(() => {
     })
    
   }
-
-// useEffect(()=> {
-  
-//   fetch("domain + /sendAssignment'",{
-//     method : 'post'
-//   })
- 
-//   .then(response => {
-//     if(response.ok){
-//       return response.json()
-//     }
-//     throw response;
-//   })
-//   .then(res => {
-//     sndsetdata(res);
-//   })
-//   .catch(snderror => {
-//     console.error("Error fetching data: ",snderror);
-//     sndseterror(error)
-//   })
-//   .finally(()=>{
-//     sndsetloading(false);
-//   })
-// },[])
-
-
 
 const getAssignedSchedules = () => {
   fetch(domain+"/getAssignedSchedules", {
