@@ -52,10 +52,10 @@ Session(app)
 database = mysql.connector.connect(
   host="127.0.0.1",
   user="root",
-  password="",
-  database="grp"
-#   password="12345678",
-#   database="try"
+  #password="",
+  #database="grp"
+    password="12345678",
+    database="try"
 )
 login_info = {
     "code": -1,
@@ -188,15 +188,18 @@ def getAllPlanners():
             planner_str = json.dumps(planner, cls=MyEncoder)
             planner_json = json.loads(planner_str)
             planners.append(planner_json)
-        cur.close()
+        
 
         res_json['result'] = planners
         print(res_json)
         
-        return res_json
+        
     except Exception as e:
         return jsonify({"code": -2, "data": {}, "message": e})
-
+    finally:
+        cur.close()
+    return jsonify(res_json)
+    
 # Assign Schedules page
 # field
 # planner, title, description
@@ -231,7 +234,7 @@ def sendAssignment():
         res_json['message'] = e
     finally:
         cur.close()
-    return res_json
+    return jsonify(res_json)
 
 # View Messages page
 
@@ -248,7 +251,8 @@ def getAssignedSchedules():
         assignments = []
         cur = database.cursor(dictionary=True)
         # TODO get manager from session
-        manager = 'fyyc'
+        #manager = 'fyyc'
+        manager = "Jimmy"
         sql = "SELECT * FROM assignment WHERE manager='%s';" % (manager)
         cur.execute(sql)
         for assignement in cur:
@@ -263,7 +267,7 @@ def getAssignedSchedules():
         res_json['message'] = e
     finally:
         cur.close()
-        return res_json
+    return jsonify(res_json)
 
 
 # for planner
@@ -489,31 +493,34 @@ def test():
     # session.pop("username")
     data = request.json
     print(data)
-    try:
-        if data:
+    
+    if data:
             
-            username = data['username']
-            password = data['password']
-            cur = database.cursor(dictionary=True)
-            cur.execute(
-                "SELECT username,password FROM user WHERE username = %s AND password = %s;", (username, password))
+        username = data['username']
+        password = data['password']
+        cur = database.cursor(dictionary=True)
+        cur.execute(
+            "SELECT username,password FROM user WHERE username = %s AND password = %s;", (username, password))
             #cur.execute("SELECT uid, displayname, rank, disabled FROM user WHERE username = %s AND password = %s;", (username, password,))
             #cur.execute("SELECT uid, displayname, rank, disabled FROM user WHERE username = %s AND password = AES_ENCRYPT(%s, UNHEX(SHA2('', )));", (username, password,))
-            account = cur.fetchone()
+        account = cur.fetchone()
+        if account:
+            modify_info(1, "Login successfully!")
             account_str = json.dumps(account, cls=MyEncoder)
             account_json = json.loads(account_str)
             session["username"] = account_json["username"]
-    except Exception as e:
-        return jsonify({"code": -2, "data": {}, "message": e})
-    finally:
-        cur.close()
 
-    if account:
-        
-        modify_info(1, "Login successfully!")
-    else:
-        modify_info(0, "Login not successful")
+    
+
+        else:
+            modify_info(0, "Login not successful")
+
+
+        cur.close()
     return jsonify({"code": login_info["isLogin"], "message": login_info["message"]})
+
+    #except Exception as e:
+     #   return jsonify({"code": -2, "data": {}, "message": e})
 
 # registration page
 

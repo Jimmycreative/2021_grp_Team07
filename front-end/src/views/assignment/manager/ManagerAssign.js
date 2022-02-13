@@ -76,10 +76,15 @@ const [snddata,sndsetdata] = useState(null);
 const [sndloading,sndsetloading] = useState(true);
 const [snderror,sndseterror] = useState(null);
 
-/* useEffect(() => {
-  getAssignedSchedules()
+const sleep = (milliseconds) => {
+  return new Promise(resolve => setTimeout(resolve, milliseconds))
+}
 
-},[]) */
+useEffect(() => {
+  
+  getAllPlanners()
+  getAssignedSchedules()
+},[])
 
 
  /* const getAllPlanners = ()=> {
@@ -134,30 +139,33 @@ const [snderror,sndseterror] = useState(null);
       // make sure to catch any error
       .catch(console.error);
   }) */
-  // useEffect(()=> {
-  //   console.log("ffdfdf")
-  //   fetch(domain+"/getAllPlanners", {
-  //     cache: 'no-cache',
-  //     headers: new Headers({
-  //         'Content-Type': 'application/json'
-  //     }),
-  //     method: 'GET', // *GET, POST, PUT, DELETE, etc.
-  //     mode: 'cors'
-  //   })
-  //   .then(response => {
-  //     console.log("jimmy")
-  //     if(response.ok) {
-  //       return response.json();
-  //     }
-  //   }).then((data)=>{
-  //     if (data.code===1) {
-  //       setTableData(data.result)
-  //       //console.log(tableData)
-  //     }
+
+  const getAllPlanners = async ()=> {
+     console.log("ffdfdf")
+     await sleep(1000);
+     fetch(domain+"/getAllPlanners", {
+       cache: 'no-cache',
+       headers: new Headers({
+           'Content-Type': 'application/json'
+       }),
+       method: 'GET', // *GET, POST, PUT, DELETE, etc.
+       mode: 'cors'
+     })
+     .then(response => {
+       console.log("jimmy")
+       if(response.ok) {
+         return response.json();
+       }
+     }).then((data)=>{
+       if (data.code===1) {
+         setTableData(data.result)
+         console.log(tableData)
+       }
       
-  //   }
-  //   )
-  // },[]);
+     }
+     )
+   }
+
   const sendAssignment = ()=> {
     let mydata = {
       title: title,
@@ -294,6 +302,7 @@ const getAssignedSchedules = () => {
                   </thead>
                   <tbody>
                   {console.log(tableData)}
+
                   {tableData===null?<></>:tableData.filter((val)=>{
                         if(searchPlanner === ""){
                             return val;
@@ -490,9 +499,11 @@ const getAssignedSchedules = () => {
                                 </FormGroup>
 
                         </ModalBody>
-                        
+                        <ModalFooter>
+                       <Button color="primary" type='submit' onClick={()=>{setModal(!modal)}}  >Close</Button>                    
+                       </ModalFooter>
                     </Modal>
-                   
+                    
                        </td>
 
                         </tr>
