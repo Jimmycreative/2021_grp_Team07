@@ -36,7 +36,7 @@ ReactDOM.render(
   <BrowserRouter>
     <Switch>
       <Route exact path="/login" component={LoginSignup} />
-      <ProtectedRoute path="/admin" component = {AdminLayout} />
+      <ProtectedRoute path="/admin/" component = {AdminLayout} />
       <Redirect to="/login" />
       {/* <Route path="/admin" component = {AdminLayout} />
       <Redirect to="/admin/dashboard" /> */}

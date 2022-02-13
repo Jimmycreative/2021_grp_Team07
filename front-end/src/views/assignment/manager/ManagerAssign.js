@@ -26,7 +26,11 @@ function ManagerAssign() {
   const [Message, setMessage] = useState("")
   const [myHistory,setmyHistory] = useState([]);
 
- {/*validation 
+  const [title, setTitle] = useState("")
+  const [plannername, setPlannername] = useState("")
+  const [description, setDescription] = useState("") 
+  const [myHistory,setmyHistory] = useState({});
+ /*validation 
   const [Title, setTitle] = useState("")
   const [Plannername, setPlannername] = useState("")
   const [Message, setMessage] = useState("")
@@ -54,9 +58,9 @@ function ManagerAssign() {
 
          const onSubmitHandler = (e) => {
                   e.preventDefault();
-                }*/}
+                }*/
     
-const [data,setdata] = useState(null);
+const [tableData,setTableData] = useState(null);
 const [loading,setloading] = useState(true);
 const [error,seterror] = useState(null);
 const [snddata,sndsetdata] = useState(null);
@@ -64,27 +68,81 @@ const [sndloading,sndsetloading] = useState(true);
 const [snderror,sndseterror] = useState(null);
 
 
-//  useEffect(()=> {
-//   fetch("domain + '/getAllPlanners'")
-//   .then(response => {
-//     if(response.ok){
-//       return response.json()
-//     }
-//     throw response;
-//   })
-//   .then(res => {
-//     setdata(res);
-//   })
-//   .catch(error => {
-//     console.error("Error fetching data: ",error);
-//     seterror(error)
-//   })
-//   .finally(()=>{
-//     setloading(false);
-//   })
-// },[])
+
+ /* const getAllPlanners = ()=> {
+  fetch("domain + '/getAllPlanners'")
+  .then(response => {
+    if(response.ok){
+      return response.json()
+    }
+    throw response;
+  })
+  .then(res => {
+    setdata(res);
+  })
+  .catch(error => {
+    console.error("Error fetching data: ",error);
+    seterror(error)
+  })
+  .finally(()=>{
+    setloading(false);
+  })
+} */
+
+  useEffect(()=> {
+    fetch(domain+"/getAllPlanners", {
+      cache: 'no-cache',
+      headers: new Headers({
+          'Content-Type': 'application/json'
+      }),
+      method: 'GET', // *GET, POST, PUT, DELETE, etc.
+      mode: 'cors'
+    })
+    .then(response => {
+              
+      if(response.ok) {
+        return response.json();
+      }
+    }).then((data)=>{
+      if (data.code===1) {
+        setTableData(data.result)
+      }
+      console.log(tableData)
+    }
+    )
+  },[]);
 
 
+  const sendAssignment = ()=> {
+    let mydata = {
+      title: title,
+      planner: plannername,
+      description: description
+    }
+    console.log(mydata)
+    fetch(domain + "/sendAssignment",{
+      body: JSON.stringify(mydata),
+      cache: 'no-cache',
+
+      headers: new Headers({
+          'Content-Type': 'application/json'
+      }),
+      method: 'POST', // *GET, POST, PUT, DELETE, etc.
+      mode: 'cors', // no-cors, cors, *same-origin
+      redirect: 'follow', // manual, *follow, error
+      referrer: 'no-referrer', // *client, no-referrer
+    })
+  
+    .then(response => {
+      if(response.ok){
+        return response.json()
+      }
+      else{
+        console.log("Error fetching")
+      }
+    })
+   
+  }
 
 // useEffect(()=> {
   
@@ -139,8 +197,10 @@ const getAssignedSchedules = () => {
   })
 }
 
-
-
+  const changeDescription = changeEvent =>{
+    setDescription(changeEvent.target.value)
+    console.log(description)
+  }
  
 
     return (
@@ -210,7 +270,7 @@ const getAssignedSchedules = () => {
                             <td> <Button className="btn-round btn-icon"
                       color="success"
                       size="sm"
-                      onClick={toggle}
+                      onClick={() => {setModal(!modal);setPlannername(val.name)}}
                       >  {/*pop up function */}
                     <i className="fa fa-envelope" /> </Button>
 
@@ -233,7 +293,9 @@ const getAssignedSchedules = () => {
                                   <Input
                                     placeholder="Title..."
                                     type="text"
+                                    onChange={changeEvent=>setTitle(changeEvent.target.value)}
                                     id='AssignTitle'
+
                                     />
 
 
@@ -247,6 +309,7 @@ const getAssignedSchedules = () => {
                                     placeholder={val.username}
                                     type="text"
                                     id='username'
+                                    readOnly
                                     />
 
                                                             
@@ -258,6 +321,7 @@ const getAssignedSchedules = () => {
                                   <Input
                                     placeholder="message.."
                                     type="textarea"
+                                    onChange={changeDescription}
                                     id='message'
                                     />
 
@@ -269,7 +333,7 @@ const getAssignedSchedules = () => {
                       </ModalBody>
                                                     
                        <ModalFooter>
-                       <Button color="primary" type='submit' onClick={toggle}  >Send</Button>                    
+                       <Button color="primary" type='submit' onClick={sendAssignment}  >Send</Button>                    
                        </ModalFooter>
                        </Modal>
                    
