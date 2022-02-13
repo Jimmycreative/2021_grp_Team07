@@ -10,7 +10,6 @@ import mysql.connector
 from flask import jsonify
 from flask_cors import CORS
 import json
-from mysqlx import Session
 import requests
 import secrets
 import string
@@ -18,7 +17,6 @@ import datetime
 import json
 import decimal
 import re
-
 
 
 from flask_session import Session
@@ -54,8 +52,10 @@ Session(app)
 database = mysql.connector.connect(
   host="127.0.0.1",
   user="root",
-  password="12345678",
-  database="try"
+  password="",
+  database="grp"
+#   password="12345678",
+#   database="try"
 )
 login_info = {
     "code": -1,
@@ -331,6 +331,7 @@ def sortPlannerList(my_list):
             temp_json['status'] = status_list[i]
             temp_json['description'] = description_list[i]
             temp_json['start'] = start_list[i]
+            temp_json['manager'] = manager
             this_manager_list.append(temp_json)
 
         this_manager_json['manager'] = manager
