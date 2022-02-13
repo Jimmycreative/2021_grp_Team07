@@ -18,10 +18,26 @@ import { Link, BrowserRouter as Router } from "react-router-dom";
 export default function PlannerAssign() {
   const[searchManager,setSearchManager] = useState(""); {/* Searching function */}
   const [modal, setModal] = React.useState(false);      {/* popup */}
-  const toggle = () => setModal(!modal);                {/* popup */}
+  const toggle = (row) => {
+    setModal(!modal);
+    setThisTable(row)
+  }
 
+  const [thisTable, setThisTable]=useState([])
+  const [thisManager, setThisManager]=useState("")
+  const [thisDescription, setThisDescription]=useState("")
   const [viewForm, setViewForm] = React.useState(false);      {/* popup */}
-  const toggleView = () => setViewForm(!viewForm);                {/* popup */}
+  const toggleView = (row) => {
+    console.log("line 27", row)
+    setViewForm(!viewForm);
+    setThisManager(row.manager)
+    setThisDescription(row.description)
+  }
+
+  const toggleViewClose = () => {
+    setViewForm(!viewForm);
+  }
+  
   let countmessages = 0;
     plannerdata && plannerdata.map((i) => {
       console.log("line 27", i)
@@ -121,7 +137,7 @@ export default function PlannerAssign() {
                       <Col className="text-right" md="3" xs="3">
                       
                         <Badge badgeContent={val.unfinished_assignment} color="success" >
-                        <MailIcon color="action" onClick={toggle} />
+                        <MailIcon color="action" onClick={()=>toggle(val.assignment)} />
                         </Badge>
                        
 
@@ -139,8 +155,7 @@ export default function PlannerAssign() {
                       
 
                       
-                        <ModalHeader
-                            toggle={toggle}>
+                        <ModalHeader>
                               
                                 <CardTitle tag="h5">Description </CardTitle>
                               
@@ -158,11 +173,11 @@ export default function PlannerAssign() {
                                     </thead>
                                     <tbody>
                                       {console.log(val.assignment)}
-                                      {val.assignment.map((m)=>(
+                                      {thisTable.map((m)=>(
                                         <tr>
                                           <td>{m.title}</td>
                                           <td> {new Date(m.start).toLocaleDateString()} </td>
-                                          <td><Button onClick={toggleView} >View Description</Button></td>
+                                          <td><Button onClick={()=>toggleView(m)} >View Description</Button></td>
                                           <Modal
                                             isOpen={viewForm}
                                             toggle={toggleView}
@@ -172,18 +187,18 @@ export default function PlannerAssign() {
                                             scrollable
                                             className="popup">
                                             
-                                            <ModalHeader
-                                              toggle={toggleView}
-                                              >
-                                              <CardTitle tag="h7"> Assignment from {val.manager} </CardTitle>
+                                            <ModalHeader>
+                                              <CardTitle tag="h7"> Assignment from {thisManager} </CardTitle>
                                             </ModalHeader>
                                             
                                             <ModalBody>
-                                              {m.description}
+                                              {thisDescription}
                                             </ModalBody>
                                             <ModalFooter>
                                               <Link to="/admin/definition">
                                                 <Button>Go to Definition page</Button>   {/*click and go to definition page */}
+                                                <Button className="cancel-btn" onClick={toggleViewClose}>Cancel</Button>{' '}
+                                                <Button color="secondary" onClick={toggleViewClose}>Confirm</Button>
                                               </Link>
                                             </ModalFooter>
                                           </Modal>

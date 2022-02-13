@@ -30,7 +30,8 @@ class MySchedule extends Component {
             tableData:[{}],
             dataErr:true,
             errMsg:"",
-            alertVisible:true
+            alertVisible:true,
+            curResult:{}
         };
 
         this.options={
@@ -47,10 +48,18 @@ class MySchedule extends Component {
             autoDismiss: 7
         }
         this.toggle = this.toggle.bind(this);
+        this.toggleClose = this.toggleClose.bind(this);
     }
     
+    toggle(e, row) {
+        console.log("line 54", row)
+        this.setState({
+            showGantt: !this.state.showGantt,
+            curResult: row.result
+        });
+      };
 
-    toggle() {
+    toggleClose() {
         this.setState({
             showGantt: !this.state.showGantt
         }); 
@@ -168,7 +177,7 @@ class MySchedule extends Component {
                                             <td>
                                                 <Button
                                                     className="table-btn"
-                                                    onClick={this.toggle}
+                                                    onClick={e=>this.toggle(e, m)}
                                                 >
                                                     Gantt Chart
                                                 </Button>
@@ -183,14 +192,14 @@ class MySchedule extends Component {
                                                     className="my-modal"
                                                     //style={{width: "120%"}}
                                                 >
-                                                    <ModalHeader toggle={this.toggle}>Type Choice</ModalHeader>
+                                                    <ModalHeader>Type Choice</ModalHeader>
                                                     <ModalBody>
-                                                        <GanttDay showBar={true} task={m.result} />
+                                                        <GanttDay showBar={true} task={this.state.curResult} />
                                                     </ModalBody>
                                                     
                                                     <ModalFooter>
-                                                        <Button className="cancel-btn" onClick={this.toggle}>Cancel</Button>{' '}
-                                                        <Button color="secondary" onClick={this.toggle}>Confirm</Button>
+                                                        <Button className="cancel-btn" onClick={this.toggleClose}>Cancel</Button>{' '}
+                                                        <Button color="secondary" onClick={this.toggleClose}>Confirm</Button>
                                                     </ModalFooter>
                                                 </Modal>
                                             </td>
