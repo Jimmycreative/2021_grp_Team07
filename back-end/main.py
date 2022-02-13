@@ -273,7 +273,7 @@ def getMySchedules():
         cur = database.cursor(dictionary=True)
         # TODO, get from session
         # planner=session["username"]
-        planner="penny"
+        planner="sheldon"
         sql="""
             SELECT manager, COUNT(IF(_status=0,1,NULL)) AS unfinished_assignment, GROUP_CONCAT(title) AS title,
             GROUP_CONCAT(_status) AS status,

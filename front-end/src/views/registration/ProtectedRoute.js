@@ -10,7 +10,6 @@ function ProtectedRoute({isLogin, component: Component, ...rest}){
             render={(props)=>{
                 console.log(isLogin)
                  if(Auth.isLogin){
-                     console.log("jiji")
                     return <Component {...props}/>;
                  }
                  else{
