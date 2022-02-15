@@ -118,7 +118,7 @@ INSERT INTO `token` (`tokenid`, `datecreated`, `dateexpire`, `rank`, `uses`, `di
 --
 
 CREATE TABLE `user` (
-  `uid` int(11) NOT NULL,
+  `uid` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `username` varchar(16) COLLATE utf8_bin NOT NULL UNIQUE,
   `displayname` varchar(64) COLLATE utf8_bin NOT NULL,
   `password` varchar(256) COLLATE utf8_bin NOT NULL,
