@@ -288,7 +288,7 @@ def getMySchedules():
         # planner=session["username"]
         planner="sheldon"
         sql="""
-            SELECT manager, COUNT(*), GROUP_CONCAT(title) AS title, GROUP_CONCAT(description) AS description, GROUP_CONCAT(a.datecreated) AS datecreated
+            SELECT manager, COUNT(*) AS status, GROUP_CONCAT(title) AS title, GROUP_CONCAT(description) AS description, GROUP_CONCAT(a.datecreated) AS datecreated
             FROM assignment a
             WHERE a.planner = %s
             AND a.aid IN (SELECT ss.aid from schedule ss)
