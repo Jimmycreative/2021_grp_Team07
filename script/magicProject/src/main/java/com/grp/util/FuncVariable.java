@@ -19,12 +19,14 @@ public class FuncVariable {
     String uuid="";
     List<ArrayList<ArrayList>> jobs=new ArrayList();
     ArrayList<String> machineNameList=new ArrayList<>();
+    ArrayList<String> myConstraints=new ArrayList<>();
 
     private String objective1="minimize";
     private String objective2="maximize";
     private String jobNames="job_names";
     private String machineNames="machine_names";
     private String basicConstraint="basicConstraint";
+    private String customizedConstraint="subject_to";
 
     String objective="";
     HashMap<String, String> nameMap=new HashMap<>();

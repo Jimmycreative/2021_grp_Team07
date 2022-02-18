@@ -49,7 +49,8 @@ public class ModelFunction implements MagicModule {
             String uuid=funcVariable.getUuid();
             String objective=funcVariable.getObjective();
             HashMap<String, String> nameMap= funcVariable.getNameMap();
-            modelService.runBasic(jobs, uuid, objective, nameMap);
+            ArrayList<String> myConstraints=funcVariable.getMyConstraints();
+            modelService.runBasic(jobs, uuid, objective, nameMap, myConstraints);
             System.out.println(getUUid(funcVariable));
             return getUUid(funcVariable);
         } catch (Exception e) {
@@ -220,6 +221,9 @@ public class ModelFunction implements MagicModule {
             String basicConstraint=getKeywordVal(funcVariable.getBasicConstraint(), funcVariable)==null?"":(String) getKeywordVal(funcVariable.getBasicConstraint(), funcVariable);
             ArrayList<String> myConstraint=parseConstraint(basicConstraint);
             //TODO
+            //whether subject_to is valid
+            String customizedConstraint=getKeywordVal(funcVariable.getCustomizedConstraint(), funcVariable)==null?"":(String) getKeywordVal(funcVariable.getCustomizedConstraint(), funcVariable);
+            analyzeConstraint(customizedConstraint, funcVariable);
 
             assert machine_names != null;
             if (machine_names.size()!= funcVariable.getMachineLen()) {
@@ -279,6 +283,109 @@ public class ModelFunction implements MagicModule {
         Map<String, Object> map=runtimeContext.getVarMap();
         Object object=map.get(keyword);
         return object;
+    }
+
+    private void analyzeConstraint(String customizedConstraint, FuncVariable funcVariable) throws Exception {
+        if (customizedConstraint.equals(""))
+            return;
+        try {
+            customizedConstraint=customizedConstraint.replace("\n", "");
+            ArrayList<String> myConstraints=new ArrayList<>();
+            String [] constraints=customizedConstraint.split(";");
+            for (String constraint:constraints) {
+                //find the job name
+                //e.g. 2job1.task[0].start
+                StringBuilder expr= new StringBuilder();
+                expr.append("    model.Add(");
+                if (!constraint.contains(".start") && !constraint.contains(".end")) {
+                    throw new Exception("Please input correct constraint format");
+                }
+                constraint=constraint.replace(" ","");
+                constraint=constraint.replace("-","+(-1)");
+                if (constraint.contains("+")) {
+                    String [] exprConstraints=constraint.split("\\+");
+                    for (String exprConstraint:exprConstraints) {
+                        if (exprConstraint.contains("<") || exprConstraint.contains(">") || exprConstraint.contains("=")) {
+                            getExpression(expr, exprConstraint, funcVariable);
+                        } else {
+                            expr.append(getVariable(exprConstraint, funcVariable) + "+");
+                        }
+                    }
+                }
+                else {
+                    getExpression(expr,constraint,funcVariable);
+                }
+                expr.append(")");
+                myConstraints.add(expr.toString());
+
+            }
+            funcVariable.setMyConstraints(myConstraints);
+        }
+        catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    private String getVariable(String constraint, FuncVariable funcVariable) throws Exception {
+        try {
+            String jobName=constraint.substring(0, constraint.indexOf("."));
+            //e.g. job1
+            int jobIndex=Integer.parseInt(jobName.substring(jobName.length()-1));
+            if (jobIndex>=funcVariable.getJobsLen() || jobIndex<0) {
+                throw new Exception("wrong job index");
+            }
+            //e.g. 2job1
+            //TODO if negative
+            int coefficient;
+            //String coefficientStr;
+            coefficient=!Character.isDigit(jobName.charAt(0))?1:Integer.parseInt(jobName.substring(0,1));
+
+            String realConstraint;
+            if (constraint.contains("task[")) {
+                String task=constraint.substring(constraint.indexOf("[")+1, constraint.indexOf("]"));
+                int taskIndex=Integer.parseInt(task);
+                realConstraint=coefficient+"*all_tasks["+(jobIndex-1)+", "+taskIndex+"]"+constraint.substring(constraint.indexOf("]")+1);
+            }
+            else {
+                //e.g. job2.start
+                String expression=constraint.substring(constraint.indexOf("."));
+                if (expression.contains("start")) {
+                    realConstraint=coefficient+"*all_tasks["+(jobIndex-1)+", "+0+"].start";
+                }
+                else if (expression.contains("end")){
+                    List<ArrayList<ArrayList>> jobs=funcVariable.getJobs();
+                    int len=jobs.get(jobIndex).size()-1;
+                    realConstraint=coefficient+"*all_tasks["+(jobIndex-1)+", "+len+"].end";
+                }
+                else {
+                    throw new Exception("Wrong format");
+                }
+
+            }
+            return realConstraint;
+        }catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    private String getExpression(StringBuilder expr, String exprConstraint, FuncVariable funcVariable) throws Exception {
+        if (exprConstraint.contains(">")) {
+            String[] finalExprs=exprConstraint.split(">");
+            expr.append(getVariable(finalExprs[0], funcVariable));
+            expr.append(">").append(finalExprs[1]);
+        }
+        else if (exprConstraint.contains("<")) {
+            String[] finalExprs=exprConstraint.split("<");
+            expr.append(getVariable(finalExprs[0], funcVariable));
+            expr.append("<").append(finalExprs[1]);
+        }
+
+        else if (exprConstraint.contains("=")) {
+            String[] finalExprs=exprConstraint.split("=");
+            expr.append(getVariable(finalExprs[0], funcVariable));
+            expr.append("=").append(finalExprs[1]);
+        }
+        return expr.toString();
     }
 
     /**

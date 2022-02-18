@@ -27,6 +27,10 @@ job_names=["job_1","job_2", "job_3"]
 //optional
 machine_names=["machine_0","machine_1", "machine_2", "machine_12"]
 
+subject_to={{
+  2job1.start>5;
+  job2.end>10;
+}}
 //remember to return
 return model.runBasic(jobs)`
 
@@ -560,7 +564,7 @@ class DefForm extends React.Component {
                                 className="mb-2 text-muted"
                                 tag="h6"
                                 >
-                                Card subtitle
+                                {/* Card subtitle */}
                             </CardSubtitle>
                             
                             
