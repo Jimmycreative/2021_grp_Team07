@@ -288,14 +288,13 @@ def getMySchedules():
         # planner=session["username"]
         planner="sheldon"
         sql="""
-            SELECT manager, COUNT(*) AS unfinished_assignment, GROUP_CONCAT(title) AS title, GROUP_CONCAT(description) AS description, GROUP_CONCAT(a.datecreated) AS datecreated
+            SELECT manager, COUNT(*) AS unfinished_assignment
             FROM assignment a
             WHERE a.planner = %s
-            AND a.aid IN (SELECT ss.aid from schedule ss)
+            AND NOT a.aid IN (SELECT ss.aid from schedule ss)
             GROUP BY manager;
             """
         """
-            WHERE 
             SELECT manager, COUNT(IF(_status=0,1,NULL)) AS unfinished_assignment, GROUP_CONCAT(title) AS title,
             GROUP_CONCAT(_status) AS status,
             GROUP_CONCAT(description) AS description,
