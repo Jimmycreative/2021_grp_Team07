@@ -288,13 +288,21 @@ def getMySchedules():
         # planner=session["username"]
         planner="sheldon"
         sql="""
+            SELECT manager, COUNT(*) AS unfinished_assignment
+            FROM assignment a
+            WHERE a.planner = %s
+            AND NOT a.aid IN (SELECT ss.aid from schedule ss)
+            GROUP BY manager;
+            """
+        """
             SELECT manager, COUNT(IF(_status=0,1,NULL)) AS unfinished_assignment, GROUP_CONCAT(title) AS title,
             GROUP_CONCAT(_status) AS status,
             GROUP_CONCAT(description) AS description,
             GROUP_CONCAT(datecreated) AS datecreated
-            FROM assignment WHERE planner='%s' GROUP BY manager
-        """ % planner
-        cur.execute(sql)
+            FROM assignment WHERE planner=%s GROUP BY manager
+        """ #%planner
+        cur.execute(sql, (planner, ))
+        #
 
         for record in cur:
             record_str = json.dumps(record, cls=MyEncoder)
@@ -499,10 +507,9 @@ def test():
         username = data['username']
         password = data['password']
         cur = database.cursor(dictionary=True)
-        cur.execute(
-            "SELECT username,password FROM user WHERE username = %s AND password = %s;", (username, password))
+        cur.execute("SELECT username, password FROM user WHERE username = %s AND password = %s;", (username, password))
             #cur.execute("SELECT uid, displayname, rank, disabled FROM user WHERE username = %s AND password = %s;", (username, password,))
-            #cur.execute("SELECT uid, displayname, rank, disabled FROM user WHERE username = %s AND password = AES_ENCRYPT(%s, UNHEX(SHA2('', )));", (username, password,))
+            #cur.execute("SELECT uid, displayname, rank, disabled FROM user WHERE username = %s AND password = AES_ENCRYPT(%s, UNHEX(SHA2('encryption_key', )));", (username, password,))
         account = cur.fetchone()
         if account:
             modify_info(1, "Login successfully!")
