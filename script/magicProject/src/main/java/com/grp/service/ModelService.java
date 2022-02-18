@@ -55,7 +55,7 @@ public class ModelService {
         serviceVariable.setType(flexibleType);
         initialize(objective, nameMap, serviceVariable);
 
-        readCode(changeNestedArrForm(jobs, serviceVariable), "", multiResourceType, serviceVariable);
+        readCode(changeNestedArrForm(jobs, serviceVariable), "", flexibleType, serviceVariable);
     }
 
     /**

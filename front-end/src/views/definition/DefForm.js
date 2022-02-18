@@ -230,7 +230,10 @@ class DefForm extends React.Component {
                     this.setState({uuid: data.data})
                     this.setState({result:"Schedule "+this.state.uuid+" is running."})
                     this.setState({flag: 1})
-                    //this.sendUuid(data.data)
+                    this.sendUuid(data.data)
+                }
+                else {
+                    alert(data.message)
                 }
           
         } 
@@ -242,7 +245,7 @@ class DefForm extends React.Component {
             uuid:this.state.uuid
         }
         console.log(mydata)
-        fetch(this.domain+"/getres", {
+        fetch(domain+"/getres", {
             body: JSON.stringify(mydata),
             cache: 'no-cache',
             headers: new Headers({

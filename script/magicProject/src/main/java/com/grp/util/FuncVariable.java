@@ -24,6 +24,7 @@ public class FuncVariable {
     private String objective2="maximize";
     private String jobNames="job_names";
     private String machineNames="machine_names";
+    private String basicConstraint="basicConstraint";
 
     String objective="";
     HashMap<String, String> nameMap=new HashMap<>();

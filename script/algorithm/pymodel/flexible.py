@@ -176,7 +176,6 @@ try:
 
         # Finally print the solution found.
         print("-----")
-        print(f'Optimal Schedule Length: {solver.ObjectiveValue()}')
         print(output)
     else:
         print("-----")
