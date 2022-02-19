@@ -19,6 +19,7 @@ FrontEnd
 2. FrontEnd api testing
 3. User profile( Display name functionality and Email)
 4. User manual not done
+5. Style in different browsers might be inconsistent 
 
 BackEnd
 
