@@ -123,7 +123,8 @@ public class APIController {
      */
     private void getPyPath() {
         String curPath=System.getProperty("user.dir");
-        curPath=curPath.replace("magicProject", "algorithm\\");
+        //curPath=curPath.replace("magicProject", "algorithm\\");
+        curPath=curPath.replace("magicProject", "algorithm/");
         exePath=curPath;
     }
 

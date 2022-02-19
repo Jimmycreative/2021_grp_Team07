@@ -81,7 +81,10 @@ machine_names=["machine_0","machine_1", "machine_2", "machine_10", "machine_12"]
 //remember to return
 return model.runMulti(jobs)
 `
-const jobType = [basic,dynamic,flexible,multi];
+const noTemplate = ``
+
+const jobType = [basic,dynamic,flexible,multi,noTemplate];
+
 class DefForm extends React.Component {
     constructor(props) {
         super(props);
@@ -152,6 +155,9 @@ class DefForm extends React.Component {
             index = 2
         else if(this.state.selectedOption=== "Multi-Resource Type")
             index = 3
+        else if(this.state.selectedOption=== "No template")
+            index = 4
+            
         this.setState({
             modal: !this.state.modal,
             code: jobType[index]
@@ -234,7 +240,7 @@ class DefForm extends React.Component {
                     this.setState({uuid: data.data})
                     this.setState({result:"Schedule "+this.state.uuid+" is running."})
                     this.setState({flag: 1})
-                    this.sendUuid(data.data)
+                    //this.sendUuid(data.data)
                 }
                 else {
                     alert(data.message)
@@ -473,6 +479,23 @@ class DefForm extends React.Component {
                                     className="form-check-input"
                                 />
                                 Multi-Resource Type
+                            </label>
+                          
+                        </div>
+
+                        {/* No template */}
+                        <div className="form-check">
+                            <label style={{marginLeft: "-3px"}}>
+                                <input
+                                    type="radio"
+                                    name="react-tips"
+                                    value="No template"
+                                    
+                                    checked={this.state.selectedOption === "No template"}
+                                    onChange={this.changeOption}
+                                    className="form-check-input"
+                                />
+                                No template
                             </label>
                           
                         </div>

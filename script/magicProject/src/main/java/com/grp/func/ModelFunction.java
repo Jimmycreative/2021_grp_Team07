@@ -135,6 +135,11 @@ public class ModelFunction implements MagicModule {
         }
     }
 
+    //ToDo
+    // define the script without template
+    
+
+
     /**
      * to get uuid
      * @param funcVariable to store variables
@@ -219,7 +224,8 @@ public class ModelFunction implements MagicModule {
             ArrayList<String> machine_names=getKeywordVal(funcVariable.getMachineNames(), funcVariable)==null?funcVariable.getMachineNameList():(ArrayList<String>) getKeywordVal(funcVariable.getMachineNames(), funcVariable);
             //get basic constraints
             String basicConstraint=getKeywordVal(funcVariable.getBasicConstraint(), funcVariable)==null?"":(String) getKeywordVal(funcVariable.getBasicConstraint(), funcVariable);
-            ArrayList<String> myConstraint=parseConstraint(basicConstraint);
+            parseConstraint(basicConstraint);
+            //ArrayList<String> myConstraint=parseConstraint(basicConstraint);
             //TODO
             //whether subject_to is valid
             String customizedConstraint=getKeywordVal(funcVariable.getCustomizedConstraint(), funcVariable)==null?"":(String) getKeywordVal(funcVariable.getCustomizedConstraint(), funcVariable);
@@ -391,46 +397,61 @@ public class ModelFunction implements MagicModule {
     /**
      *
      * @param inputConstraint basic constraints that user inputs
-     * @return all constraints
      */
-    private ArrayList<String> parseConstraint(String inputConstraint) throws Exception {
-        if (inputConstraint.isEmpty()) {
-            return new ArrayList<>();
-        }
+    private void parseConstraint(String inputConstraint) throws Exception {
+        //if (inputConstraint.isEmpty()) {}
+
         ArrayList<String> constraint = new ArrayList<>();
         String handle = inputConstraint.replace("\n", ""); //remove newline
         handle = handle.replace("\t", ""); //remove \t
         handle = handle.replace("\\s+","");
 
         //System.out.println(handle);
-        String[] lines = handle.split("for");
+        String[] lines = handle.split(";");
 
         System.out.println(lines.length);
         for (int i=0; i<lines.length; i++)
         {
             //System.out.println("this:"+lines[i]);
-            if (lines[i].equals("(job in jobs){job.nexTask.start >= job.curTask.end};")){
+            if (lines[i].equals("for(job in jobs){job.nexTask.start >= job.curTask.end}")){
                 constraint.add("1"); // for precedence constraint
             }
-            else if (lines[i].equals("(machine in machines){machine.nexTask.start >= machine.curTask.end};")){
+            else if (lines[i].equals("for(machine in machines){machine.nexTask.start >= machine.curTask.end}")){
                 constraint.add("2"); // for overlap constraint
             }
-            else if (lines[i].equals("(task in tasks){if(len(task)>1){task.chooseOption <= 1}};")){
-                constraint.add("3");
+            else if (lines[i].equals("for(task in tasks){if(len(task)>1){task.chooseOption <= 1}}")){
+                if (constraint.contains("4") || constraint.contains("5")){
+                    throw new Exception("Job type conflict occurs!");
+                }
+                else {
+                    constraint.add("3");
+                }
+
             }
-            else if(lines[i].equals("(machine in machines){machine.nexTask.priority <= machine.curTask.priority};")){
-                constraint.add("4");
+            else if(lines[i].equals("for(machine in machines){machine.nexTask.priority <= machine.curTask.priority}")){
+                if (constraint.contains("3") || constraint.contains("5")){
+                    throw new Exception("Job type conflict occurs!");
+                }
+                else{
+                    constraint.add("4");
+                }
+
             }
-            else if(lines[i].equals("(task in tasks){if(len(task)>1){task.chooseOption = len(task)}};")){
-                constraint.add("5");
+            else if(lines[i].equals("for(task in tasks){if(len(task)>1){task.chooseOption = len(task)}}")){
+                if (constraint.contains("3") || constraint.contains("4")){
+                    throw new Exception("Job type conflict occurs!");
+                }
+                else{
+                    constraint.add("5");
+                }
             }
             else {
-                throw new Exception("Wrong syntax");
+                throw new Exception("Wrong syntax"); // constraint not defined
             }
 
         }
         System.out.println(constraint);
-        return constraint;
+
     }
 
 
