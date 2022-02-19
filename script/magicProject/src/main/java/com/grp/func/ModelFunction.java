@@ -137,7 +137,7 @@ public class ModelFunction implements MagicModule {
 
     //ToDo
     // define the script without template
-    
+
 
 
     /**
