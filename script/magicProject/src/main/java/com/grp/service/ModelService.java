@@ -32,11 +32,11 @@ public class ModelService {
      * @param nameMap name map for jobs and machines
      */
     @Async
-    public void runBasic(List<ArrayList<ArrayList>> jobs, String uuid, String objective, HashMap<String, String> nameMap) {
+    public void runBasic(List<ArrayList<ArrayList>> jobs, String uuid, String objective, HashMap<String, String> nameMap, ArrayList<String> myConstraints) {
         ServiceVariable serviceVariable=new ServiceVariable();
         serviceVariable.setUuid(uuid);
         serviceVariable.setType(basicType);
-        initialize(objective, nameMap, serviceVariable);
+        initialize(objective, nameMap, myConstraints, serviceVariable);
 
         readCode(changeNestedArrForm(jobs, serviceVariable), "", basicType, serviceVariable);
     }
@@ -53,9 +53,9 @@ public class ModelService {
         ServiceVariable serviceVariable=new ServiceVariable();
         serviceVariable.setUuid(uuid);
         serviceVariable.setType(flexibleType);
-        initialize(objective, nameMap, serviceVariable);
+        //initialize(objective, nameMap, serviceVariable);
 
-        readCode(changeNestedArrForm(jobs, serviceVariable), "", multiResourceType, serviceVariable);
+        readCode(changeNestedArrForm(jobs, serviceVariable), "", flexibleType, serviceVariable);
     }
 
     /**
@@ -71,7 +71,7 @@ public class ModelService {
         ServiceVariable serviceVariable=new ServiceVariable();
         serviceVariable.setUuid(uuid);
         serviceVariable.setType(dynamicType);
-        initialize(objective, nameMap, serviceVariable);
+        //initialize(objective, nameMap, serviceVariable);
 
         //for dynamic type
         String pyDurations= changeArrForm(expected_duration);
@@ -92,7 +92,7 @@ public class ModelService {
         ServiceVariable serviceVariable=new ServiceVariable();
         serviceVariable.setUuid(uuid);
         serviceVariable.setType(multiResourceType);
-        initialize(objective, nameMap, serviceVariable);
+        //initialize(objective, nameMap, serviceVariable);
 
         readCode(changeNestedArrForm(jobs, serviceVariable), "", multiResourceType, serviceVariable);
     }
@@ -103,7 +103,8 @@ public class ModelService {
      * @param nameMap name map for jobs and machines
      * @param serviceVariable to store variables
      */
-    private void initialize(String objective, HashMap<String, String> nameMap, ServiceVariable serviceVariable) {
+    private void initialize(String objective, HashMap<String, String> nameMap, ArrayList<String> myConstraints, ServiceVariable serviceVariable) {
+        serviceVariable.setMyConstraints(myConstraints);
         serviceVariable.setObjective(objective);
         serviceVariable.setNameMap(nameMap);
         getPyPath(serviceVariable);
@@ -245,6 +246,14 @@ public class ModelService {
                 //define the machine type
                 else if (line.contains("#define the machine type")) {
                     buf.append(modifiedContent);
+                }
+
+                //define customized constraints
+                else if (line.contains("#define the constraints")) {
+                    ArrayList<String> myConstraints=serviceVariable.getMyConstraints();
+                    for (String constraint:myConstraints) {
+                        buf.append(constraint+"\n");
+                    }
                 }
 
                 else {

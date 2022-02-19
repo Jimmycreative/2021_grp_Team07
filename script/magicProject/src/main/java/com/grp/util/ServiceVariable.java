@@ -2,6 +2,7 @@ package com.grp.util;
 
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -23,6 +24,7 @@ public class ServiceVariable {
 
     private String uuid="";
     private String pyJobs="";
+    private ArrayList<String> myConstraints=new ArrayList<>();
     String objective;
     HashMap<String, String> nameMap;
 }

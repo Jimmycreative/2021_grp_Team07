@@ -261,7 +261,8 @@ public class APIController {
             else {
                 Result res=(Result) result;
                 if (res.getData()==null) {
-                    return Result.fail("Something is wrong");
+                    String errMsg=res.getMessage();
+                    return Result.fail(errMsg);
                 }
                 return res;
             }

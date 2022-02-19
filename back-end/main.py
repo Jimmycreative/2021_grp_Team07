@@ -52,10 +52,10 @@ Session(app)
 database = mysql.connector.connect(
   host="127.0.0.1",
   user="root",
-  #password="",
-  #database="grp"
-    password="12345678",
-    database="try"
+  password="",
+  database="grp"
+    # password="12345678",
+    # database="try"
 )
 login_info = {
     "code": -1,
@@ -288,13 +288,29 @@ def getMySchedules():
         # planner=session["username"]
         planner="sheldon"
         sql="""
-            SELECT manager, COUNT(IF(_status=0,1,NULL)) AS unfinished_assignment, GROUP_CONCAT(title) AS title,
-            GROUP_CONCAT(_status) AS status,
+        SELECT manager, COUNT(*) AS unfinished_assignment, GROUP_CONCAT(title) AS title,
             GROUP_CONCAT(description) AS description,
             GROUP_CONCAT(datecreated) AS datecreated
-            FROM assignment WHERE planner='%s' GROUP BY manager
-        """ % planner
-        cur.execute(sql)
+            FROM assignment a
+            WHERE a.planner = %s
+            AND NOT a.aid IN (SELECT ss.aid from schedule ss)
+            GROUP BY manager;
+        """
+        sql1="""
+            SELECT manager, COUNT(*) AS unfinished_assignment
+            FROM assignment a
+            WHERE a.planner = %s
+            AND NOT a.aid IN (SELECT ss.aid from schedule ss)
+            GROUP BY manager;
+            """
+        sql2="""
+            SELECT manager, GROUP_CONCAT(title) AS title,
+            GROUP_CONCAT(description) AS description,
+            GROUP_CONCAT(datecreated) AS datecreated
+            FROM assignment WHERE planner=%s GROUP BY manager
+        """ #%planner
+        cur.execute(sql, (planner, ))
+        #
 
         for record in cur:
             record_str = json.dumps(record, cls=MyEncoder)
@@ -321,19 +337,19 @@ def sortPlannerList(my_list):
         this_manager_list = []
         manager = my_json['manager']
         titles = my_json['title']
-        status = my_json['status']
+        # status = my_json['status']
         description = my_json['description']
         start = my_json['datecreated']
 
         title_list = getAttributeList(titles)
-        status_list = getAttributeList(status)
+        # status_list = getAttributeList(status)
         description_list = getAttributeList(description)
         start_list = getAttributeList(start)
 
         for i in range(len(title_list)):
             temp_json = {}
             temp_json['title'] = title_list[i]
-            temp_json['status'] = status_list[i]
+            # temp_json['status'] = status_list[i]
             temp_json['description'] = description_list[i]
             temp_json['start'] = start_list[i]
             temp_json['manager'] = manager
@@ -499,10 +515,9 @@ def test():
         username = data['username']
         password = data['password']
         cur = database.cursor(dictionary=True)
-        cur.execute(
-            "SELECT username,password FROM user WHERE username = %s AND password = %s;", (username, password))
+        cur.execute("SELECT username, password FROM user WHERE username = %s AND password = %s;", (username, password))
             #cur.execute("SELECT uid, displayname, rank, disabled FROM user WHERE username = %s AND password = %s;", (username, password,))
-            #cur.execute("SELECT uid, displayname, rank, disabled FROM user WHERE username = %s AND password = AES_ENCRYPT(%s, UNHEX(SHA2('', )));", (username, password,))
+            #cur.execute("SELECT uid, displayname, rank, disabled FROM user WHERE username = %s AND password = AES_ENCRYPT(%s, UNHEX(SHA2('encryption_key', )));", (username, password,))
         account = cur.fetchone()
         if account:
             modify_info(1, "Login successfully!")

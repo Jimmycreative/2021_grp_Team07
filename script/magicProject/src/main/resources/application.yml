@@ -8,7 +8,7 @@ server:
   #配置web页面入口
 magic-api:
   web: /magic/web # UI请求的界面以及UI服务地址
-  auto-import-module: db,model,test
+  auto-import-module: db,model,test, algorithm
 
 
 

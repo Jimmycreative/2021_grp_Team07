@@ -35,6 +35,8 @@ try:
     
     #basic model constraints
     util.addBasicConstraints(all_machines, model, machine_to_intervals, jobs_data, all_tasks)
+
+    #define the constraints
     print("Constraints added\t",time.asctime( time.localtime(time.time())))
     
     # Makespan objective.

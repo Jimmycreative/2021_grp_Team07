@@ -27,6 +27,10 @@ job_names=["job_1","job_2", "job_3"]
 //optional
 machine_names=["machine_0","machine_1", "machine_2", "machine_12"]
 
+subject_to={{
+  2job1.start>5;
+  job2.end>10;
+}}
 //remember to return
 return model.runBasic(jobs)`
 
@@ -230,7 +234,10 @@ class DefForm extends React.Component {
                     this.setState({uuid: data.data})
                     this.setState({result:"Schedule "+this.state.uuid+" is running."})
                     this.setState({flag: 1})
-                    //this.sendUuid(data.data)
+                    this.sendUuid(data.data)
+                }
+                else {
+                    alert(data.message)
                 }
           
         } 
@@ -242,7 +249,7 @@ class DefForm extends React.Component {
             uuid:this.state.uuid
         }
         console.log(mydata)
-        fetch(this.domain+"/getres", {
+        fetch(domain+"/getres", {
             body: JSON.stringify(mydata),
             cache: 'no-cache',
             headers: new Headers({
@@ -557,7 +564,7 @@ class DefForm extends React.Component {
                                 className="mb-2 text-muted"
                                 tag="h6"
                                 >
-                                Card subtitle
+                                {/* Card subtitle */}
                             </CardSubtitle>
                             
                             
