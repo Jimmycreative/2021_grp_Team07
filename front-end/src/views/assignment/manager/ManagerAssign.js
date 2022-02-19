@@ -244,14 +244,14 @@ const getAssignedSchedules = () => {
                             <td> <Button className="btn-round btn-icon"
                       color="success"
                       size="sm"
-                      //onClick={() => {setModal(!modal);setPlannername(val.name)}}
+                      onClick={() => {setModal(!modal);setPlannername(val.name)}}
                       >  {/*pop up function */}
                     <i className="fa fa-envelope" /> </Button>
 
                     
                     
-                     {/* <Modal
-                      isOpen={isOpen}
+                     <Modal
+                      isOpen={modal}
                       toggle={toggle}
                       backdrop={false}
                       size="md"
@@ -280,7 +280,7 @@ const getAssignedSchedules = () => {
                                   
                                   <label htmlFor="username" >Username</label>
                                   <Input
-                                    placeholder={val.username}
+                                    placeholder={plannername}
                                     type="text"
                                     id='username'
                                     readOnly
@@ -309,7 +309,7 @@ const getAssignedSchedules = () => {
                        <ModalFooter>
                        <Button color="primary" type='submit' onClick={sendAssignment}  >Send</Button>                    
                        </ModalFooter>
-                       </Modal> */}
+                       </Modal> 
                    
                        </td>
 
