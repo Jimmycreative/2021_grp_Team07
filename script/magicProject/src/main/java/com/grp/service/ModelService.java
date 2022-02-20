@@ -427,6 +427,7 @@ public class ModelService {
             for (int i=0;i< originalResult.size();i++) {
                 JSONObject originalTask=originalResult.getJSONObject(i);
                 String originalName=(String) originalTask.get("id");
+                originalName=originalName.substring(originalName.indexOf("|")+1);
                 //object is machine
                 if (originalTask.get("type").equals("project")) {
                     String machineName=originalName.split(" ")[0];
@@ -437,6 +438,7 @@ public class ModelService {
                 }
 
                 else {
+
                     String jobName=originalName.split("\\|")[0];
                     String showName=nameMap.get(jobName);
                     //task name
