@@ -1,8 +1,6 @@
-'''
-Util functions for different types
-'''
 from operator import itemgetter
 import random
+import uuid
 
 flexible_type='flexible'
 dynamic_type='dynamic'
@@ -146,6 +144,8 @@ def randomcolor():
     return "#"+color
 
 def generateOutput(all_machines, assigned_jobs, time_length):
+    uid = str(uuid.uuid1())
+    suid = ''.join(uid.split('-'))
     output=[]
     job_count={}
     for machine in all_machines.keys():
@@ -161,7 +161,7 @@ def generateOutput(all_machines, assigned_jobs, time_length):
         cur_machine['end']=machine_last_start+machine_last_duration
 
         cur_machine['name']=machine_name
-        cur_machine['id']=machine_name
+        cur_machine['id']=suid+"|"+machine_name
         cur_machine['progress']=100
         cur_machine['type']="project"
         cur_machine['hideChildren']=False
@@ -178,7 +178,7 @@ def generateOutput(all_machines, assigned_jobs, time_length):
                 job_name='job_%i' % (assigned_task.job)
                 task_name='task_%i' % (assigned_task.index)
                 cur_job['name']=job_name+" "+task_name
-                cur_job['id']=job_name+"|"+task_name
+                cur_job['id']=suid+"|"+job_name+"|"+task_name
                 cur_job['job_name']=job_name
                 # to calculate the job count
                 if (job_name in job_count.keys()):

@@ -224,7 +224,9 @@ public class ModelFunction implements MagicModule {
             ArrayList<String> machine_names=getKeywordVal(funcVariable.getMachineNames(), funcVariable)==null?funcVariable.getMachineNameList():(ArrayList<String>) getKeywordVal(funcVariable.getMachineNames(), funcVariable);
             //get basic constraints
             String basicConstraint=getKeywordVal(funcVariable.getBasicConstraint(), funcVariable)==null?"":(String) getKeywordVal(funcVariable.getBasicConstraint(), funcVariable);
-            parseConstraint(basicConstraint);
+            if (!basicConstraint.equals("")) {
+                parseConstraint(basicConstraint);
+            }
             //ArrayList<String> myConstraint=parseConstraint(basicConstraint);
             //TODO
             //whether subject_to is valid

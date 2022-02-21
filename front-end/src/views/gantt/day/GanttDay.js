@@ -6,9 +6,10 @@ import "gantt-task-react/dist/index.css";
 class GanttDay extends React.Component {
   constructor(props) {
     super(props);
+    console.log("line 9", this.props.task)
     this.state = {
       view : ViewMode.Day,
-      tasks: initTasks(this.props.task),
+      tasks: this.props.task,
       isChecked: false,
       columnWidth: 60,
       showBar: this.props.showBar

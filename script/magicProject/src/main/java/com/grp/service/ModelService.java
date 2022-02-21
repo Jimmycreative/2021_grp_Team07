@@ -54,8 +54,9 @@ public class ModelService {
         ServiceVariable serviceVariable=new ServiceVariable();
         serviceVariable.setUuid(uuid);
         serviceVariable.setType(flexibleType);
-        ArrayList<String> myConstraint = new ArrayList<>();
-        initialize(objective, nameMap, myConstraint,serviceVariable);
+
+        initialize(objective, nameMap, new ArrayList<>(), serviceVariable);
+
 
         readCode(changeNestedArrForm(jobs, serviceVariable), "", flexibleType, serviceVariable);
     }
@@ -73,7 +74,7 @@ public class ModelService {
         ServiceVariable serviceVariable=new ServiceVariable();
         serviceVariable.setUuid(uuid);
         serviceVariable.setType(dynamicType);
-        //initialize(objective, nameMap, serviceVariable);
+        initialize(objective, nameMap, new ArrayList<>(), serviceVariable);
 
         //for dynamic type
         String pyDurations= changeArrForm(expected_duration);
@@ -94,7 +95,7 @@ public class ModelService {
         ServiceVariable serviceVariable=new ServiceVariable();
         serviceVariable.setUuid(uuid);
         serviceVariable.setType(multiResourceType);
-        //initialize(objective, nameMap, serviceVariable);
+        initialize(objective, nameMap, new ArrayList<>(), serviceVariable);
 
         readCode(changeNestedArrForm(jobs, serviceVariable), "", multiResourceType, serviceVariable);
     }
@@ -211,10 +212,10 @@ public class ModelService {
     private void getPyPath(ServiceVariable serviceVariable) {
         String curPath=System.getProperty("user.dir");
         //TODO
-        //curPath=curPath.replace("magicProject", "algorithm\\");
-        //serviceVariable.setPath(curPath+"pymodel\\");
-        curPath=curPath.replace("magicProject", "algorithm/");
-        serviceVariable.setPath(curPath+"pymodel/");
+        curPath=curPath.replace("magicProject", "algorithm\\");
+        serviceVariable.setPath(curPath+"pymodel\\");
+//        curPath=curPath.replace("magicProject", "algorithm/");
+//        serviceVariable.setPath(curPath+"pymodel/");
         serviceVariable.setExePath(curPath);
     }
 
@@ -376,11 +377,11 @@ public class ModelService {
     private void executeCode(ServiceVariable serviceVariable) throws Exception {
         int flag=0;
         try {
-            //String pyFile="python "+serviceVariable.getExePath()+serviceVariable.getUuid()+".py";
-            //Process proc = Runtime.getRuntime().exec(pyFile);// 执行py文件
-            String pyFile=serviceVariable.getExePath()+serviceVariable.getUuid()+".py";
-            String[] cmd = {"/anaconda3/bin/python3",pyFile};
-            Process proc = Runtime.getRuntime().exec(cmd);// 执行py文件
+            String pyFile="python "+serviceVariable.getExePath()+serviceVariable.getUuid()+".py";
+            Process proc = Runtime.getRuntime().exec(pyFile);// 执行py文件
+//            String pyFile=serviceVariable.getExePath()+serviceVariable.getUuid()+".py";
+//            String[] cmd = {"/anaconda3/bin/python3",pyFile};
+            //Process proc = Runtime.getRuntime().exec(cmd);// 执行py文件
 
             BufferedReader in = new BufferedReader(new InputStreamReader(proc.getInputStream()));
             String line;
@@ -428,6 +429,7 @@ public class ModelService {
             for (int i=0;i< originalResult.size();i++) {
                 JSONObject originalTask=originalResult.getJSONObject(i);
                 String originalName=(String) originalTask.get("id");
+                originalName=originalName.substring(originalName.indexOf("|")+1);
                 //object is machine
                 if (originalTask.get("type").equals("project")) {
                     String machineName=originalName.split(" ")[0];
@@ -438,6 +440,7 @@ public class ModelService {
                 }
 
                 else {
+
                     String jobName=originalName.split("\\|")[0];
                     String showName=nameMap.get(jobName);
                     //task name

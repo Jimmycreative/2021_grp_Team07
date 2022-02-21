@@ -46,6 +46,8 @@ try:
     
     # Priority constraint (for this type)
     util.addPriorityConstraint(expected_duration, dict, jobs_data, model, all_tasks)
+
+    #define the constraints
     print("Constraints added\t",time.asctime(time.localtime(time.time())))
     
     # Makespan objective.
