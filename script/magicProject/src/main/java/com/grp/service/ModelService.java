@@ -54,7 +54,8 @@ public class ModelService {
         ServiceVariable serviceVariable=new ServiceVariable();
         serviceVariable.setUuid(uuid);
         serviceVariable.setType(flexibleType);
-        //initialize(objective, nameMap, serviceVariable);
+        ArrayList<String> myConstraint = new ArrayList<>();
+        initialize(objective, nameMap, myConstraint,serviceVariable);
 
         readCode(changeNestedArrForm(jobs, serviceVariable), "", flexibleType, serviceVariable);
     }

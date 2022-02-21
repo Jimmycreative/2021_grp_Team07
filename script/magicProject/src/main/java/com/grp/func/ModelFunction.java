@@ -400,26 +400,28 @@ public class ModelFunction implements MagicModule {
      */
     private void parseConstraint(String inputConstraint) throws Exception {
         //if (inputConstraint.isEmpty()) {}
-
+        System.out.println(inputConstraint);
+        //String handle = handleParse(inputConstraint);
+        String handle = inputConstraint;
         ArrayList<String> constraint = new ArrayList<>();
-        String handle = inputConstraint.replace("\n", ""); //remove newline
-        handle = handle.replace("\t", ""); //remove \t
-        handle = handle.replace("\\s+","");
+        handle = handle.replace("\n", ""); //remove newline
+        handle = handle.replaceAll("\\s", ""); //remove space
 
-        //System.out.println(handle);
+
+        System.out.println(handle);
         String[] lines = handle.split(";");
 
         System.out.println(lines.length);
         for (int i=0; i<lines.length; i++)
         {
-            //System.out.println("this:"+lines[i]);
-            if (lines[i].equals("for(job in jobs){job.nexTask.start >= job.curTask.end}")){
+            System.out.println("this:"+lines[i]);
+            if (lines[i].equals("for(jobinjobs){job.nexTask.start>=job.curTask.end}")){
                 constraint.add("1"); // for precedence constraint
             }
-            else if (lines[i].equals("for(machine in machines){machine.nexTask.start >= machine.curTask.end}")){
+            else if (lines[i].equals("for(machineinmachines){machine.nexTask.start>=machine.curTask.end}")){
                 constraint.add("2"); // for overlap constraint
             }
-            else if (lines[i].equals("for(task in tasks){if(len(task)>1){task.chooseOption <= 1}}")){
+            else if (lines[i].equals("for(taskintasks){if(len(task)>1){task.chooseOption<=1}}")){
                 if (constraint.contains("4") || constraint.contains("5")){
                     throw new Exception("Job type conflict occurs!");
                 }
@@ -428,7 +430,7 @@ public class ModelFunction implements MagicModule {
                 }
 
             }
-            else if(lines[i].equals("for(machine in machines){machine.nexTask.priority <= machine.curTask.priority}")){
+            else if(lines[i].equals("for(machineinmachines){machine.nexTask.priority<=machine.curTask.priority}")){
                 if (constraint.contains("3") || constraint.contains("5")){
                     throw new Exception("Job type conflict occurs!");
                 }
@@ -437,13 +439,17 @@ public class ModelFunction implements MagicModule {
                 }
 
             }
-            else if(lines[i].equals("for(task in tasks){if(len(task)>1){task.chooseOption = len(task)}}")){
+            else if(lines[i].equals("for(taskintasks){if(len(task)>1){task.chooseOption=len(task)}}")){
                 if (constraint.contains("3") || constraint.contains("4")){
                     throw new Exception("Job type conflict occurs!");
                 }
                 else{
                     constraint.add("5");
                 }
+            }
+            else if(lines[i].equals("") && lines.length==1){
+                constraint.add("1");
+                constraint.add("2");
             }
             else {
                 throw new Exception("Wrong syntax"); // constraint not defined
@@ -453,7 +459,27 @@ public class ModelFunction implements MagicModule {
         System.out.println(constraint);
 
     }
+    public String handleParse(String inputConstraint){
 
+        String handle = inputConstraint;
+
+        for (int i=0;i<handle.length();i++){
+            if (handle.charAt(i)=='/' && handle.charAt(i+1)=='/'){
+                int start = i;
+                while(handle.charAt(i)!='\n'){
+                    //System.out.println(i);
+                    //System.out.println(handle.charAt(i));
+                    i = i+1;
+                }
+                int end = i;
+                handle = handle.replace(handle.substring(start,end),"");
+
+                i = start;
+            }
+        }
+        System.out.println(handle);
+        return handle;
+    }
 
 
 }
