@@ -13,11 +13,11 @@
 
 ### Deadline
 
-Software: April 7
-Report : Team final report April 7 Individual report: April 25
-Recordings: April 12
-Poster: submit by 4pm April 13
-Presentation: April 20
+1. Software: April 7
+2. Report : Team final report April 7 Individual report: April 25
+3. Recordings: April 12
+4. Poster: submit by 4pm April 13
+5. Presentation: April 20
 
 ### Problems encountered
 
