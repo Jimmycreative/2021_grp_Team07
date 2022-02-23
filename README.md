@@ -11,6 +11,14 @@
 8. report (ch5, 6, 7, appendix C)
 9. session
 
+### Deadline
+
+Software: April 7
+Report : Team final report April 7 Individual report: April 25
+Recordings: April 12
+Poster: submit by 4pm April 13
+Presentation: April 20
+
 ### Problems encountered
 
 FrontEnd
