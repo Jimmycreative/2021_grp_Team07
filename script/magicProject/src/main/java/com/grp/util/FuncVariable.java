@@ -25,7 +25,7 @@ public class FuncVariable {
     private String objective2="maximize";
     private String jobNames="job_names";
     private String machineNames="machine_names";
-    private String basicConstraint="basicConstraint";
+    private String basicConstraint="basic_constraint";
     private String customizedConstraint="subject_to";
 
     String objective="";

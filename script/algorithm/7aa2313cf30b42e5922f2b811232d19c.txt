@@ -1,0 +1,17 @@
+Started	 Thu Feb 24 19:24:53 2022
+Model created	 Thu Feb 24 19:24:53 2022
+Constraints added	 Thu Feb 24 19:24:53 2022
+Objective function defined	 Thu Feb 24 19:24:53 2022
+Solving...	 Thu Feb 24 19:24:53 2022
+Solved	 Thu Feb 24 19:24:53 2022
+Statistics
+  - conflicts: 1
+  - branches : 19
+  - wall time: 0.067933 s
+Solution:
+0
+2
+1
+0
+-----
+{'time_length':12.0,'result':[{'start':0,'name':'machine_0','progress':100,'end':7,'id':'62f8b1d6956411eca06ccc6b1e5a3a20|Machine 0','type':'project','hideChildren':false},{'job_name':'job_0','start':0,'name':'job_1 task_0','progress':100,'project':'Machine 0','end':3,'styles':{'progressColor':'#FF72A9','progressSelectedColor':'#FF72A9'},'id':'62f8b1d6956411eca06ccc6b1e5a3a20|job_0|task_0','type':'task'},{'job_name':'job_2','start':3,'name':'job_3 task_0','progress':100,'project':'Machine 0','end':7,'styles':{'progressColor':'#FF8186','progressSelectedColor':'#FF8186'},'id':'62f8b1d6956411eca06ccc6b1e5a3a20|job_2|task_0','type':'task'},{'start':1,'name':'machine_2','progress':100,'end':12,'id':'62f8b1d6956411eca06ccc6b1e5a3a20|Machine 2','type':'project','hideChildren':false},{'job_name':'job_1','start':1,'name':'job_2 task_1','progress':100,'project':'Machine 2','end':2,'styles':{'progressColor':'#FF5B5D','progressSelectedColor':'#FF5B5D'},'id':'62f8b1d6956411eca06ccc6b1e5a3a20|job_1|task_1','type':'task'},{'job_name':'job_0','start':5,'name':'job_1 task_2','progress':100,'project':'Machine 2','end':9,'styles':{'progressColor':'#FF72A9','progressSelectedColor':'#FF72A9'},'id':'62f8b1d6956411eca06ccc6b1e5a3a20|job_0|task_2','type':'task'},{'job_name':'job_2','start':9,'name':'job_3 task_1','progress':100,'project':'Machine 2','end':12,'styles':{'progressColor':'#FF8186','progressSelectedColor':'#FF8186'},'id':'62f8b1d6956411eca06ccc6b1e5a3a20|job_2|task_1','type':'task'},{'start':0,'name':'machine_3','progress':100,'end':5,'id':'62f8b1d6956411eca06ccc6b1e5a3a20|Machine 4','type':'project','hideChildren':false},{'job_name':'job_1','start':0,'name':'job_2 task_0','progress':100,'project':'Machine 4','end':1,'styles':{'progressColor':'#FF5B5D','progressSelectedColor':'#FF5B5D'},'id':'62f8b1d6956411eca06ccc6b1e5a3a20|job_1|task_0','type':'task'},{'job_name':'job_0','start':3,'name':'job_1 task_1','progress':100,'project':'Machine 4','end':5,'styles':{'progressColor':'#FF72A9','progressSelectedColor':'#FF72A9'},'id':'62f8b1d6956411eca06ccc6b1e5a3a20|job_0|task_1','type':'task'},{'start':2,'name':'machine_4','progress':100,'end':2,'id':'62f8b1d6956411eca06ccc6b1e5a3a20|Machine 3','type':'project','hideChildren':false}]}
