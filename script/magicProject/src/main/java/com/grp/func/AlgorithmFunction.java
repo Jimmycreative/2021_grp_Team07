@@ -1,5 +1,7 @@
 package com.grp.func;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.grp.util.FuncVariable;
 import com.grp.util.Result;
 import org.springframework.stereotype.Component;
@@ -10,6 +12,7 @@ import org.ssssssss.script.runtime.RuntimeContext;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class AlgorithmFunction implements MagicModule {
@@ -18,33 +21,32 @@ public class AlgorithmFunction implements MagicModule {
         return "algorithm";
     }
 
-    @Comment("Sum up")
-    public int sum(Integer... params) throws Exception {
-        int sum=0;
-        try {
-            for (int i : params) {
-                sum+=i;
+    @Comment("Standardize job format")
+    public JSONArray standardize(RuntimeContext context, List<ArrayList<ArrayList<Integer>>> jobs) throws Exception {
+        getKeywordVal(context);
+        ArrayList<Integer> testJob=jobs.get(0).get(0);
+        if (testJob.size()!=4) {
+            throw  new Exception("Wrong size of jobs");
+        }
+        JSONArray result=new JSONArray();
+        for (ArrayList<ArrayList<Integer>> job:jobs) {
+            JSONArray oneJob=new JSONArray();
+            for (ArrayList<Integer> task:job) {
+                JSONObject object=new JSONObject();
+                object.put("machine_id", task.get(0));
+                object.put("duration", task.get(1));
+                object.put("start", task.get(2));
+                object.put("end", task.get(3));
+                oneJob.add(object);
             }
+            result.add(oneJob);
         }
-        catch (Exception e) {
-            throw new Exception("Wrong input");
-        }
-        System.out.println(sum);
-        return sum;
+        return result;
     }
 
-    @Comment("Sum up")
-    public int basicConstraint(String... params) throws Exception {
-        int sum=0;
-        try {
-            for (String i : params) {
-                System.out.println(i);
-            }
-        }
-        catch (Exception e) {
-            throw new Exception("Wrong input");
-        }
-        System.out.println(sum);
-        return sum;
+    private Object getKeywordVal(RuntimeContext context) {
+        Map<String, Object> map=context.getVarMap();
+        Object object=map.get("keyword");
+        return object;
     }
 }
