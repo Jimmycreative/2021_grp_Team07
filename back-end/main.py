@@ -52,10 +52,10 @@ Session(app)
 database = mysql.connector.connect(
   host="127.0.0.1",
   user="root",
-  password="",
-  database="grp"
-    #  password="12345678",
-    #  database="try"
+  #password="",
+  #database="grp"
+      password="12345678",
+      database="try"
 )
 login_info = {
     "code": -1,

@@ -212,10 +212,10 @@ public class ModelService {
     private void getPyPath(ServiceVariable serviceVariable) {
         String curPath=System.getProperty("user.dir");
         //TODO
-        curPath=curPath.replace("magicProject", "algorithm\\");
-        serviceVariable.setPath(curPath+"pymodel\\");
-//        curPath=curPath.replace("magicProject", "algorithm/");
-//        serviceVariable.setPath(curPath+"pymodel/");
+        //curPath=curPath.replace("magicProject", "algorithm\\");
+        //serviceVariable.setPath(curPath+"pymodel\\");
+        curPath=curPath.replace("magicProject", "algorithm/");
+        serviceVariable.setPath(curPath+"pymodel/");
         serviceVariable.setExePath(curPath);
     }
 
@@ -377,11 +377,11 @@ public class ModelService {
     private void executeCode(ServiceVariable serviceVariable) throws Exception {
         int flag=0;
         try {
-            String pyFile="python "+serviceVariable.getExePath()+serviceVariable.getUuid()+".py";
-            Process proc = Runtime.getRuntime().exec(pyFile);// 执行py文件
-//            String pyFile=serviceVariable.getExePath()+serviceVariable.getUuid()+".py";
-//            String[] cmd = {"/anaconda3/bin/python3",pyFile};
-            //Process proc = Runtime.getRuntime().exec(cmd);// 执行py文件
+            //String pyFile="python "+serviceVariable.getExePath()+serviceVariable.getUuid()+".py";
+            //Process proc = Runtime.getRuntime().exec(pyFile);// 执行py文件
+            String pyFile=serviceVariable.getExePath()+serviceVariable.getUuid()+".py";
+            String[] cmd = {"/anaconda3/bin/python3",pyFile};
+            Process proc = Runtime.getRuntime().exec(cmd);// 执行py文件
 
             BufferedReader in = new BufferedReader(new InputStreamReader(proc.getInputStream()));
             String line;
