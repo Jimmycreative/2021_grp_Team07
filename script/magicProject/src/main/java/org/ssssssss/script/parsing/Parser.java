@@ -113,7 +113,9 @@ public class Parser {
 			result = parseForStatement();
 		} else if (stream.match("while", false)) {
 			result = parseWhileStatement();
-		} else if (stream.match("continue", false)) {
+		} else if (stream.match("basic", false)) {
+			result = parseBasicStatement();
+		}else if (stream.match("continue", false)) {
 			result = new Continue(stream.consume().getSpan());
 		} else if (stream.match("async", false)) {
 			result = parseAsync();
@@ -375,6 +377,15 @@ public class Parser {
 		if (KEYWORDS.contains(span.getText())) {
 			MagicScriptError.error("变量名不能定义为关键字", span);
 		}
+	}
+
+	private BasicStatement parseBasicStatement(){
+		Span openingBasic = stream.expect("basic").getSpan();
+		push();
+		List<Node> basicBlock = parseFunctionBody();
+		Span closingEnd = stream.getPrev().getSpan();
+		pop();
+		return new BasicStatement(addSpan(openingBasic, closingEnd), basicBlock);
 	}
 
 	private WhileStatement parseWhileStatement() {
