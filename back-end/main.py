@@ -510,13 +510,13 @@ def test():
     # session.pop("username")
     data = request.json
     print(data)
+    result={}
     
     if data:
-            
         username = data['username']
         password = data['password']
         cur = database.cursor(dictionary=True)
-        cur.execute("SELECT username, password FROM user WHERE username = %s AND password = %s;", (username, password))
+        cur.execute("SELECT username, password, role FROM user WHERE username = %s AND password = %s;", (username, password))
             #cur.execute("SELECT uid, displayname, rank, disabled FROM user WHERE username = %s AND password = %s;", (username, password,))
             #cur.execute("SELECT uid, displayname, rank, disabled FROM user WHERE username = %s AND password = AES_ENCRYPT(%s, UNHEX(SHA2('encryption_key', )));", (username, password,))
         account = cur.fetchone()
@@ -525,6 +525,9 @@ def test():
             account_str = json.dumps(account, cls=MyEncoder)
             account_json = json.loads(account_str)
             session["username"] = account_json["username"]
+            result["username"]=username
+            result["role"]=account_json["role"]
+            result["isLogin"]=1
 
     
 
@@ -533,7 +536,7 @@ def test():
 
 
         cur.close()
-    return jsonify({"code": login_info["isLogin"], "message": login_info["message"]})
+    return jsonify({"code": login_info["isLogin"],"data":result, "message": login_info["message"]})
 
     #except Exception as e:
      #   return jsonify({"code": -2, "data": {}, "message": e})
