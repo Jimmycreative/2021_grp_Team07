@@ -15,6 +15,7 @@ import {
   } from "reactstrap";
 
   import { domain } from "../../global"
+  import { setTrueDate } from "../../gantt/helper"
 
 const basic = `//task=[machine_id, duration]
 job1=[[0, 3], [1, 2], [2, 2]]
@@ -618,7 +619,7 @@ class DefForm extends React.Component {
                                 >
                                     
                                     <ModalBody>
-                                        <GanttDay showBar={true} task={this.state.result_gantt}/>
+                                        <GanttDay showBar={true} task={setTrueDate(this.state.result_gantt)}/>
                                     </ModalBody>
                                                     
                                     <ModalFooter>

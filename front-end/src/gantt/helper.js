@@ -1,4 +1,4 @@
-function setTrueDate(origin_tasks) {
+export function setTrueDate(origin_tasks) {
   console.log("line 25, entered", origin_tasks)
   const currentDate = new Date();
   var real_tasks=[]
