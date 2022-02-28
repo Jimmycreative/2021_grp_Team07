@@ -3,9 +3,11 @@ import { Route, Redirect } from "react-router-dom";
 import Auth from "views/registration/Auth";
 import memoryUtils from "./userInfo/memoryUtil"
 import storageUtils from "./userInfo/storageUtils"
+import { jsonParse } from "../../variables/util/util"
 
-const user = JSON.parse(storageUtils.getUser())
+const user = jsonParse(storageUtils.getUser())
 memoryUtils.user = user
+console.log("line 10",user)
 
 function ProtectedRoute({isLogin, component: Component, ...rest}){
     return (
