@@ -21,6 +21,7 @@ import re
 
 from flask_session import Session
 
+
 class MyEncoder(json.JSONEncoder):
 
     def default(self, obj):
@@ -40,13 +41,19 @@ class MyEncoder(json.JSONEncoder):
 app = Flask(__name__)
 
 app.config['SESSION_TYPE'] = 'filesystem'
-app.config['SECRET_KEY']='123456'
-app.config['SESSION_PERMANENT']=False
-app.config['SESSION_USE_SIGNER']=True
+app.config['SECRET_KEY'] = '123456'
+app.config['SESSION_PERMANENT'] = False
+app.config['SESSION_USE_SIGNER'] = True
 #app.secret_key = "hello"
 
 CORS(app, supports_credentials=True)
 Session(app)
+
+# host="192.168.64.2",
+#     port=3306,
+#     user="unnc",
+#     password="Uk.JgBsQn]bQp[2u",
+#     database="unnc_team_2021-07-p16"
 
 
 database = mysql.connector.connect(
@@ -54,8 +61,8 @@ database = mysql.connector.connect(
   user="root",
   password="",
   database="grp"
-    #   password="12345678",
-    #   database="try"
+#   password="12345678",
+#   database="try"
 )
 login_info = {
     "code": -1,
@@ -150,7 +157,7 @@ def checktoken(token):
         return True
     else:
         return False
-    
+
 
 def modify_info(isLogin, message):
     login_info["isLogin"] = isLogin
@@ -174,6 +181,8 @@ def modify_token(uses, token):
 '''
 get all planners from database
 '''
+
+
 @app.route('/getAllPlanners', methods=['GET'])
 def getAllPlanners():
     res_json = {}
@@ -188,28 +197,30 @@ def getAllPlanners():
             planner_str = json.dumps(planner, cls=MyEncoder)
             planner_json = json.loads(planner_str)
             planners.append(planner_json)
-        
 
         res_json['result'] = planners
         print(res_json)
-        
-        
+
     except Exception as e:
         return jsonify({"code": -2, "data": {}, "message": e})
     finally:
         cur.close()
     return jsonify(res_json)
-    
+
+
 # Assign Schedules page
 # field
 # planner, title, description
+
 '''
 manager send assignment to planners
 @param json for assignment
 '''
+
+
 @app.route('/sendAssignment', methods=['POST'])
 def sendAssignment():
-    
+
     res_json = {}
     res_json['code'] = 1
     res_json['data'] = {}
@@ -218,18 +229,22 @@ def sendAssignment():
         data = request.json
         print(data)
         if data:
-            planner=data['planner']
-            title=data['title']
-            description=data['description']
+
+            planner = data['planner']
+            title = data['title']
+            description = data['description']
             manager = session.get("username")
             print(manager)
+
             cur = database.cursor(dictionary=True)
             cur.execute("INSERT INTO assignment (title, description, manager, planner) VALUES ( %s, %s, %s, %s);",
                         (title, description, manager, planner))
             database.commit()
     except Exception as e:
         database.rollback()
+
         print(e)
+
         res_json['code'] = -2
         res_json['message'] = e
     finally:
@@ -238,9 +253,12 @@ def sendAssignment():
 
 # View Messages page
 
+
 '''
 get all assigned schedules of manager
 '''
+
+
 @app.route('/getAssignedSchedules', methods=['GET'])
 def getAssignedSchedules():
     res_json = {}
@@ -251,6 +269,7 @@ def getAssignedSchedules():
         assignments = []
         cur = database.cursor(dictionary=True)
         # TODO get manager from session
+
         #manager = 'fyyc'
         manager = "Jimmy"
         sql = "SELECT * FROM assignment WHERE manager='%s';" % (manager)
@@ -262,7 +281,7 @@ def getAssignedSchedules():
 
         res_json['data'] = assignments
     except Exception as e:
-        
+
         res_json['code'] = -2
         res_json['message'] = e
     finally:
@@ -275,6 +294,8 @@ def getAssignedSchedules():
 '''
 get all schedules of one planner
 '''
+
+
 @app.route('/getMySchedules', methods=['GET'])
 def getMySchedules():
     res_json = {}
@@ -285,9 +306,10 @@ def getMySchedules():
         temp_list = []
         cur = database.cursor(dictionary=True)
         # TODO, get from session
+
         # planner=session["username"]
-        planner="sheldon"
-        sql="""
+        planner = "sheldon"
+        sql = """
         SELECT manager, COUNT(*) AS unfinished_assignment, GROUP_CONCAT(title) AS title,
             GROUP_CONCAT(description) AS description,
             GROUP_CONCAT(datecreated) AS datecreated
@@ -296,19 +318,19 @@ def getMySchedules():
             AND NOT a.aid IN (SELECT ss.aid from schedule ss)
             GROUP BY manager;
         """
-        sql1="""
+        sql1 = """
             SELECT manager, COUNT(*) AS unfinished_assignment
             FROM assignment a
             WHERE a.planner = %s
             AND NOT a.aid IN (SELECT ss.aid from schedule ss)
             GROUP BY manager;
             """
-        sql2="""
+        sql2 = """
             SELECT manager, GROUP_CONCAT(title) AS title,
             GROUP_CONCAT(description) AS description,
             GROUP_CONCAT(datecreated) AS datecreated
             FROM assignment WHERE planner=%s GROUP BY manager
-        """ #%planner
+        """  # %planner
         cur.execute(sql, (planner, ))
         #
 
@@ -327,9 +349,13 @@ def getMySchedules():
         return res_json
 
 # auxiliary function
+
+
 '''
 generate json list for messages of one planner
 '''
+
+
 def sortPlannerList(my_list):
     result = []
     for my_json in my_list:
@@ -337,6 +363,7 @@ def sortPlannerList(my_list):
         this_manager_list = []
         manager = my_json['manager']
         titles = my_json['title']
+
         # status = my_json['status']
         description = my_json['description']
         start = my_json['datecreated']
@@ -349,6 +376,7 @@ def sortPlannerList(my_list):
         for i in range(len(title_list)):
             temp_json = {}
             temp_json['title'] = title_list[i]
+
             # temp_json['status'] = status_list[i]
             temp_json['description'] = description_list[i]
             temp_json['start'] = start_list[i]
@@ -375,6 +403,8 @@ def getAttributeList(concat_str):
 get uuid from script language
 @param script the code snippet to define JSSP
 '''
+
+
 @app.route('/getuuid', methods=['GET', 'POST'])
 def get_script():
     manager = session.get("username")
@@ -409,10 +439,13 @@ def post_script(data):  # string will replace the variable s below
     print(uuid)
     return uuid
 
+
 '''
 get result from script language
 @param uuid to find the schedule
 '''
+
+
 @app.route('/getres', methods=['POST'])
 def post_uid():
     data = request.json
@@ -486,7 +519,7 @@ def save_schedule():
             uuid = data["uuid"]
             aid = data["aid"]
 
-            cur.execute("SELECT name FROM schedule WHERE aid='%s';"%(aid))
+            cur.execute("SELECT name FROM schedule WHERE aid='%s';" % (aid))
             account = cur.fetchone()
             if account:
                 name = account["name"]
@@ -497,7 +530,8 @@ def save_schedule():
                         (name, uid, script, timelength, result, status, errlog, description, uuid))
             # INSERT INTO schedule (name, uid, script, timelength, result, status, errlog, description, uuid) VALUES ('schedule 1',1,'i am handsome',3,"[{'start':0,'name':'Maachine 0','progress':0,'end':5,'id':'Machine 0','type':'project','hideChildren':false},{'start':0,'name':'job_0 task_0','progress':0,'project':'Machine 0','end':3,'id':'job_0|task_0','type':'task'},{'start':3,'name':'job_1 task_0','progress':0,'project':'Machine 0','end':5,'id':'job_1|task_0','type':'task'},{'start':0,'name':'Maachine 1','progress':0,'end':10,'id':'Machine 1','type':'project','hideChildren':false},{'start':0,'name':'job_2 task_0','progress':0,'project':'Machine 1','end':4,'id':'job_2|task_0','type':'task'},{'start':4,'name':'job_0 task_1','progress':0,'project':'Machine 1','end':6,'id':'job_0|task_1','type':'task','dependencies':['job_0|task_0']},{'start':6,'name':'job_1 task_2','progress':0,'project':'Machine 1','end':10,'id':'job_1|task_2','type':'task','dependencies':['job_1|task_1']},{'start':4,'name':'Maachine 2','progress':0,'end':9,'id':'Machine 2','type':'project','hideChildren':false},{'start':4,'name':'job_2 task_1','progress':0,'project':'Machine 2','end':7,'id':'job_2|task_1','type':'task','dependencies':['job_2|task_0']},{'start':7,'name':'job_0 task_2','progress':0,'project':'Machine 2','end':9,'id':'job_0|task_2','type':'task','dependencies':['job_0|task_1']},{'start':5,'name':'Maachine 12','progress':0,'end':6,'id':'Machine 12','type':'project','hideChildren':false},{'start':5,'name':'job_1 task_1','progress':0,'project':'Machine 12','end':6,'id':'job_1|task_1','type':'task','dependencies':['job_1|task_0']}]", -1, "none",'good schedule','8jug7g7g');
             database.commit()
-            cur.execute("UPDATE assignment SET _status = 1 WHERE aid = %s;",(aid))
+            cur.execute(
+                "UPDATE assignment SET _status = 1 WHERE aid = %s;", (aid))
             database.commit()
             return jsonify({"code": 1, "data": "", "message": "Successfully stored schedule and update assignment!"})
         except Exception as e:
@@ -505,41 +539,40 @@ def save_schedule():
             return jsonify({"code": -2, "data": {}, "message": e})
 
 
-@app.route('/login', methods=['GET','POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def test():
     # session.pop("username")
     data = request.json
     print(data)
-    result={}
-    
+
+    result = {}
+
     if data:
         username = data['username']
         password = data['password']
         cur = database.cursor(dictionary=True)
-        cur.execute("SELECT username, password, role FROM user WHERE username = %s AND password = %s;", (username, password))
-            #cur.execute("SELECT uid, displayname, rank, disabled FROM user WHERE username = %s AND password = %s;", (username, password,))
-            #cur.execute("SELECT uid, displayname, rank, disabled FROM user WHERE username = %s AND password = AES_ENCRYPT(%s, UNHEX(SHA2('encryption_key', )));", (username, password,))
+        cur.execute(
+            "SELECT username, password, role FROM user WHERE username = %s AND password = %s;", (username, password))
+        #cur.execute("SELECT uid, displayname, rank, disabled FROM user WHERE username = %s AND password = %s;", (username, password,))
+        #cur.execute("SELECT uid, displayname, rank, disabled FROM user WHERE username = %s AND password = AES_ENCRYPT(%s, UNHEX(SHA2('encryption_key', )));", (username, password,))
         account = cur.fetchone()
         if account:
             modify_info(1, "Login successfully!")
             account_str = json.dumps(account, cls=MyEncoder)
             account_json = json.loads(account_str)
             session["username"] = account_json["username"]
-            result["username"]=username
-            result["role"]=account_json["role"]
-            result["isLogin"]=1
-
-    
+            result["username"] = username
+            result["role"] = account_json["role"]
+            result["isLogin"] = 1
 
         else:
             modify_info(0, "Login not successful")
 
-
         cur.close()
-    return jsonify({"code": login_info["isLogin"],"data":result, "message": login_info["message"]})
+    return jsonify({"code": login_info["isLogin"], "data": result, "message": login_info["message"]})
 
-    #except Exception as e:
-     #   return jsonify({"code": -2, "data": {}, "message": e})
+    # except Exception as e:
+    #   return jsonify({"code": -2, "data": {}, "message": e})
 
 # registration page
 
@@ -596,23 +629,23 @@ def genToken():
         role = json_data["rank"]  # 0 for planner 1 for manager
         uses = json_data["uses"]
 
-        
         purgetoken()
         token = ''.join(secrets.choice(string.ascii_letters + string.digits)
-                for _ in range(8))
+                        for _ in range(8))
 
         print(token)
         while checktoken(token):
             token = ''.join(secrets.choice(string.ascii_letters +
                             string.digits) for _ in range(8))
         print(token)
-        if uses=="":
+        if uses == "":
             uses = str(-1)
         #print("type: ",type(uses))
+
         try:
             cur = database.cursor()
-            if dateexpire=="":
-                
+            if dateexpire == "":
+
                 cur.execute("""
                 INSERT INTO token (tokenid, dateexpire, role, uses) VALUES (%s, NULL, %s, %s);""", (token, role, uses))
             else:
