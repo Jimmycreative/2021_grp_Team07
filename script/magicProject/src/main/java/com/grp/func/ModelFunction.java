@@ -225,7 +225,7 @@ public class ModelFunction implements MagicModule {
             //get basic constraints
             String basicConstraint=getKeywordVal(funcVariable.getBasicConstraint(), funcVariable)==null?"":(String) getKeywordVal(funcVariable.getBasicConstraint(), funcVariable);
             if (!basicConstraint.equals("")) {
-                parseConstraint(basicConstraint);
+                //parseConstraint(basicConstraint);
             }
             //ArrayList<String> myConstraint=parseConstraint(basicConstraint);
             //TODO
@@ -396,71 +396,7 @@ public class ModelFunction implements MagicModule {
         return expr.toString();
     }
 
-    /**
-     *
-     * @param inputConstraint basic constraints that user inputs
-     */
-    private void parseConstraint(String inputConstraint) throws Exception {
-        //if (inputConstraint.isEmpty()) {}
-        System.out.println(inputConstraint);
-        //String handle = handleParse(inputConstraint);
-        String handle = inputConstraint;
-        ArrayList<String> constraint = new ArrayList<>();
-        handle = handle.replace("\n", ""); //remove newline
-        handle = handle.replaceAll("\\s", ""); //remove space
 
-
-        System.out.println(handle);
-        String[] lines = handle.split(";");
-
-        System.out.println(lines.length);
-        for (int i=0; i<lines.length; i++)
-        {
-            System.out.println("this:"+lines[i]);
-            if (lines[i].equals("for(jobinjobs){job.nexTask.start>=job.curTask.end}")){
-                constraint.add("1"); // for precedence constraint
-            }
-            else if (lines[i].equals("for(machineinmachines){machine.nexTask.start>=machine.curTask.end}")){
-                constraint.add("2"); // for overlap constraint
-            }
-            else if (lines[i].equals("for(taskintasks){if(len(task)>1){task.chooseOption<=1}}")){
-                if (constraint.contains("4") || constraint.contains("5")){
-                    throw new Exception("Job type conflict occurs!");
-                }
-                else {
-                    constraint.add("3");
-                }
-
-            }
-            else if(lines[i].equals("for(machineinmachines){machine.nexTask.priority<=machine.curTask.priority}")){
-                if (constraint.contains("3") || constraint.contains("5")){
-                    throw new Exception("Job type conflict occurs!");
-                }
-                else{
-                    constraint.add("4");
-                }
-
-            }
-            else if(lines[i].equals("for(taskintasks){if(len(task)>1){task.chooseOption=len(task)}}")){
-                if (constraint.contains("3") || constraint.contains("4")){
-                    throw new Exception("Job type conflict occurs!");
-                }
-                else{
-                    constraint.add("5");
-                }
-            }
-            else if(lines[i].equals("") && lines.length==1){
-                constraint.add("1");
-                constraint.add("2");
-            }
-            else {
-                throw new Exception("Wrong syntax"); // constraint not defined
-            }
-
-        }
-        System.out.println(constraint);
-
-    }
     public String handleParse(String inputConstraint){
 
         String handle = inputConstraint;
