@@ -25,38 +25,38 @@ function Invatation() {
 
     const getToken = () => {
         let date = JSdatetimeToMySQLdatetime();
-         var mydata = {
-             expirationDate: date,
-             rank: 0,
-             uses: uses
-         }
+        var mydata = {
+            expirationDate: date,
+            rank: 0,
+            uses: uses
+        }
         console.log(mydata)
-         fetch(domain +"/genToken", {
+        fetch(domain + "/genToken", {
 
-             body: JSON.stringify(mydata),
-             cache: 'no-cache',
+            body: JSON.stringify(mydata),
+            cache: 'no-cache',
 
-             headers: new Headers({
+            headers: new Headers({
                 'Content-Type': 'application/json'
-              }),
+            }),
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
             mode: 'cors', // no-cors, cors, *same-origin
             redirect: 'follow', // manual, *follow, error
             referrer: 'no-referrer', // *client, no-referrer
-         }).then(response => {
-             if (response.ok) {
-                 return response.json()
-             }
-         }
-         ).then(
-             data => {
-                 //console.log("line 143", data)
-                 if (data.code === 1) {
-                     setToken(data.data);
-                 }
+        }).then(response => {
+            if (response.ok) {
+                return response.json()
             }
-         )
-     };
+        }
+        ).then(
+            data => {
+                //console.log("line 143", data)
+                if (data.code === 1) {
+                    setToken(data.data);
+                }
+            }
+        )
+    };
 
 
     // show token form backend
@@ -186,14 +186,14 @@ function Invatation() {
             default:
         }
 
-        
+
         return seconds;
     }
 
 
 
     const JSdatetimeToMySQLdatetime = () => {
-        
+
         if (time === "Unlimited") {
             setExpiration('');
             setExpirationError('');
@@ -204,7 +204,7 @@ function Invatation() {
             document.getElementById("dateexpire").disabled = false;
         }
 
-        
+
         // get current datetime in sconeds
         let currentTimeInSeconds = (new Date().getTime() / 1000) + (new Date().getTimezoneOffset() * -60);
 
@@ -326,7 +326,7 @@ function Invatation() {
                         <select
                             id="dateexpireSelect"
                             name="dateexpireSelect"
-                            onChange={(e) => setTime(e.target.value) }
+                            onChange={(e) => setTime(e.target.value)}
                         >
                             <option
                                 value="minutes"
