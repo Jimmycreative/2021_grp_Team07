@@ -1,9 +1,11 @@
 import "./LoginSignup.css";
 import {Button} from "reactstrap";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Redirect } from "react";
 import Auth from "./Auth";
 import { useHistory } from 'react-router-dom';
 import { domain } from "../../global"
+import memoryUtils from "./userInfo/memoryUtil"
+import storageUtils from "./userInfo/storageUtils"
 // import Registration from "./RegTemp";
 // import Login from "./LogTemp";
 
@@ -85,10 +87,15 @@ function LoginSignup() {
     const insertData= (body)=>{
         console.log(body)
         var mydata={
-            //username:"fyyc",
-            //password:"123456"
-              username:username,
-              password:password
+            //planner
+            username:"fyyc",
+            password:"123456"
+
+            //manager
+            // username:"admin",
+            // password:"imthequeen"
+            //  username:username,
+            //  password:password
         }
         fetch(domain+"/login", {
           body: JSON.stringify(mydata),
@@ -114,6 +121,10 @@ function LoginSignup() {
             
             Auth.login()
             console.log(Auth.isLogin)
+            const user = data.data
+            memoryUtils.user = user
+            storageUtils.saveUser(user)
+            console.log("line 122",user)
             history.push("/admin/dashboard")
           }
           

@@ -57,6 +57,7 @@
     "remark-gfm": "^3.0.1",
     "remark-toc": "^8.0.1",
     "size-sensor": "^1.0.1",
+    "store": "^2.0.12",
     "styled-components": "^5.3.3",
     "yup": "^0.32.11"
   },
