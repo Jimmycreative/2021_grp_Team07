@@ -77,7 +77,8 @@ function Profile() {
                    {/* this will be changed to data.role or something */}
                  
                   {click && <><p style={{color:"gray",fontSize:"1.3rem"}}><span className="description" style={{fontSize:"1rem"}}>Username:</span> {change ? userName : data.username}
-                  <i className="nc-icon nc-settings-gear-65" style={{position:'relative', textDecoration:"none",left:"1%",top:"2%"}} onClick={handleClick}/></p>
+                  {/* <i className="nc-icon nc-settings-gear-65" style={{position:'relative', textDecoration:"none",left:"1%",top:"2%"}} onClick={handleClick}/> */}
+                  </p>
                  </> }
                    
                 {!click &&<>
