@@ -5,7 +5,8 @@ const USER_KEY = 'user_key';
 export default {
     // 保存用户
     saveUser(user) {
-        store.set(USER_KEY, JSON.stringify(user))
+        // store.set(USER_KEY, JSON.stringify(user))
+        store.set(USER_KEY, user)
     },
 
     // 读取用户
