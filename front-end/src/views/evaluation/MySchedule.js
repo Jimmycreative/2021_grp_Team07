@@ -11,6 +11,7 @@ import NotificationAlert from "react-notification-alert";
 import GanttDay from "views/gantt/day/GanttDay";
 import sample_data from '../../variables/data/saved_data.json';
 import "./mySchedule.css"
+import { domain } from "../../global"
 
 class MySchedule extends Component {
     constructor(props) {
@@ -22,8 +23,6 @@ class MySchedule extends Component {
         this.pageSize = 10;
         this.pagesCount = Math.ceil(sample_data.length / this.pageSize);
         
-    
-        this.domain = `http://127.0.0.1:5000`;
         this.state = {
             currentPage: 0,
             searchSchedule:"",
@@ -31,7 +30,9 @@ class MySchedule extends Component {
             tableData:[{}],
             dataErr:true,
             errMsg:"",
-            alertVisible:true
+            alertVisible:true,
+            curResult:{},
+            curKey:""
         };
 
         this.options={
@@ -48,10 +49,19 @@ class MySchedule extends Component {
             autoDismiss: 7
         }
         this.toggle = this.toggle.bind(this);
+        this.toggleClose = this.toggleClose.bind(this);
     }
     
+    toggle(row) {
+        console.log("line 54", row)
+        this.setState({
+            showGantt: !this.state.showGantt,
+            curResult: row.result,
+            curKey:row.scheduleid
+        });
+      };
 
-    toggle() {
+    toggleClose() {
         this.setState({
             showGantt: !this.state.showGantt
         }); 
@@ -87,7 +97,7 @@ class MySchedule extends Component {
       //invoke /getAllSchedules
       //planner 0, manager 1
       getAllSchedules () {
-        fetch(this.domain+"/getAllSchedules", {
+        fetch(domain+"/getAllSchedules", {
             cache: 'no-cache',
             headers: new Headers({
                 'Content-Type': 'application/json'
@@ -97,13 +107,16 @@ class MySchedule extends Component {
           })
          .then(res =>res.json())
          .then((data) => {
-            console.log("line 90")
            if (data.code==1) {
-            console.log("line 90")
-            this.setState({
-                tableData:data.data.result
-            })
-            console.log(this.state.tableData)
+               for (var i=0;i<data.data.result.length;i++) {
+                   console.log(data.data.result[i].result)
+                   data.data.result[i].result=this.setTrueDate(data.data.result[i].result)
+               }
+               this.setState({
+                   tableData:data.data.result
+                })
+                console.log("line 114",this.state.tableData)
+                
            }
            
            else {
@@ -117,6 +130,25 @@ class MySchedule extends Component {
            
          })
     }
+    
+    setTrueDate(origin_tasks) {
+        console.log("line 130", origin_tasks)
+        const currentDate = new Date();
+        var real_tasks=[]
+        for (let i = 0; i < origin_tasks.length; i++) {
+          const task = origin_tasks[i];
+          var start=task.start+1
+          var end=task.end+1
+          var type=task.type
+          task.start=new Date(currentDate.getFullYear(), currentDate.getMonth(), start)
+          task.end=new Date(currentDate.getFullYear(), currentDate.getMonth(), end)
+          if (type=='project') {
+            task.styles={progressColor: '#FFCCCC',progressSelectedColor: '#FFCCCC'}
+          }
+          real_tasks.push(task)
+        }
+        return real_tasks
+      }
 
     render() {
         const { currentPage } = this.state;
@@ -134,7 +166,7 @@ class MySchedule extends Component {
                                 this.setSearchSchedule(e.target.value)
                         }}/>
                         
-                        <Table>
+                        <Table rowKey={'scheduleid'}>
                             <thead className="text-primary">
                                 <tr>
                                     <th>Schedule</th>
@@ -169,7 +201,7 @@ class MySchedule extends Component {
                                             <td>
                                                 <Button
                                                     className="table-btn"
-                                                    onClick={this.toggle}
+                                                    onClick={()=>this.toggle(m)}
                                                 >
                                                     Gantt Chart
                                                 </Button>
@@ -184,14 +216,14 @@ class MySchedule extends Component {
                                                     className="my-modal"
                                                     //style={{width: "120%"}}
                                                 >
-                                                    <ModalHeader toggle={this.toggle}>Type Choice</ModalHeader>
+                                                    <ModalHeader>Type Choice</ModalHeader>
                                                     <ModalBody>
-                                                        <GanttDay showBar={true} task={m.result} />
+                                                        <GanttDay showBar={true} task={this.state.curResult} />
                                                     </ModalBody>
                                                     
                                                     <ModalFooter>
-                                                        <Button className="cancel-btn" onClick={this.toggle}>Cancel</Button>{' '}
-                                                        <Button color="secondary" onClick={this.toggle}>Confirm</Button>
+                                                        <Button className="cancel-btn" onClick={this.toggleClose}>Cancel</Button>{' '}
+                                                        <Button color="secondary" onClick={this.toggleClose}>Confirm</Button>
                                                     </ModalFooter>
                                                 </Modal>
                                             </td>

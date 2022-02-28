@@ -21,6 +21,7 @@ import * as RiIcons from 'react-icons/ri';
 
 import Profile from "views/profile/Profile";
 import Home from "views/Home";
+// import MyGantt from 'views/gantt/GanttChart';
 import UserManual from "views/userManual/UserManual";
 import Invitation from "views/assignment/manager/Invitation";
 import ManagerAssign from "views/assignment/manager/ManagerAssign";
@@ -37,11 +38,16 @@ import TableList from "views/Tables.js";
 import Maps from "views/Map.js";
 import UserPage from "views/User.js";
 import UpgradeToPro from "views/Upgrade.js";
-
-
 import BothHome from "views/tempo_home/BothHome";
 
+import memoryUtils from "./views/registration/userInfo/memoryUtil"
+import storageUtils from "./views/registration/userInfo/storageUtils"
 
+const user = JSON.parse(storageUtils.getUser())
+memoryUtils.user = user
+//0 for planner, 1 for manager
+const isManager=user.role==0?false:true
+console.log("line 50", user, isManager)
 
 var routes = [
  
@@ -51,23 +57,19 @@ var routes = [
     icon: "nc-icon nc-bank",
     component: Dashboard,
     layout: "/admin",
-    toView:true
+    toView:true,
+    managerSee: true,
+    plannerSee:true
   },
   {
     path: "/home",
     name: "Home",
     icon: "nc-icon nc-bank",
-    component: Home,
-    layout: "/admin",
-    toView:true
-  },
-  {
-    path: "/tempo_home",
-    name: "tempo_home",
-    icon: "nc-icon nc-bullet-list-67",
     layout: "/admin",
     component: BothHome,
-    toView:true
+    toView:true,
+    managerSee: true,
+    plannerSee:true
   },
   {
     path: "/usermanual",
@@ -75,7 +77,9 @@ var routes = [
     icon: "nc-icon nc-map-big",
     component: UserManual,
     layout: "/admin",
-    toView:true
+    toView:true,
+    managerSee: true,
+    plannerSee:true
   },
   {
     path: "/profile",
@@ -83,7 +87,11 @@ var routes = [
     icon: "nc-icon nc-bank",
     component: Profile,
     layout: "/admin",
-    toView:false
+    toView:false,
+    managerSee: true,
+    plannerSee:true,
+    isManager:false,
+    isManager:isManager
   },
   {
     path: "/assignment",
@@ -93,6 +101,9 @@ var routes = [
     iconClosed: <RiIcons.RiArrowDownSFill />,
     iconOpened: <RiIcons.RiArrowUpSFill />,
     toView:true,
+    managerSee: true,
+    plannerSee:true,
+    isManager:isManager,
     subNav: [
       {
         path: "/schedule_m",
@@ -101,7 +112,10 @@ var routes = [
         component: ManagerAssign,
         layout: "/admin",
         isManager:true,
-        toView:true
+        toView:true,
+        managerSee: true,
+        plannerSee: false,
+        isManager:isManager
       },
       {
         path: "/invitation",
@@ -110,7 +124,10 @@ var routes = [
         component: Invitation,
         layout: "/admin",
         isManager:true,
-        toView:true
+        toView:true,
+        managerSee: true,
+        plannerSee: false,
+        isManager:isManager
       },
       {
         path: "/schedule_p",
@@ -119,7 +136,10 @@ var routes = [
         component: PlannerAssign,
         layout: "/admin",
         isPlanner:true,
-        toView:true
+        toView:true,
+        managerSee: false,
+        plannerSee:true,
+        isManager:isManager
       }
     ]
   },
@@ -130,7 +150,10 @@ var routes = [
     component: DefForm,
     layout: "/admin",
     isPlanner:true,
-    toView:true
+    toView:true,
+    managerSee: false,
+    plannerSee: true,
+    isManager:isManager
   },
   {
     path: "/evaluation",
@@ -140,6 +163,9 @@ var routes = [
     iconClosed: <RiIcons.RiArrowDownSFill />,
     iconOpened: <RiIcons.RiArrowUpSFill />,
     toView:true,
+    managerSee: true,
+    plannerSee:true,
+    isManager:isManager,
     subNav: [
       {
         path: "/schedule",
@@ -148,7 +174,10 @@ var routes = [
         component: MySchedule,
         layout: "/admin",
         isManager:true,
-        toView:true
+        toView:true,
+        managerSee: true,
+        plannerSee:true,
+        isManager:isManager
       },
       {
         path: "/progress",
@@ -157,7 +186,10 @@ var routes = [
         component: Progress,
         layout: "/admin",
         isManager:true,
-        toView:true
+        toView:true,
+        managerSee: true,
+        plannerSee:true,
+        isManager:isManager
       }
     ]
   },
@@ -167,7 +199,10 @@ var routes = [
     icon: "nc-icon nc-diamond",
     component: Icons,
     layout: "/admin",
-    toView:true
+    toView:true,
+    managerSee: true,
+    plannerSee:true,
+    isManager:isManager
   },
   {
     path: "/maps",
@@ -175,7 +210,10 @@ var routes = [
     icon: "nc-icon nc-pin-3",
     component: Maps,
     layout: "/admin",
-    toView:true
+    toView:true,
+    managerSee: true,
+    plannerSee:true,
+    isManager:isManager
   },
   {
     path: "/notifications",
@@ -183,7 +221,10 @@ var routes = [
     icon: "nc-icon nc-bell-55",
     component: Notifications,
     layout: "/admin",
-    toView:true
+    toView:true,
+    managerSee: true,
+    plannerSee:true,
+    isManager:isManager
   },
   {
     path: "/user-page",
@@ -191,7 +232,10 @@ var routes = [
     icon: "nc-icon nc-single-02",
     component: UserPage,
     layout: "/admin",
-    toView:true
+    toView:true,
+    managerSee: true,
+    plannerSee:true,
+    isManager:isManager
   },
   {
     path: "/tables",
@@ -199,7 +243,10 @@ var routes = [
     icon: "nc-icon nc-tile-56",
     component: TableList,
     layout: "/admin",
-    toView:true
+    toView:true,
+    managerSee: true,
+    plannerSee:true,
+    isManager:isManager
   },
   {
     path: "/typography",
@@ -207,7 +254,10 @@ var routes = [
     icon: "nc-icon nc-caps-small",
     component: Typography,
     layout: "/admin",
-    toView:true
+    toView:true,
+    managerSee: true,
+    plannerSee:true,
+    isManager:isManager
   },
   {
     //pro: true,
@@ -216,7 +266,10 @@ var routes = [
     icon: "nc-icon nc-spaceship",
     component: UpgradeToPro,
     layout: "/admin",
-    toView:true
+    toView:true,
+    managerSee: true,
+    plannerSee:true,
+    isManager:isManager
   },
   
 ];

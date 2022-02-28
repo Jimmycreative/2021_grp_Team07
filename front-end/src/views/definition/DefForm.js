@@ -4,7 +4,6 @@ import CodeEditor from './controls/CodeEditor';
 
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { Form, FormGroup, Input, Label } from 'reactstrap';
-import axios from 'axios';
 import {
     Card,
     CardBody,
@@ -15,7 +14,8 @@ import {
     Col,
   } from "reactstrap";
 
-
+  import { domain } from "../../global"
+  import { setTrueDate } from "../../gantt/helper"
 
 const basic = `//task=[machine_id, duration]
 job1=[[0, 3], [1, 2], [2, 2]]
@@ -28,6 +28,10 @@ job_names=["job_1","job_2", "job_3"]
 //optional
 machine_names=["machine_0","machine_1", "machine_2", "machine_12"]
 
+subject_to={{
+  2job1.start>5;
+  job2.end>10;
+}}
 //remember to return
 return model.runBasic(jobs)`
 
@@ -78,7 +82,10 @@ machine_names=["machine_0","machine_1", "machine_2", "machine_10", "machine_12"]
 //remember to return
 return model.runMulti(jobs)
 `
-const jobType = [basic,dynamic,flexible,multi];
+const noTemplate = ``
+
+const jobType = [basic,dynamic,flexible,multi,noTemplate];
+
 class DefForm extends React.Component {
     constructor(props) {
         super(props);
@@ -87,13 +94,11 @@ class DefForm extends React.Component {
             modalImport: false,
             showGantt: false,
             selectedOption:"Basic Type",
-            scheduleName:"New Schedule",
+            assignmentId:"",
             description:"",
-            script:"",
-            user_json:{
-                timelength:-1,
-                result:{}
-            },
+            
+            
+            timelength:-1,
             uuid:"",
             result:"",
             
@@ -109,7 +114,6 @@ class DefForm extends React.Component {
               flag: 1,
               selectedFile: null
         };
-        this.domain="http://127.0.0.1:5000"
         this.toggle = this.toggle.bind(this);
         this.toggleImport = this.toggleImport.bind(this);
         this.updateSolution = this.updateSolution.bind(this);
@@ -152,6 +156,9 @@ class DefForm extends React.Component {
             index = 2
         else if(this.state.selectedOption=== "Multi-Resource Type")
             index = 3
+        else if(this.state.selectedOption=== "No template")
+            index = 4
+            
         this.setState({
             modal: !this.state.modal,
             code: jobType[index]
@@ -180,12 +187,12 @@ class DefForm extends React.Component {
         })        
     };
 
-    changeScheduleName = changeEvent =>{
+    changeAssignmentId = changeEvent =>{
 
         this.setState({
-          scheduleName:changeEvent.target.value
+          assignmentId:changeEvent.target.value
       })
-        console.log(this.state.scheduleName)
+        console.log(this.state.assignmentId)
     };
 
     changeDescription = changeEvent =>{
@@ -204,18 +211,19 @@ class DefForm extends React.Component {
       }
     
       handleRun = event=> {
+        
         event.preventDefault();
         var mydata={
             script:this.state.code
         }
         console.log(mydata)
-        fetch(this.domain+"/getuuid", {
+        fetch(domain+"/getuuid", {
             body: JSON.stringify(mydata),
-            cache: 'no-cache',
             headers: new Headers({
                 'Content-Type': 'application/json'
               }),
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            credentials: 'include',
             mode: 'cors', // no-cors, cors, *same-origin
             redirect: 'follow', // manual, *follow, error
             referrer: 'no-referrer', // *client, no-referrer
@@ -235,6 +243,9 @@ class DefForm extends React.Component {
                     this.setState({flag: 1})
                     //this.sendUuid(data.data)
                 }
+                else {
+                    alert(data.message)
+                }
           
         } 
     ).catch(error => console.log(error))
@@ -245,7 +256,7 @@ class DefForm extends React.Component {
             uuid:this.state.uuid
         }
         console.log(mydata)
-        fetch(this.domain+"/getres", {
+        fetch(domain+"/getres", {
             body: JSON.stringify(mydata),
             cache: 'no-cache',
             headers: new Headers({
@@ -268,6 +279,7 @@ class DefForm extends React.Component {
                     console.log(data.data.mid_msg)
                     this.setState({
                         result: data.data.mid_msg,
+                        timelength: data.data.timelength,
                         result_gantt: data.data.result,
                         showGantt: true,
                         flag: 0
@@ -296,37 +308,41 @@ class DefForm extends React.Component {
     runModel() {}
 
     //invoke /saveSchedule
-    saveSchedule(){
+    saveSchedule = () => {
         this.setState({
             showGantt: !this.state.showGantt
         })
         var mydata={
-            name:this.state.scheduleName,
-            script:this.state.script,
-            timelength:this.state.user_json==null?-1:this.state.user_json.timelength,
-            result:this.state.user_json==null?"":this.state.user_json.result,
+            //name:this.state.scheduleName,
+            script:this.state.code,
+            timelength: this.state.timelength,
+            result:this.state.result,
             //0 for new, 1 for compelete, -1 for err
             status:this.state.user_json==null?-1:0,
             errlog:"",
             description:this.state.description,
             uuid:this.state.uuid,
             //uid TODO
-            uid:this.state.uid
+            //uid:this.state.uid,
+            aid: this.state.assignmentId
         }
         fetch(this.domain+'/saveSchedule',{
-          method:'POST',
-          data:mydata,
-          headers:{
-            'Content-Type':'application/json;charset=UTF-8'
-          },
-          mode:'cors',
-          cache:'default'
+            body: JSON.stringify(mydata),
+            cache: 'no-cache',
+            headers: new Headers({
+                'Content-Type': 'application/json'
+              }),
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, cors, *same-origin
+            redirect: 'follow', // manual, *follow, error
+            referrer: 'no-referrer', // *client, no-referrer
         })
          .then(res =>res.json())
          .then((data) => {
            console.log(data)
          })
       }
+
       fileSelectedHandler = (event=>{
         console.log(event.target.files[0])
         if(event.target.files[0].type==="text/plain"){
@@ -467,6 +483,23 @@ class DefForm extends React.Component {
                             </label>
                           
                         </div>
+
+                        {/* No template */}
+                        <div className="form-check">
+                            <label style={{marginLeft: "-3px"}}>
+                                <input
+                                    type="radio"
+                                    name="react-tips"
+                                    value="No template"
+                                    
+                                    checked={this.state.selectedOption === "No template"}
+                                    onChange={this.changeOption}
+                                    className="form-check-input"
+                                />
+                                No template
+                            </label>
+                          
+                        </div>
                     </Form>
                 </ModalBody>
                 <ModalFooter>
@@ -500,7 +533,7 @@ class DefForm extends React.Component {
                                     </Label>
                                     <Input
                                         name="schedulename"
-                                        onChange={this.changeScheduleName}
+                                        onChange={this.changeAssignmentId}
                                         placeholder="Please specify the Assignment ID"
                                         //disabled
                                     />
@@ -555,7 +588,7 @@ class DefForm extends React.Component {
                                 className="mb-2 text-muted"
                                 tag="h6"
                                 >
-                                Card subtitle
+                                {/* Card subtitle */}
                             </CardSubtitle>
                             
                             
@@ -586,7 +619,7 @@ class DefForm extends React.Component {
                                 >
                                     
                                     <ModalBody>
-                                        <GanttDay showBar={true} task={this.state.result_gantt}/>
+                                        <GanttDay showBar={true} task={setTrueDate(this.state.result_gantt)}/>
                                     </ModalBody>
                                                     
                                     <ModalFooter>
