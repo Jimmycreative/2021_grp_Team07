@@ -44,7 +44,8 @@ import memoryUtils from "./views/registration/userInfo/memoryUtil"
 import storageUtils from "./views/registration/userInfo/storageUtils"
 import { jsonParse } from "./variables/util/util"
 
-const user = jsonParse(storageUtils.getUser())
+//const user = jsonParse(storageUtils.getUser())
+const user = storageUtils.getUser()
 memoryUtils.user = user
 //0 for planner, 1 for manager
 const isManager=user.role==0?false:true

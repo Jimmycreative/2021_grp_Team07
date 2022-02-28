@@ -5,7 +5,8 @@ import memoryUtils from "./userInfo/memoryUtil"
 import storageUtils from "./userInfo/storageUtils"
 import { jsonParse } from "../../variables/util/util"
 
-const user = jsonParse(storageUtils.getUser())
+//const user = jsonParse(storageUtils.getUser())
+const user = storageUtils.getUser()
 memoryUtils.user = user
 console.log("line 10",user)
 
@@ -18,7 +19,8 @@ function ProtectedRoute({isLogin, component: Component, ...rest}){
                     return <Component {...props}/>;
                  }
                  else{
-                     console.log("Fail to login")
+                    console.log("line 22",user) 
+                    console.log("Fail to login")
                      return <Redirect to={{pathname: "/login", state: {from: props.location}}} />;
                  }
             }}
