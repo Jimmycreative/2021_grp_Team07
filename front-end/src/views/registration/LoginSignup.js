@@ -92,10 +92,10 @@ function LoginSignup() {
             // password:"123456"
 
             //manager
-            //username:"admin",
-            //password:"imthequeen"
-              username:username,
-              password:password
+            username:"admin",
+            password:"imthequeen"
+            //   username:username,
+            //   password:password
         }
         fetch(domain+"/login", {
           body: JSON.stringify(mydata),
