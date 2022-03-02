@@ -64,10 +64,7 @@ database = mysql.connector.connect(
   password="12345678",
   database="try"
 )
-login_info = {
-    "code": -1,
-    "message": ""
-}
+
 algorithm_result = {}
 
 # For generating token
@@ -544,9 +541,12 @@ def test():
     # session.pop("username")
     data = request.json
     print(data)
-
     result = {}
 
+    login_info = {
+        "code": -1,
+        "message": ""
+    }
     if data:
         username = data['username']
         password = data['password']
@@ -557,7 +557,10 @@ def test():
         #cur.execute("SELECT uid, displayname, rank, disabled FROM user WHERE username = %s AND password = AES_ENCRYPT(%s, UNHEX(SHA2('encryption_key', )));", (username, password,))
         account = cur.fetchone()
         if account:
-            modify_info(1, "Login successfully!")
+            
+            login_info["code"] = 1
+            login_info["message"] = "Login successfully!"
+
             account_str = json.dumps(account, cls=MyEncoder)
             account_json = json.loads(account_str)
             session["username"] = account_json["username"]
@@ -566,10 +569,13 @@ def test():
             result["isLogin"] = 1
 
         else:
-            modify_info(0, "Login not successful")
+            
+            login_info["code"] = 0
+            login_info["message"] = "Login not successfully!"
+
 
         cur.close()
-    return jsonify({"code": login_info["isLogin"], "data": result, "message": login_info["message"]})
+    return jsonify({"code": login_info["code"], "data": result, "message": login_info["message"]})
 
     # except Exception as e:
     #   return jsonify({"code": -2, "data": {}, "message": e})
