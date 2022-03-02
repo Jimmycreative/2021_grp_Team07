@@ -9,7 +9,7 @@ import time
 try:
     print("Started\t",time.asctime( time.localtime(time.time())))
     jobs_data = [  # task = (machine_id, processing_time).
-[(0, 3), (1, 2), (2, 2)], [(0, 2), (12, 1), (1, 4)], [(1, 4), (2, 3)]    ]
+[(0, 3), (1, 2), (2, 2)], [(0, 2), (2, 1), (1, 4)], [(1, 4), (2, 3)]    ]
     
     model_type = "basic"
     all_machines = util.getMachineListCount(jobs_data)
@@ -35,8 +35,6 @@ try:
     #basic model constraints
     util.addBasicConstraints(all_machines, model, machine_to_intervals, jobs_data, all_tasks)
 
-    model.Add(2*all_tasks[0, 0].start>5)
-    model.Add(1*all_tasks[1, 1].end>10)
     print("Constraints added\t",time.asctime( time.localtime(time.time())))
     
     # Makespan objective.

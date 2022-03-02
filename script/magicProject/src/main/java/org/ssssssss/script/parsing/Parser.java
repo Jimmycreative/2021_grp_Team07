@@ -77,6 +77,9 @@ public class Parser {
 		return varIndices;
 	}
 
+	public JSONObject getJsonDecision() {
+		return jsonDecision;
+	}
 
 	public List<Node> parse(String source) throws Exception {
 		List<Node> nodes = new ArrayList<>();
