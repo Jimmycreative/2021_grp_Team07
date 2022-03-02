@@ -77,7 +77,7 @@ public class Parser {
 		return varIndices;
 	}
 
-	public JSONObject getJsonDecision() {
+	public static JSONObject getJsonDecision() {
 		return jsonDecision;
 	}
 
@@ -1047,9 +1047,5 @@ public class Parser {
 		}
 		System.out.println(constraint);
 
-	}
-
-	public static JSONObject getJsonDecision() {
-		return jsonDecision;
 	}
 }
