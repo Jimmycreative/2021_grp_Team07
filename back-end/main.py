@@ -154,14 +154,7 @@ def checktoken(token):
         return True
     else:
         return False
-
-
-def modify_info(isLogin, message):
-    login_info["isLogin"] = isLogin
-    login_info["message"] = message
-    print(login_info["message"])
-    print(type(login_info))
-
+        
 
 def modify_token(uses, token):
     cur = database.cursor()
