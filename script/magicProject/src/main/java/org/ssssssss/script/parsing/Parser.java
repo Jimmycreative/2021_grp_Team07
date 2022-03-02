@@ -70,7 +70,7 @@ public class Parser {
 	private TokenStream stream;
 	private final List<String> defines = new ArrayList<>();
 	private ArrayList<String> constraint = new ArrayList<>();
-	private JSONObject jsonDecision = new JSONObject();
+	private static JSONObject jsonDecision = new JSONObject();
 	private boolean isDecision;
 
 	public Set<VarIndex> getVarIndices() {
@@ -1047,5 +1047,9 @@ public class Parser {
 		}
 		System.out.println(constraint);
 
+	}
+
+	public static JSONObject getJsonDecision() {
+		return jsonDecision;
 	}
 }
