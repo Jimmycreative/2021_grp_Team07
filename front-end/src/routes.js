@@ -181,18 +181,18 @@ var routes = [
         plannerSee:true,
         isManager:isManager
       },
-      {
-        path: "/progress",
-        name: "Progress",
-        icon: "nc-icon nc-align-left-2",
-        component: Progress,
-        layout: "/admin",
-        isManager:true,
-        toView:true,
-        managerSee: true,
-        plannerSee:true,
-        isManager:isManager
-      }
+      // {
+      //   path: "/progress",
+      //   name: "Progress",
+      //   icon: "nc-icon nc-align-left-2",
+      //   component: Progress,
+      //   layout: "/admin",
+      //   isManager:true,
+      //   toView:true,
+      //   managerSee: true,
+      //   plannerSee:true,
+      //   isManager:isManager
+      // }
     ]
   },
   {
