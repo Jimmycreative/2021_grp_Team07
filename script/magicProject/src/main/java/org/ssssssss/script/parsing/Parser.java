@@ -1,5 +1,6 @@
 package org.ssssssss.script.parsing;
 
+import com.alibaba.fastjson.JSONObject;
 import org.ssssssss.script.MagicScriptError;
 import org.ssssssss.script.parsing.ast.*;
 import org.ssssssss.script.parsing.ast.binary.AssigmentOperation;
@@ -69,6 +70,8 @@ public class Parser {
 	private TokenStream stream;
 	private final List<String> defines = new ArrayList<>();
 	private ArrayList<String> constraint = new ArrayList<>();
+	private JSONObject jsonDecision = new JSONObject();
+	private boolean isDecision;
 
 	public Set<VarIndex> getVarIndices() {
 		return varIndices;
@@ -81,9 +84,16 @@ public class Parser {
 		stream = Tokenizer.tokenize(source);
 		while (stream.hasMore()) {
 			Node node = parseStatement();
+
 			if (node != null) {
 				validateNode(node);
 				nodes.add(node);
+				if (isDecision==true && node instanceof VariableDefine){
+					VariableDefine myVar=(VariableDefine) node;
+					jsonDecision.put(node.getSpan().getText(),myVar.getRight().getSpan().getText());
+					System.out.println(jsonDecision);
+
+				}
 			}
 		}
 		pop();
@@ -376,10 +386,14 @@ public class Parser {
 		Span opening = stream.consume().getSpan();
 		Token token = stream.expect(Identifier);
 		boolean isConst = "const".equals(opening.getText());
-		boolean isDecision = "decision_var".equals(opening.getText());
+		isDecision = "decision_var".equals(opening.getText());
+
 		checkKeyword(token.getSpan());
 		String variableName = token.getSpan().getText();
+
+
 		if (stream.match(Assignment, true)) {
+
 			VarIndex varIndex = forceAdd(variableName, isConst);
 			defines.add(variableName);
 			return new VariableDefine(addSpan(opening, stream.getPrev().getSpan()), varIndex, parseExpression());

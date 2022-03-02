@@ -31,5 +31,7 @@ public class VariableDefine extends Node {
 				.visit(right)    // 读取变量值
 				.scopeStore();    // 保存变量
 	}
-
+	public Expression getRight(){
+		return right;
+	}
 }

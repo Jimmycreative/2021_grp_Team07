@@ -107,6 +107,7 @@ public class Span {
 		return "Span [text=" + getText() + ", start=" + start + ", end=" + end + "]";
 	}
 
+
 	/**
 	 * Returns the line this span is on. Does not return a correct result for spans across multiple lines.
 	 **/
