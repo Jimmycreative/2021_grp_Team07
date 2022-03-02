@@ -4,16 +4,14 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.grp.util.FuncVariable;
 import com.grp.util.Result;
+import io.swagger.models.auth.In;
 import org.springframework.stereotype.Component;
 import org.ssssssss.magicapi.config.MagicModule;
 import org.ssssssss.script.annotation.Comment;
 import org.ssssssss.script.parsing.Parser;
 import org.ssssssss.script.runtime.RuntimeContext;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class AlgorithmFunction implements MagicModule {
@@ -23,9 +21,9 @@ public class AlgorithmFunction implements MagicModule {
     }
 
     @Comment("Standardize job format")
-    public Result standardize(RuntimeContext context, List<ArrayList<ArrayList<Integer>>> jobs) {
+    public Result standardize(List<ArrayList<ArrayList<Integer>>> jobs) {
         try {
-            JSONObject decisionVar=Parser.getJsonDecision();
+            LinkedHashMap<String, Object> decisionVar=Parser.getJsonDecision();
             JSONObject realVars=getDecisionVar(decisionVar);
 
             JSONObject startObj=realVars.getJSONObject("start");
@@ -35,6 +33,10 @@ public class AlgorithmFunction implements MagicModule {
             JSONObject endObj=realVars.getJSONObject("end");
             String endKey=endObj.getString("name");
             int endVal=endObj.getIntValue("value");
+
+            JSONObject priorityObj=realVars.getJSONObject("priority");
+            String priorityKey=priorityObj.getString("name");
+            ArrayList<Integer> priorityVal=(ArrayList<Integer>) priorityObj.get("value");
 
             ArrayList<Integer> testJob=jobs.get(0).get(0);
             if (testJob.size()!=2) {
@@ -55,6 +57,7 @@ public class AlgorithmFunction implements MagicModule {
                     object.put("duration", task.get(1));
                     object.put(startKey, startVal);
                     object.put(endKey, endVal);
+                    object.put(priorityKey,priorityVal.get(i));
                     oneJob.add(object);
 
                     //for tasks
@@ -86,6 +89,8 @@ public class AlgorithmFunction implements MagicModule {
             JSONObject formatJob=new JSONObject();
             formatJob.put("jobs",jobArr);
             formatJob.put("machines", machineArr);
+
+            formatJob.put("priority", priorityVal);
             return Result.succeed(formatJob);
         } catch (Exception e) {
             return Result.fail(e.getMessage());
@@ -114,29 +119,49 @@ public class AlgorithmFunction implements MagicModule {
         return object;
     }
 
-    private JSONObject getDecisionVar(JSONObject decisionVars) throws Exception {
+    private JSONObject getDecisionVar(LinkedHashMap<String, Object> decisionVars) throws Exception {
         JSONObject realVars=new JSONObject();
         int count=0;
         try {
             for (String str: decisionVars.keySet()) {
                 JSONObject oneVar=new JSONObject();
-                if (count>2)
+                if (count>3)
                     break;
                 String key=str.replace("decision_var ", "");
                 key=key.replace("=", "");
                 key=key.replace(" ", "");
 
                 String tempVal=(String) decisionVars.get(str);
-                int initValue=Integer.parseInt(tempVal);
-                oneVar.put("name", key);
-                oneVar.put("value", initValue);
+                if (count<2) {
+                    int initValue=Integer.parseInt(tempVal);
+                    oneVar.put("name", key);
+                    oneVar.put("value", initValue);
 
-                if (count==0) {
-                    realVars.put("start", oneVar);
+                    if (count==0) {
+                        realVars.put("start", oneVar);
+                    }
+                    else if (count==1) {
+                        realVars.put("end", oneVar);
+                    }
                 }
                 else {
-                    realVars.put("end", oneVar);
+                    tempVal=tempVal.replace("[", "");
+                    tempVal=tempVal.replace("]", "");
+                    tempVal=tempVal.replace(" ", "");
+                    String[] split = tempVal.split(","); //转为String[]
+
+                    Integer[] ints1 = new Integer[split.length];
+                    for (int i = 0; i < ints1.length; i++) {
+                        ints1[i] = Integer.parseInt(split[i]);
+                    }
+
+                    ArrayList<Integer> priorityList=new ArrayList(Arrays.asList(ints1));
+
+                    oneVar.put("name", key);
+                    oneVar.put("value", priorityList);
+                    realVars.put("priority",oneVar);
                 }
+
                 count++;
             }
 

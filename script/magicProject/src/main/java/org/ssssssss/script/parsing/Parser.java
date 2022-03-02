@@ -70,14 +70,14 @@ public class Parser {
 	private TokenStream stream;
 	private final List<String> defines = new ArrayList<>();
 	private ArrayList<String> constraint = new ArrayList<>();
-	private static JSONObject jsonDecision = new JSONObject();
+	private static LinkedHashMap<String, Object> jsonDecision = new LinkedHashMap<>();
 	private boolean isDecision;
 
 	public Set<VarIndex> getVarIndices() {
 		return varIndices;
 	}
 
-	public static JSONObject getJsonDecision() {
+	public static LinkedHashMap<String, Object> getJsonDecision() {
 		return jsonDecision;
 	}
 
