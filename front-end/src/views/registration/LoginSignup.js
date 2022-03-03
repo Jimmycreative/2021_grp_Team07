@@ -88,12 +88,12 @@ function LoginSignup() {
         console.log(body)
         var mydata={
             //planner
-            // username:"fyyc",
-            // password:"123456"
+            username:"fyyc",
+            password:"123456"
 
             //manager
-            username:"sheldon",
-            password:"imthequeen"
+            // username:"sheldon",
+            // password:"imthequeen"
             //   username:username,
             //   password:password
         }
