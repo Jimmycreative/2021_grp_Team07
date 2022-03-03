@@ -37,6 +37,11 @@ public class ModelFunction implements MagicModule {
     }
 
     @Comment("run model")
+    public void add(String test) {
+        System.out.println(test);
+    }
+
+    @Comment("run model")
     public Result runModel(RuntimeContext context, int type, @Nullable Result originalData) {
         if (type<1 || (originalData==null && type<3) || (originalData!=null && originalData.getCode()==-1 && type<3) || type>4) {
             return originalData;

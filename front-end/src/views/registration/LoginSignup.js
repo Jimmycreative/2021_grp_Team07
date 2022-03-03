@@ -92,7 +92,7 @@ function LoginSignup() {
             // password:"123456"
 
             //manager
-            username:"admin",
+            username:"sheldon",
             password:"imthequeen"
             //   username:username,
             //   password:password

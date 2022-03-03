@@ -244,7 +244,7 @@ const getAssignedSchedules = () => {
                             <td> <Button className="btn-round btn-icon"
                       color="success"
                       size="sm"
-                      onClick={() => {setModal(!modal);setPlannername(val.name)}}
+                      onClick={() => {setModal(!modal);setPlannername(val.username)}}
                       >  {/*pop up function */}
                     <i className="fa fa-envelope" /> </Button>
 
