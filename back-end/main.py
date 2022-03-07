@@ -160,13 +160,6 @@ def checktoken(token):
         return False
 
 
-# def modify_info(isLogin, message):
-#     login_info["isLogin"] = isLogin
-#     login_info["message"] = message
-#     print(login_info["message"])
-#     print(type(login_info))
-
-
 def modify_token(uses, token):
     cur = database.cursor()
     cur.execute(
@@ -552,15 +545,6 @@ def login():
         "code": -1,
         "message": ""
     }
-
-    # data is empty
-    # demonstrate it
-
-    # data = {
-    #     'username': "BBB",
-    #     'password': "CCC"
-    # }
-
     if data:
 
         username = data['username']

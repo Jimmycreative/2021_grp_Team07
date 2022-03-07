@@ -89,7 +89,12 @@ public class MagicScript extends CompiledScript {
 			Parser parser = new Parser();
 			boolean debug = source.startsWith(DEBUG_MARK);
 			String script = debug ? source.substring(DEBUG_MARK.length()) : source;
-			List<Node> nodes = parser.parse(expression ? "return " + script : script);
+			List<Node> nodes = null;
+			try {
+				nodes = parser.parse(expression ? "return " + script : script);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			Set<VarIndex> varIndices = parser.getVarIndices();
 			return new MagicScript(nodes, varIndices, scriptEngine, debug);
 		});

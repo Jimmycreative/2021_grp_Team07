@@ -35,6 +35,7 @@ public abstract class Node implements Opcodes {
 		return getClass().getSimpleName() + ":" + span.getText();
 	}
 
+
 	public void visitMethod(MagicScriptCompiler compiler) {
 
 	}

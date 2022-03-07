@@ -42,8 +42,10 @@ import BothHome from "views/tempo_home/BothHome";
 
 import memoryUtils from "./views/registration/userInfo/memoryUtil"
 import storageUtils from "./views/registration/userInfo/storageUtils"
+import { jsonParse } from "./variables/util/util"
 
-const user = JSON.parse(storageUtils.getUser())
+//const user = jsonParse(storageUtils.getUser())
+const user = storageUtils.getUser()
 memoryUtils.user = user
 //0 for planner, 1 for manager
 const isManager=user.role==0?false:true
@@ -179,18 +181,18 @@ var routes = [
         plannerSee:true,
         isManager:isManager
       },
-      {
-        path: "/progress",
-        name: "Progress",
-        icon: "nc-icon nc-align-left-2",
-        component: Progress,
-        layout: "/admin",
-        isManager:true,
-        toView:true,
-        managerSee: true,
-        plannerSee:true,
-        isManager:isManager
-      }
+      // {
+      //   path: "/progress",
+      //   name: "Progress",
+      //   icon: "nc-icon nc-align-left-2",
+      //   component: Progress,
+      //   layout: "/admin",
+      //   isManager:true,
+      //   toView:true,
+      //   managerSee: true,
+      //   plannerSee:true,
+      //   isManager:isManager
+      // }
     ]
   },
   {

@@ -26,7 +26,7 @@ public class BasicStatement extends Node {
     public void compile(MagicScriptCompiler compiler) {
         Label start = new Label();
         Label end = new Label();
-        compiler.markLabel(start, end)    // 标记 continue 和 break 位置
+        compiler.markLabel(start, end)
                 .label(start)
 
                 // 执行循环体
