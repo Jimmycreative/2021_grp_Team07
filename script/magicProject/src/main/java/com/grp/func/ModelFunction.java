@@ -2,14 +2,18 @@ package com.grp.func;
 
 
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.grp.service.ModelService;
 import com.grp.util.FuncVariable;
 import com.grp.util.MyThreadLocal;
 import com.grp.util.Result;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.ssssssss.magicapi.config.MagicModule;
 import org.ssssssss.script.annotation.Comment;
+import org.ssssssss.script.reflection.JavaReflection;
 import org.ssssssss.script.runtime.RuntimeContext;
 
 import java.util.*;
@@ -30,6 +34,79 @@ public class ModelFunction implements MagicModule {
     @Override
     public String getModuleName() {
         return "model";
+    }
+
+    @Comment("run model")
+    public void add(String test) {
+        System.out.println(test);
+    }
+
+    @Comment("run model")
+    public Result runModel(RuntimeContext context, int type, @Nullable Result originalData) {
+        if (type<1 || (originalData==null && type<3) || (originalData!=null && originalData.getCode()==-1 && type<3) || type>4) {
+            return originalData;
+        }
+        try {
+            if (type==3 || type==4) {
+                List<ArrayList<ArrayList>> jobs=getJobKeyword(context);
+                Result res=type==3?runFlexible(context, jobs):runMulti(context, jobs);
+                return res;
+            }
+            JSONObject myData = (JSONObject) originalData.getData();
+            JSONArray jobArr = myData.getJSONArray("jobs");
+            JSONArray machineArr = myData.getJSONArray("machines");
+
+            List<ArrayList<ArrayList>> realJobs=JSToList(jobArr);
+            if (type==1) {
+                return runBasic(context, realJobs);
+            }
+            else if (type==2) {
+                ArrayList<Integer> priorityArr =(ArrayList<Integer>) myData.get("priority");
+                return runDynamic(context, realJobs, priorityArr);
+            }
+            else {
+                return Result.fail("Wrong type");
+            }
+
+
+        } catch (Exception e) {
+            return Result.fail(e.getMessage());
+        }
+    }
+
+    private List<ArrayList<ArrayList>> getJobKeyword(RuntimeContext context) throws Exception {
+        try {
+            Map<String, Object> map=context.getVarMap();
+            List<ArrayList<ArrayList>> list=(List<ArrayList<ArrayList>>) map.get("jobs");
+            return list;
+        }
+        catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    /**
+     * Convert format of jobs
+     * @param jobArr JSONArray for jobs
+     * @return Arraylist of jobs
+     */
+    private List<ArrayList<ArrayList>> JSToList(JSONArray jobArr) {
+        List<ArrayList<ArrayList>> jobs=new ArrayList<>();
+        for (int i=0;i<jobArr.size();i++) {
+            ArrayList<ArrayList> myJob=new ArrayList<>();
+            JSONArray oneJob=jobArr.getJSONArray(i);
+            for (int j=0;j<oneJob.size();j++) {
+                ArrayList myTask=new ArrayList<>();
+                JSONObject oneTask=oneJob.getJSONObject(j);
+                int machine_id=oneTask.getIntValue("machine_id");
+                int duration=oneTask.getIntValue("duration");
+                myTask.add(machine_id);
+                myTask.add(duration);
+                myJob.add(myTask);
+            }
+            jobs.add(myJob);
+        }
+        return jobs;
     }
 
     /**
