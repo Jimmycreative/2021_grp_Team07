@@ -12,12 +12,71 @@ import org.ssssssss.script.parsing.Parser;
 import org.ssssssss.script.runtime.RuntimeContext;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 @Component
 public class AlgorithmFunction implements MagicModule {
     @Override
     public String getModuleName() {
         return "algorithm";
+    }
+
+    //底层逻辑
+    public ArrayList<String> analyzeConstraint(String customizedConstraint) throws Exception {
+        if (customizedConstraint.equals(""))
+            return new ArrayList<>();
+        try {
+            customizedConstraint=customizedConstraint.replace("\n", "");
+            customizedConstraint=customizedConstraint.replace("\r", "");
+            customizedConstraint=customizedConstraint.replace(" ", "");
+            ArrayList<String> myConstraints=new ArrayList<>();
+            String [] constraints=customizedConstraint.split(";");
+            for (String constraint:constraints) {
+                //find the job and task index
+                //e.g. 2*js_jobs[0][1].start
+                StringBuilder expr= new StringBuilder();
+                expr.append("    model.Add(");
+                //TODO change start to variable name
+                if (!constraint.contains(".start") && !constraint.contains(".end")) {
+                    throw new Exception("Please input correct constraint format");
+                }
+
+                constraint=constraint.replace(" ","");
+                expr.append(getVariable(constraint));
+                expr.append(")");
+                myConstraints.add(expr.toString());
+
+            }
+            return myConstraints;
+        }
+        catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    //底层逻辑
+    private String getVariable(String constraint) throws Exception {
+        try {
+            //e.g. 2*js_jobs[0][1].start
+            String varName;
+            Pattern pattern = Pattern.compile("[0-9]*");
+            boolean isNum=pattern.matcher(constraint).matches();
+            if (isNum)
+                return constraint;
+
+            boolean isFirstNum=Character.isDigit(constraint.charAt(0));
+            if (!isFirstNum) {
+                varName=constraint.substring(0, constraint.indexOf("["));
+            }
+            else {
+                varName=constraint.substring(constraint.indexOf("*")+1, constraint.indexOf("["));
+            }
+
+            String realConstraint=constraint.replace(varName,"all_tasks");
+            return realConstraint;
+        }catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
     }
 
     @Comment("Standardize job format")

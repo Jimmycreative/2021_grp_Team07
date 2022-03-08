@@ -1004,22 +1004,29 @@ public class Parser {
 		for (int i=0; i<lines.length; i++)
 		{
 			System.out.println("this:"+lines[i]);
-			if (lines[i].equals("start<end")){
+			if (lines[i].equals("job[index+1].start>=job[index].end")){
 				constraint.add("1"); // for precedence constraint
 			}
-			else if (lines[i].equals("for(machineinmachines){machine.nexTask.start>=machine.curTask.end}")){
+			else if (lines[i].equals("machine[index+1].start>=machine[index].end")){
 				constraint.add("2"); // for overlap constraint
 			}
-			else if (lines[i].equals("for(taskintasks){if(len(task)>1){task.chooseOption<=1}}")){
-				if (constraint.contains("4") || constraint.contains("5")){
-					throw new Exception("Job type conflict occurs!");
-				}
-				else {
-					constraint.add("3");
-				}
+			//else if (lines[i].equals("for(taskintasks){if(len(task)>1){task.chooseOption<=1}}")){
 
-			}
-			else if(lines[i].equals("for(machineinmachines){machine.nexTask.priority<=machine.curTask.priority}")){
+				//for(task in tasks){if(len(task)>1){task.selectOneMachine())
+			//	if (constraint.contains("4") || constraint.contains("5")){
+			//		throw new Exception("Job type conflict occurs!");
+			//	}
+			//	else {
+			//		constraint.add("3");
+			//	}
+
+			//}
+			else if(lines[i].equals("machine.tasks[index+1].priority<=machine.tasks[index].priority")){
+				//for(machineinmachines)
+				//	for (index in range(0,len(machine.tasks))
+				// 		if(index==len(machine.tasks)-1)
+				//			break
+				//		machine.tasks[index+1].priority<=machine.tasks[index].priority
 				if (constraint.contains("3") || constraint.contains("5")){
 					throw new Exception("Job type conflict occurs!");
 				}
@@ -1028,7 +1035,9 @@ public class Parser {
 				}
 
 			}
+
 			else if(lines[i].equals("for(taskintasks){if(len(task)>1){task.chooseOption=len(task)}}")){
+				//for(task in tasks){if(len(task)>1){task.selectAllMachine())
 				if (constraint.contains("3") || constraint.contains("4")){
 					throw new Exception("Job type conflict occurs!");
 				}
