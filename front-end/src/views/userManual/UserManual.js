@@ -67,7 +67,7 @@ function UserManual() {
                     <h4>Definition Page</h4>
                     <p>
                     This page allows Planners to define Job shop scheduling problems by writing or importing the script, based on JSSP type.<br/>
-                    Generates a computed schedule in a Gantt chart.</p>import { Code1 } from 'assets/img/addUser.png';
+                    Generates a computed schedule in a Gantt chart.</p>
 
                 
                 </div>
@@ -96,8 +96,8 @@ function UserManual() {
                 <p>
                 Users should define<br/>
                 <li>job data: including tasks for each job, machine id and duration for each task. Tasks within one job are constrained by their precedence. </li>
-                <li>job names (optional): the order and length should be same as the definition of job data. Use *job_names* as keyword.</li>
-                <li>machine names (optional): the order and length should be same as the index of the machine defined in job data. Use *machine_names* as keyword.</li>
+                <li>job names (optional): the order and length should be same as the definition of job data. Use <em>job_names</em> as keyword.</li>
+                <li>machine names (optional): the order and length should be same as the index of the machine defined in job data. Use <em>machine_names</em> as keyword.</li>
                 <li>choose <em>model.runBasic()</em></li> <br/>
                 
                 See code snippet below👇:<br/>
@@ -116,8 +116,8 @@ function UserManual() {
                 Users should define<br/>
                 <li>job data: including tasks for each job, machine id and duration for each task. Tasks within one job are constrained by their precedence. </li>
                 <li>expected duration: the order and length should be same as the definition of job data.</li>
-                <li>job names (optional): the order and length should be same as the definition of job data. Use *job_names* as keyword.</li>
-                <li>machine names (optional): the order and length should be same as the index of the machine defined in job data. Use *machine_names* as keyword.</li>
+                <li>job names (optional): the order and length should be same as the definition of job data. Use<em>job_names</em> as keyword.</li>
+                <li>machine names (optional): the order and length should be same as the index of the machine defined in job data. Use <em>machine_names</em> as keyword.</li>
                 <li>choose <em>model.runBasic()</em></li> <br/>
                 See code snippet below👇:<br/>
                 <img className='CodeImg' alt='CodeImg' align="center" src={Code2} style={{width:"310", height:"360px" }}/> 
@@ -133,9 +133,8 @@ function UserManual() {
                 <p>
                 Users should define<br/>
                 <li>job data: including tasks for each job, machine id and duration for each task. Tasks within one job are constrained by their precedence.</li>
-                <li>job names (optional): the order and length should be same as the definition of job data. Use *job_names* as keyword.</li>
-                <li>machine names (optional): the order and length should be same as the index of the machine defined in job data. Use *machine_names* as keyword.</li>
-                <li>machine names (optional): the order and length should be same as the index of the machine defined in job data. Use *machine_names* as keyword.</li>
+                <li>job names (optional): the order and length should be same as the definition of job data. Use <em>job_names</em> as keyword.</li>
+                <li>machine names (optional): the order and length should be same as the index of the machine defined in job data. Use <em>machine_names</em> as keyword.</li>
                 <li>choose <em>model.Flexible()</em></li> <br/>
                 See code snippet below👇:<br/>
                 <img className='CodeImg' alt='CodeImg' align="center" src={Code3} style={{width:"310", height:"360px" }}/> 
@@ -151,8 +150,8 @@ function UserManual() {
                 <p>
                 Users should define<br/>
                 <li>job data: including tasks for each job, machine id and duration for each task. Tasks within one job are constrained by their precedence. </li>
-                <li>job names (optional): the order and length should be same as the definition of job data. Use *job_names* as keyword.</li>
-                <li>machine names (optional): the order and length should be same as the index of the machine defined in job data. Use *machine_names* as keyword.</li>
+                <li>job names (optional): the order and length should be same as the definition of job data. Use <em>job_names</em> as keyword.</li>
+                <li>machine names (optional): the order and length should be same as the index of the machine defined in job data. Use <em>machine_names</em>as keyword.</li>
                 <li>choose <em>model.runMulti()</em></li> <br/>
                 See code snippet below👇:<br/>
                 <img className='CodeImg' alt='CodeImg' align="center" src={Code4} style={{width:"310", height:"360px" }}/> 
