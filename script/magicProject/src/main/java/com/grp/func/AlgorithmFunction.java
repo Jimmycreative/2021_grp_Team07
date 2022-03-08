@@ -80,8 +80,9 @@ public class AlgorithmFunction implements MagicModule {
     }
 
     @Comment("Standardize job format")
-    public Result standardize(List<ArrayList<ArrayList<Integer>>> jobs) {
+    public Result standardize(RuntimeContext context, List<ArrayList<ArrayList<Integer>>> jobs) {
         try {
+            ArrayList<Integer> myPriority=(ArrayList<Integer>) getJobPriority(context);
             LinkedHashMap<String, Object> decisionVar=Parser.getJsonDecision();
             JSONObject realVars=getDecisionVar(decisionVar);
 
@@ -128,6 +129,8 @@ public class AlgorithmFunction implements MagicModule {
                     machineTask.put(startKey, startVal);
                     machineTask.put(endKey, endVal);
                     machineTask.put("job_index",i+"_"+j);
+                    int priority= myPriority.get(i);
+                    machineTask.put("priority",priority);
                     if (index==-1) {
                         taskArr.add(machineTask);
                         curMachine.put("machine_id", task.get(0));
@@ -172,9 +175,9 @@ public class AlgorithmFunction implements MagicModule {
         return -1;
     }
 
-    private Object getKeywordVal(RuntimeContext context) {
+    private Object getJobPriority(RuntimeContext context) {
         Map<String, Object> map=context.getVarMap();
-        Object object=map.get("keyword");
+        Object object=map.get("job_priority");
         return object;
     }
 
