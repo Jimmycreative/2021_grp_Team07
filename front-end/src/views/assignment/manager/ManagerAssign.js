@@ -4,10 +4,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import {Button,Card,CardHeader,CardBody,CardTitle,Table,Row,Col,FormGroup,Form,Input} from "reactstrap";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import React, { useEffect } from "react";
-import { useModal } from 'react-hooks-use-modal';
-import TextField from '@mui/material/TextField';
 import './ManagerAssign.css';
-import infoPlanner from "./infoPlanner.json";
 import { domain } from "../../../global"
 import { useState } from 'react';
 import {InputGroup,InputGroupAddon,InputGroupText} from "reactstrap"; {/* npm install --save react-tabs */}
@@ -39,35 +36,7 @@ function ManagerAssign() {
   const [myHistory,setmyHistory] = useState([]);
   const [thisPlanner, setThisPlanner]=useState("")
   const [thisDescription, setThisDescription]=useState("")
- /*validation 
-  const [Title, setTitle] = useState("")
-  const [Plannername, setPlannername] = useState("")
-  const [Message, setMessage] = useState("")
 
-
-          const onTitleHandler = (e) => {
-            setTitle(e.currentTarget.value)
-        }
-
-        const onPlannerHandler = (e) => {
-          setPlannername(e.currentTarget.value)
-        }
-
-        const onMessageHandler = (e) => {
-          setMessage(e.currentTarget.value)
-        }
-
-        const TitleError = TitleEntered =>
-                Title.length < 1 ? true : false;
-
-       
-
-        const MessageError = MessageEntered =>
-                Message.length < 1 ? true : false;
-
-         const onSubmitHandler = (e) => {
-                  e.preventDefault();
-                }*/
     
 const [tableData,setTableData] = useState(null);
 const [loading,setloading] = useState(true);
@@ -75,6 +44,7 @@ const [error,seterror] = useState(null);
 const [snddata,sndsetdata] = useState(null);
 const [sndloading,sndsetloading] = useState(true);
 const [snderror,sndseterror] = useState(null);
+
 
 const sleep = (milliseconds) => {
   return new Promise(resolve => setTimeout(resolve, milliseconds))
@@ -180,7 +150,7 @@ const getAssignedSchedules = () => {
     <>
      
      
-    <div className='ContentTabBox'>
+   
     <Tabs>
      <TabList className='TwoTabs'>
         <Tab>Assign Schedules</Tab>
@@ -191,8 +161,7 @@ const getAssignedSchedules = () => {
       <TabPanel className='SearchingPlanner'>
       {/* when click this tab, it shows the searching box which is able to find planner and write the form */}
 
-      <div className="ContentOfForm">
-        <Row>
+        <Col>
          
           <div className='AssignForm'>
             <Card className="card-plain">
@@ -322,24 +291,23 @@ const getAssignedSchedules = () => {
               </CardBody>
             </Card>
             </div>
-        </Row>
-      </div>
-   
+        </Col>
+     
       
     </TabPanel>
 
     <TabPanel className='ViewMessages'> {/* when click this tab, 
                                           it shows table to search the messages that manager sent*/}
     
-    <div className="CheckMessage">
-        <Row>
+    
+        <Col>
          
           <div className='View'>
             <Card className="card-plain">
               <CardHeader>
                 <CardTitle tag="h4">Message History</CardTitle>
                 <p className="card-category">
-                  Search planner name or date to review sent message.
+                  Search planner name 
                 </p>
                     <InputGroup>  {/* Search Box */}
                       <InputGroupAddon addonType="prepend">
@@ -435,13 +403,13 @@ const getAssignedSchedules = () => {
               </CardBody>
             </Card>
             </div>
-        </Row>
-      </div>
+        </Col>
+     
 
       </TabPanel>
 
     </Tabs>
-    </div>
+    
     </>
   );
                     

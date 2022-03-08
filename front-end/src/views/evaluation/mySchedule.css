@@ -1,16 +1,22 @@
 body {
-    text-align: center;
-  }
+  text-align: center;
   
-  .pagination-wrapper {
-    overflow-x:auto;
-  }
-  
-  .pagination {
-    justify-content: center;
-    margin:30px;
-  }
-  
-  .data-slice {
-    margin-top: 15px;
-  }
+}
+.ScheduleContent{
+  margin-top: 7%;
+}
+
+.pagination-wrapper {
+  overflow-x:auto;
+  margin-left: 40%;
+}
+
+.pagination {
+  justify-content: center;
+  margin:30px;
+
+}
+
+.data-slice {
+  margin-top: 15px;
+}

@@ -1,28 +1,4 @@
-.ContentTabBox{
-    margin-top: 5%;
-
-   
-
-}
-
 .TwoTabs{
-    float: left;
-}
-
-.AssignForm{
     margin-top: 5%;
-
-   
-}
-.View{
-    margin-top: 5%;
-}
-
-.PopupForm{
-    margin-top: 5%;
-}
-
-.TextBox{
-	height:100px; 
-    resize:none;
+    text-align: left;
 }
