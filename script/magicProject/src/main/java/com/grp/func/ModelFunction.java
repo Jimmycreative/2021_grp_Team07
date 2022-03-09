@@ -42,17 +42,18 @@ public class ModelFunction implements MagicModule {
     }
 
     @Comment("run model")
-    public Result runModel(RuntimeContext context, int type, @Nullable Result originalData) {
-        if (type<1 || (originalData==null && type<3) || (originalData!=null && originalData.getCode()==-1 && type<3) || type>4) {
-            return originalData;
+    public Result runModel(RuntimeContext context, @Comment("job_type") int type, @Comment("js_jobs") @Nullable JSONObject originalData) {
+        if (type<1 || (originalData==null && type<3) || (Objects.requireNonNull(originalData).isEmpty() && type<3) || type>4) {
+            return Result.fail("Wrong Definition.");
         }
         try {
+            Result originalRes=Result.succeed(originalData);
             if (type==3 || type==4) {
                 List<ArrayList<ArrayList>> jobs=getJobKeyword(context);
                 Result res=type==3?runFlexible(context, jobs):runMulti(context, jobs);
                 return res;
             }
-            JSONObject myData = (JSONObject) originalData.getData();
+            JSONObject myData = (JSONObject) originalRes.getData();
             JSONArray jobArr = myData.getJSONArray("jobs");
             JSONArray machineArr = myData.getJSONArray("machines");
 
