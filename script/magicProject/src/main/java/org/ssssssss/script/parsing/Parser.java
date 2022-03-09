@@ -1019,42 +1019,48 @@ public class Parser {
 		//System.out.println(handle);
 		String[] lines = handle.split(";");
 
-		varName = varName.replace("\n", ""); //remove newline
-		varName = varName.replaceAll("\\s", ""); //remove space
-
 		String job = "";
 		String index = "";
-		int flag = 0;
-		for (int i = 0; i < varName.length(); i++) {
-			System.out.println(varName.charAt(i));
-			if (varName.charAt(i)=='=' && varName.charAt(i+1)=='='){
-				flag = 1;
-				i+=1;
-			}
-			else if (flag==0){
-				index+=varName.charAt(i);
-			}
-			else if (flag==1){
-				String temp = "";
+		if (varName!=null){
+			varName = varName.replace("\n", ""); //remove newline
+			varName = varName.replaceAll("\\s", ""); //remove space
 
-				while(true){
-					if (temp.equals("count(") && varName.charAt(i)==')'){
-						break;
-					}
-					else if (temp.equals("count(")){
-						job+=varName.charAt(i);
-					}
-					else if (temp!="count("){
-						temp+=varName.charAt(i);
-					}
-
+			int flag = 0;
+			for (int i = 0; i < varName.length(); i++) {
+				System.out.println(varName.charAt(i));
+				if (varName.charAt(i)=='=' && varName.charAt(i+1)=='='){
+					flag = 1;
 					i+=1;
 				}
+				else if (flag==0){
+					index+=varName.charAt(i);
+				}
+				else if (flag==1){
+					String temp = "";
 
+					while(true){
+						if (temp.equals("count(") && varName.charAt(i)==')'){
+							break;
+						}
+						else if (temp.equals("count(")){
+							job+=varName.charAt(i);
+						}
+						else if (temp!="count("){
+							temp+=varName.charAt(i);
+						}
+
+						i+=1;
+					}
+
+				}
+				System.out.println(job);
+				System.out.println(index);
 			}
-			System.out.println(job);
-			System.out.println(index);
 		}
+
+
+
+
 		//System.out.println(lines.length);
 		for (int i=0; i<lines.length; i++)
 		{
