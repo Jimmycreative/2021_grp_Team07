@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 5.0.1
+-- version 5.1.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Feb 19, 2022 at 05:29 AM
--- Server version: 10.4.11-MariaDB
--- PHP Version: 7.4.3
+-- Host: localhost
+-- Generation Time: Mar 08, 2022 at 01:44 PM
+-- Server version: 10.4.22-MariaDB
+-- PHP Version: 8.1.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -30,7 +29,6 @@ USE `grp`;
 -- Table structure for table `assignment`
 --
 
-DROP TABLE IF EXISTS `assignment`;
 CREATE TABLE `assignment` (
   `aid` int(11) NOT NULL,
   `title` varchar(64) COLLATE utf8_bin NOT NULL,
@@ -46,7 +44,6 @@ CREATE TABLE `assignment` (
 -- Table structure for table `schedule`
 --
 
-DROP TABLE IF EXISTS `schedule`;
 CREATE TABLE `schedule` (
   `scheduleid` int(11) NOT NULL,
   `aid` int(11) NOT NULL,
@@ -67,13 +64,12 @@ CREATE TABLE `schedule` (
 -- Table structure for table `token`
 --
 
-DROP TABLE IF EXISTS `token`;
 CREATE TABLE `token` (
-  `tokenid` varchar(128) COLLATE utf8_bin NOT NULL,
+  `token` varchar(128) COLLATE utf8_bin NOT NULL,
   `datecreated` datetime NOT NULL DEFAULT current_timestamp(),
   `dateexpire` datetime DEFAULT NULL,
-  `role` int(1) NOT NULL,
-  `uses` int(11) DEFAULT 1,
+  `role` int(1) NOT NULL DEFAULT 0,
+  `uses` int(11) NOT NULL DEFAULT 1,
   `disabled` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
@@ -83,7 +79,6 @@ CREATE TABLE `token` (
 -- Table structure for table `user`
 --
 
-DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `uid` int(11) NOT NULL,
   `username` varchar(16) COLLATE utf8_bin NOT NULL,
@@ -117,7 +112,7 @@ ALTER TABLE `schedule`
 -- Indexes for table `token`
 --
 ALTER TABLE `token`
-  ADD PRIMARY KEY (`tokenid`);
+  ADD PRIMARY KEY (`token`);
 
 --
 -- Indexes for table `user`

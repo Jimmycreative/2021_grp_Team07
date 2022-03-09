@@ -2,11 +2,12 @@ import React, { Component } from "react";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import {
     Button,
-    Pagination,
     PaginationItem,
     PaginationLink,
     Table,
   } from "reactstrap";
+import Pagination from '@mui/material/Pagination';
+import Stack from '@mui/material/Stack';
 import NotificationAlert from "react-notification-alert";
 import GanttDay from "views/gantt/day/GanttDay";
 import sample_data from '../../variables/data/saved_data.json';
@@ -153,10 +154,10 @@ class MySchedule extends Component {
     render() {
         const { currentPage } = this.state;
         return (
-                <div>
+                <div className="ScheduleContent">
                     <NotificationAlert ref="notify" zIndex={9999} onClick={() => console.log("something is wrong")} />
                     <React.Fragment>
-                        <h1 class = "text-center" style={{marginTop:100,marginBottom:40,width:"90%"}}>My Schedules</h1>
+                        <h2 class = "text-center">My Schedules</h2>
                         <input
                             type = "text"
                             placeholder='Search'
@@ -231,8 +232,9 @@ class MySchedule extends Component {
                                     ))}
                             </tbody>
                         </Table>
-                        <div className="pagination-wrapper">
-                            <Pagination aria-label="Page navigation example">
+                        <div className="pagination-wrapper" >
+                        <Stack spacing={2}>
+                            <Pagination count={5}>
                                 <PaginationItem disabled={currentPage <= 0}>
                                     <PaginationLink
                                         onClick={e => this.handleClick(e, currentPage - 1)}
@@ -255,9 +257,11 @@ class MySchedule extends Component {
                                         onClick={e => this.handleClick(e, currentPage + 1)}
                                         next
                                         href="#"
+                                        
                                     />
                                 </PaginationItem>
                             </Pagination>
+                            </Stack>
                         </div>
                         
                     </React.Fragment>
