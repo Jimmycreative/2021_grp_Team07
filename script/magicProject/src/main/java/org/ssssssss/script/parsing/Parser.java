@@ -72,7 +72,8 @@ public class Parser {
 	private ArrayList<String> constraint = new ArrayList<>();
 	private static LinkedHashMap<String, Object> jsonDecision = new LinkedHashMap<>();
 	private boolean isDecision;
-
+	private ArrayList<String> decisions = new ArrayList<>(); // decision variable names
+	private String varName; // the name for basic constraint determination
 	public Set<VarIndex> getVarIndices() {
 		return varIndices;
 	}
@@ -129,6 +130,8 @@ public class Parser {
 			result = parseWhileStatement();
 		} else if (stream.match("basic", false)) {
 			result = parseBasicStatement();
+		}else if (stream.match("subject_to", false)) {
+			result = parseSubjectStatement();
 		}else if (stream.match("continue", false)) {
 			result = new Continue(stream.consume().getSpan());
 		} else if (stream.match("async", false)) {
@@ -341,7 +344,13 @@ public class Parser {
 		}
 		return new TryStatement(addSpan(opening.getSpan(), stream.getPrev().getSpan()), exceptionVarNode, tryBlocks, catchBlocks, finallyBlocks);
 	}
+	private List<Node> parseSubjectBody() throws Exception {
+		stream.expect("{");
+		List<Node> blocks = new ArrayList<>();
+		while (stream.hasMore() && !stream.match("}", false)){}
 
+		return null;
+	}
 	private List<Node> parseFunctionBody() throws Exception {
 		stream.expect("{");
 		List<Node> blocks = new ArrayList<>();
@@ -365,6 +374,7 @@ public class Parser {
 		}
 
 		System.out.println(inputConstraint);
+
 		parseConstraint(inputConstraint); // handle basic constraint;
 		expectCloseing();
 		return blocks;
@@ -393,7 +403,7 @@ public class Parser {
 
 		checkKeyword(token.getSpan());
 		String variableName = token.getSpan().getText();
-
+		decisions.add(variableName);
 
 		if (stream.match(Assignment, true)) {
 
@@ -422,7 +432,14 @@ public class Parser {
 		pop();
 		return new BasicStatement(addSpan(openingBasic, closingEnd), basicBlock);
 	}
-
+	private SubjectStatement parseSubjectStatement() throws Exception {
+		Span openingSubject = stream.expect("subject_to").getSpan();
+		push();
+		List<Node> basicBlock = parseFunctionBody();
+		Span closingEnd = stream.getPrev().getSpan();
+		pop();
+		return new SubjectStatement(addSpan(openingSubject, closingEnd), basicBlock);
+	}
 	private WhileStatement parseWhileStatement() throws Exception {
 		Span openingWhile = stream.expect("while").getSpan();
 		requiredNew = false;
@@ -474,6 +491,8 @@ public class Parser {
 		Span openingIf = stream.expect("if").getSpan();
 		requiredNew = false;
 		Expression condition = parseExpression();
+
+		varName = condition.getSpan().getText();
 		requiredNew = true;
 		push();
 		List<Node> trueBlock = parseFunctionBody();
@@ -1000,14 +1019,50 @@ public class Parser {
 		//System.out.println(handle);
 		String[] lines = handle.split(";");
 
+		varName = varName.replace("\n", ""); //remove newline
+		varName = varName.replaceAll("\\s", ""); //remove space
+
+		String job = "";
+		String index = "";
+		int flag = 0;
+		for (int i = 0; i < varName.length(); i++) {
+			System.out.println(varName.charAt(i));
+			if (varName.charAt(i)=='=' && varName.charAt(i+1)=='='){
+				flag = 1;
+				i+=1;
+			}
+			else if (flag==0){
+				index+=varName.charAt(i);
+			}
+			else if (flag==1){
+				String temp = "";
+
+				while(true){
+					if (temp.equals("count(") && varName.charAt(i)==')'){
+						break;
+					}
+					else if (temp.equals("count(")){
+						job+=varName.charAt(i);
+					}
+					else if (temp!="count("){
+						temp+=varName.charAt(i);
+					}
+
+					i+=1;
+				}
+
+			}
+			System.out.println(job);
+			System.out.println(index);
+		}
 		//System.out.println(lines.length);
 		for (int i=0; i<lines.length; i++)
 		{
 			System.out.println("this:"+lines[i]);
-			if (lines[i].equals("job[index+1].start>=job[index].end")){
+			if (lines[i].equals(job+"["+index+"1]."+decisions.get(0)+">="+job+"["+index+"]."+decisions.get(1))){
 				constraint.add("1"); // for precedence constraint
 			}
-			else if (lines[i].equals("machine[index+1].start>=machine[index].end")){
+			else if (lines[i].equals(job+"["+index+"1]."+decisions.get(0)+">="+job+"["+index+"]."+decisions.get(1)) && job.equals("machine")){
 				constraint.add("2"); // for overlap constraint
 			}
 			//else if (lines[i].equals("for(taskintasks){if(len(task)>1){task.chooseOption<=1}}")){
@@ -1021,34 +1076,32 @@ public class Parser {
 			//	}
 
 			//}
-			else if(lines[i].equals("machine.tasks[index+1].priority<=machine.tasks[index].priority")){
+			else if(lines[i].equals(job+".tasks["+index+"+1].priority<="+job+".tasks["+index+"].priority")&& job.equals("machine")){
 				//for(machineinmachines)
 				//	for (index in range(0,len(machine.tasks))
 				// 		if(index==len(machine.tasks)-1)
 				//			break
 				//		machine.tasks[index+1].priority<=machine.tasks[index].priority
-				if (constraint.contains("3") || constraint.contains("5")){
-					throw new Exception("Job type conflict occurs!");
-				}
-				else{
-					constraint.add("4");
-				}
+
+
+				constraint.add("4");
+
 
 			}
 
-			else if(lines[i].equals("for(taskintasks){if(len(task)>1){task.chooseOption=len(task)}}")){
+			//else if(lines[i].equals("for(taskintasks){if(len(task)>1){task.chooseOption=len(task)}}")){
 				//for(task in tasks){if(len(task)>1){task.selectAllMachine())
-				if (constraint.contains("3") || constraint.contains("4")){
-					throw new Exception("Job type conflict occurs!");
-				}
-				else{
-					constraint.add("5");
-				}
-			}
-			//else if(lines[i].equals("") && lines.length==1){
-			//	constraint.add("1");
-			//	constraint.add("2");
+			//	if (constraint.contains("3") || constraint.contains("4")){
+			//		throw new Exception("Job type conflict occurs!");
+			//	}
+			//	else{
+			//		constraint.add("5");
+			//	}
 			//}
+			else if(lines[i].equals("") && lines.length==1){
+				constraint.add("1");
+				constraint.add("2");
+			}
 			//else {
 			//	throw new Exception("Wrong syntax"); // constraint not defined
 			//}
