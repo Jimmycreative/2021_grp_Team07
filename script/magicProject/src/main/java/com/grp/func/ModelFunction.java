@@ -74,6 +74,12 @@ public class ModelFunction implements MagicModule {
         }
     }
 
+    /**
+     * get original format of jobs
+     * @param context runtime context
+     * @return all jobs
+     * @throws Exception potential exception
+     */
     private List<ArrayList<ArrayList>> getJobKeyword(RuntimeContext context) throws Exception {
         try {
             Map<String, Object> map=context.getVarMap();
