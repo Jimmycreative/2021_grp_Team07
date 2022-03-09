@@ -80,7 +80,7 @@ public class AlgorithmFunction implements MagicModule {
     }
 
     @Comment("Standardize job format")
-    public Result standardize(RuntimeContext context, List<ArrayList<ArrayList<Integer>>> jobs) {
+    public JSONObject standardize(RuntimeContext context, List<ArrayList<ArrayList<Integer>>> jobs) {
         try {
             LinkedHashMap<String, Object> decisionVar=Parser.getJsonDecision();
             JSONObject realVars=getDecisionVar(decisionVar);
@@ -99,7 +99,7 @@ public class AlgorithmFunction implements MagicModule {
 
             ArrayList<Integer> testJob=jobs.get(0).get(0);
             if (testJob.size()!=2) {
-                return Result.fail("Wrong size of jobs");
+                return new JSONObject();
             }
             JSONArray jobArr=new JSONArray();
             JSONArray machineArr=new JSONArray();
@@ -152,9 +152,9 @@ public class AlgorithmFunction implements MagicModule {
             formatJob.put("machines", machineArr);
 
             formatJob.put("priority", priorityVal);
-            return Result.succeed(formatJob);
+            return formatJob;
         } catch (Exception e) {
-            return Result.fail(e.getMessage());
+            return new JSONObject();
         }
     }
 
