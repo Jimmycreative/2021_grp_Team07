@@ -62,9 +62,11 @@ subject_to {
   job2.end>10;
 }
 //remember to return
-return model.runBasic(jobs)`
+return model.runModel(type=1, originalData=myformat)`
 
 const dynamic = `//task=[machine_id, duration]
+decision_var start = 0;
+decision_var end = 5
 job1=[[0, 3], [1, 2], [2, 2]]
 job2=[[0, 2], [12, 1], [1, 4]]
 job3=[[1, 4], [2, 3]]
@@ -77,6 +79,33 @@ expected_duration=[15,15,10]
 job_names=["job_1","job_2", "job_3"]
 //optional
 machine_names=["machine_0","machine_1", "machine_2", "machine_12"]
+
+myformat=algorithm.standardize(jobs)
+
+js_jobs=myformat.jobs
+js_machines=myformat.machines
+
+basic {
+    //precedence
+    for (job in js_jobs) {
+        for (index in job) {
+            if (index==count(job)-1) {
+                break;
+            }
+            job[index+1].start>=job[index].end
+        }
+    }
+
+    //no overlap
+    for (machine in js_machines) {
+        for (index in machine) {
+            if (index==len(job)-1) {
+                break;
+            }
+            mahine[index+].start>=machine[index].end
+        }
+    }
+}
 
 //remember to return
 return model.runDynamic(jobs,expected_duration)`
