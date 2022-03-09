@@ -17,7 +17,10 @@ import { Link, BrowserRouter as Router } from "react-router-dom";
 export default function PlannerAssign() {
   const[searchManager,setSearchManager] = useState(""); {/* Searching function */}
   const [modal, setModal] = React.useState(false);      {/* popup */}
-  const toggle = (row) => {
+  const toggle = () => {
+    setModal(!modal);
+  }
+  const toggle1 = (row) => {
     setModal(!modal);
     setThisTable(row)
   }
@@ -130,7 +133,7 @@ export default function PlannerAssign() {
                       <Col className="text-right" md="3" xs="3">
                       
                         <Badge badgeContent={val.unfinished_assignment} color="success" >
-                        <MailIcon color="action" onClick={()=>toggle(val.assignment)} />
+                        <MailIcon color="action" onClick={()=>toggle1(val.assignment)} />
                         </Badge>
                        
 
@@ -148,7 +151,7 @@ export default function PlannerAssign() {
                       
 
                       
-                        <ModalHeader>
+                        <ModalHeader toggle={toggle}>
                               
                                 <CardTitle tag="h5">Description </CardTitle>
                               
@@ -180,7 +183,7 @@ export default function PlannerAssign() {
                                             scrollable
                                             className="popup">
                                             
-                                            <ModalHeader>
+                                            <ModalHeader toggle={toggleView}>
                                               <CardTitle tag="h7"> Assignment from {thisManager} </CardTitle>
                                             </ModalHeader>
                                             
@@ -188,10 +191,9 @@ export default function PlannerAssign() {
                                               {thisDescription}
                                             </ModalBody>
                                             <ModalFooter>
+                                            <Button className="cancel-btn" onClick={toggleViewClose}>Cancel</Button>{' '}
                                               <Link to="/admin/definition">
                                                 <Button>Go to Definition page</Button>   {/*click and go to definition page */}
-                                                <Button className="cancel-btn" onClick={toggleViewClose}>Cancel</Button>{' '}
-                                                <Button color="secondary" onClick={toggleViewClose}>Confirm</Button>
                                               </Link>
                                             </ModalFooter>
                                           </Modal>
