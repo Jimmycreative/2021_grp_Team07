@@ -2,11 +2,12 @@ import React, { Component } from "react";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import {
     Button,
+    Pagination,
     PaginationItem,
     PaginationLink,
     Table,
   } from "reactstrap";
-import Pagination from '@mui/material/Pagination';
+//import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import NotificationAlert from "react-notification-alert";
 import GanttDay from "views/gantt/day/GanttDay";
@@ -21,7 +22,7 @@ class MySchedule extends Component {
         this.dataSet = [...Array(Math.ceil(500 + Math.random() * 500))].map(
             (a, i) => "Record " + (i + 1)
           );
-        this.pageSize = 10;
+        this.pageSize = 5;
         this.pagesCount = Math.ceil(sample_data.length / this.pageSize);
         
         this.state = {
@@ -110,9 +111,10 @@ class MySchedule extends Component {
          .then((data) => {
            if (data.code==1) {
                for (var i=0;i<data.data.result.length;i++) {
-                   console.log(data.data.result[i].result)
+                   console.log("line 113",data.data.result.length)
                    data.data.result[i].result=this.setTrueDate(data.data.result[i].result)
                }
+               this.pagesCount=Math.ceil(data.data.result.length / this.pageSize);
                this.setState({
                    tableData:data.data.result
                 })
@@ -217,7 +219,7 @@ class MySchedule extends Component {
                                                     className="my-modal"
                                                     //style={{width: "120%"}}
                                                 >
-                                                    <ModalHeader>Type Choice</ModalHeader>
+                                                    <ModalHeader toggle={this.toggle}>Type Choice</ModalHeader>
                                                     <ModalBody>
                                                         <GanttDay showBar={true} task={this.state.curResult} />
                                                     </ModalBody>
@@ -233,8 +235,9 @@ class MySchedule extends Component {
                             </tbody>
                         </Table>
                         <div className="pagination-wrapper" >
-                        <Stack spacing={2}>
-                            <Pagination count={5}>
+                        <Pagination aria-label="Page navigation example">
+                        {/* <Stack spacing={2}>
+                            <Pagination count={this.pagesCount}> */}
                                 <PaginationItem disabled={currentPage <= 0}>
                                     <PaginationLink
                                         onClick={e => this.handleClick(e, currentPage - 1)}
@@ -261,7 +264,7 @@ class MySchedule extends Component {
                                     />
                                 </PaginationItem>
                             </Pagination>
-                            </Stack>
+                            {/* </Stack> */}
                         </div>
                         
                     </React.Fragment>
