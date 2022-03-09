@@ -59,6 +59,7 @@ Session(app)
 
 database = mysql.connector.connect(
 
+
    
     host="127.0.0.1",
     user="root",
@@ -66,6 +67,13 @@ database = mysql.connector.connect(
     # database="grp"
     password="12345678",
     database="try"
+
+    # host="192.168.64.2",
+    # user="unnc",
+    # password="Uk.JgBsQn]bQp[2u",
+    # database="grp"
+    
+
 
 )
 # login_info = {
@@ -101,7 +109,7 @@ def purgetoken():
         """)
         database.commit()
     except Exception as e:
-        print(e)
+        print(str(e))
 
 
 def puttoken(token, dateexpire, rank, uses):
@@ -199,7 +207,7 @@ def getAllPlanners():
         print(res_json)
 
     except Exception as e:
-        return jsonify({"code": -2, "data": {}, "message": e})
+        return jsonify({"code": -2, "data": {}, "message": str(e)})
     finally:
         cur.close()
     return jsonify(res_json)
@@ -281,7 +289,7 @@ def getAssignedSchedules():
     except Exception as e:
 
         res_json['code'] = -2
-        res_json['message'] = e
+        res_json['message'] = str(e)
     finally:
         cur.close()
     return jsonify(res_json)
@@ -341,7 +349,7 @@ def getMySchedules():
 
     except Exception as e:
         res_json['code'] = -2
-        res_json['message'] = e
+        res_json['message'] = str(e)
     finally:
         cur.close()
         return res_json
@@ -475,7 +483,7 @@ def getAllSchedule():
             res_list.append(res_json)
     except Exception as e:
         # print(e)
-        return jsonify({"code": -2, "data": {}, "message": e})
+        return jsonify({"code": -2, "data": {}, "message": str(e)})
 
     finally:
         cur.close()
@@ -505,9 +513,11 @@ def save_schedule():
     if data:
         try:
             cur = database.cursor(dictionary=True)
-            # name = data["name"]
+
+            name = data["name"]
+            startdate = data["startdate"]
             # uid = session["uid"]
-            uid = "123"
+            # uid = "123"
             script = data["script"]
             timelength = data["timelength"]
             result = data["result"]
@@ -517,24 +527,26 @@ def save_schedule():
             uuid = data["uuid"]
             aid = data["aid"]
 
-            cur.execute("SELECT name FROM schedule WHERE aid='%s';" % (aid))
-            account = cur.fetchone()
-            if account:
-                name = account["name"]
-            else:
-                return jsonify({"code": -2, "data": {}, "message": "aid doesn't exist!"})
+            # cur.execute("SELECT name FROM schedule WHERE aid='%s';" % (aid))
+            # account = cur.fetchone()
+            # if account:
+            #     name = account["name"]
+            # else:
+            #     return jsonify({"code": -2, "data": {}, "message": "aid doesn't exist!"})
 
-            cur.execute("INSERT INTO schedule (name, uid, script, timelength, result, status, errlog, description, uuid) VALUES ( %s, %d, %s, %d, %s, %d, %s, %s, %s);",
-                        (name, uid, script, timelength, result, status, errlog, description, uuid))
+            cur.execute("""
+            INSERT INTO schedule (aid, name, description, script, result, timelength, status, errlog, startdate, uuid) VALUES ( %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+            """, (aid, name, description, script, result, timelength, status, errlog, startdate, uuid,))
             # INSERT INTO schedule (name, uid, script, timelength, result, status, errlog, description, uuid) VALUES ('schedule 1',1,'i am handsome',3,"[{'start':0,'name':'Maachine 0','progress':0,'end':5,'id':'Machine 0','type':'project','hideChildren':false},{'start':0,'name':'job_0 task_0','progress':0,'project':'Machine 0','end':3,'id':'job_0|task_0','type':'task'},{'start':3,'name':'job_1 task_0','progress':0,'project':'Machine 0','end':5,'id':'job_1|task_0','type':'task'},{'start':0,'name':'Maachine 1','progress':0,'end':10,'id':'Machine 1','type':'project','hideChildren':false},{'start':0,'name':'job_2 task_0','progress':0,'project':'Machine 1','end':4,'id':'job_2|task_0','type':'task'},{'start':4,'name':'job_0 task_1','progress':0,'project':'Machine 1','end':6,'id':'job_0|task_1','type':'task','dependencies':['job_0|task_0']},{'start':6,'name':'job_1 task_2','progress':0,'project':'Machine 1','end':10,'id':'job_1|task_2','type':'task','dependencies':['job_1|task_1']},{'start':4,'name':'Maachine 2','progress':0,'end':9,'id':'Machine 2','type':'project','hideChildren':false},{'start':4,'name':'job_2 task_1','progress':0,'project':'Machine 2','end':7,'id':'job_2|task_1','type':'task','dependencies':['job_2|task_0']},{'start':7,'name':'job_0 task_2','progress':0,'project':'Machine 2','end':9,'id':'job_0|task_2','type':'task','dependencies':['job_0|task_1']},{'start':5,'name':'Maachine 12','progress':0,'end':6,'id':'Machine 12','type':'project','hideChildren':false},{'start':5,'name':'job_1 task_1','progress':0,'project':'Machine 12','end':6,'id':'job_1|task_1','type':'task','dependencies':['job_1|task_0']}]", -1, "none",'good schedule','8jug7g7g');
             database.commit()
-            cur.execute(
-                "UPDATE assignment SET _status = 1 WHERE aid = %s;", (aid))
+            # cur.execute(
+            #     "UPDATE assignment SET _status = 1 WHERE aid = %s;", (aid))
             database.commit()
             return jsonify({"code": 1, "data": "", "message": "Successfully stored schedule and update assignment!"})
         except Exception as e:
             database.rollback()
-            return jsonify({"code": -2, "data": {}, "message": e})
+            print(str(e))
+            return jsonify({"code": -2, "data": {}, "message": str(e)})
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -578,7 +590,7 @@ def login():
     return jsonify({"code": login_info["code"], "data": result, "message": login_info["message"]})
 
     # except Exception as e:
-    #   return jsonify({"code": -2, "data": {}, "message": e})
+    #   return jsonify({"code": -2, "data": {}, "message": str(e)})
 
 # registration page
 
@@ -668,7 +680,7 @@ def genToken():
                 """, (token, dateexpire, role, int(uses)))
                 database.commit()
         except Exception as e:
-            return jsonify({"code": -2, "data": {}, "message": e})
+            return jsonify({"code": -2, "data": {}, "message": str(e)})
         finally:
             cur.close()
 

@@ -21,14 +21,14 @@ class testSaveSchedule(unittest.TestCase):
 
         response = app.test_client().post('/saveSchedule',
                                           data=json.dumps(
-                                              dict()),
+                                              dict(aid=1, name="lau", description="", script="", result="", timelength=1, status=0, errlog="", startdate="2022-03-08", uuid="")),
                                           content_type='application/json')
 
         json_data = response.data
         json_dict = json.loads(json_data)
 
         self.assertIn('code', json_dict, 'Wrong format')
-        self.assertEqual(json_dict['code'], -3, 'Wrong code')
+        self.assertEqual(json_dict['code'], 1, 'Wrong code')
 
 # ===========================================================================================================================
 

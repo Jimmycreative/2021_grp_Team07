@@ -1,5 +1,6 @@
+from http import client
 from main import app
-from flask import jsonify
+from flask import jsonify, url_for
 from urllib import response
 import code
 import json
@@ -20,8 +21,23 @@ class testSendAssignment(unittest.TestCase):
 
     def testSendAssignment(self):
 
-        with app.test_client().session_transaction() as testsession:
-            testsession['username'] = "admin"
+        # with app.test_client().session_transaction() as testsession:
+        #     testsession['username'] = "admin"
+
+        # with app.test_client() as client:
+        #     with client.session_transaction() as sess:
+        #         sess["username"] = "admin"
+
+        with app.test_client() as client:
+            with client.session_transaction() as sess:
+                sess["username"] = "admin"
+
+        # @live_server.app.route('/sendAssignment')
+        # def set_session():
+        #     session["username"] = "admin"
+        #     return session["username"]
+
+        # response = client.get(url_for("set_session"))
 
         response = app.test_client().post('/sendAssignment', data=json.dumps(
             dict(planner="exampleplanner", title="nelrnf234r5", description="nci34u89d")),

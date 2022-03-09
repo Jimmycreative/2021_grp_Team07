@@ -6,7 +6,7 @@ import PlannerHome from './PlannerHome';
 
 export default function BothHome() {
 
-    let [display,setDisplay] = useState('planner');
+    let [display,setDisplay] = useState('manager');
 
     if (display==='planner'){
   return <><PlannerHome/></>

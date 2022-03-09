@@ -12,6 +12,7 @@ import org.ssssssss.script.parsing.Parser;
 import org.ssssssss.script.runtime.RuntimeContext;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 @Component
 public class AlgorithmFunction implements MagicModule {
@@ -20,8 +21,66 @@ public class AlgorithmFunction implements MagicModule {
         return "algorithm";
     }
 
+    //底层逻辑
+    public ArrayList<String> analyzeConstraint(String customizedConstraint) throws Exception {
+        if (customizedConstraint.equals(""))
+            return new ArrayList<>();
+        try {
+            customizedConstraint=customizedConstraint.replace("\n", "");
+            customizedConstraint=customizedConstraint.replace("\r", "");
+            customizedConstraint=customizedConstraint.replace(" ", "");
+            ArrayList<String> myConstraints=new ArrayList<>();
+            String [] constraints=customizedConstraint.split(";");
+            for (String constraint:constraints) {
+                //find the job and task index
+                //e.g. 2*js_jobs[0][1].start
+                StringBuilder expr= new StringBuilder();
+                expr.append("    model.Add(");
+                //TODO change start to variable name
+                if (!constraint.contains(".start") && !constraint.contains(".end")) {
+                    throw new Exception("Please input correct constraint format");
+                }
+
+                constraint=constraint.replace(" ","");
+                expr.append(getVariable(constraint));
+                expr.append(")");
+                myConstraints.add(expr.toString());
+
+            }
+            return myConstraints;
+        }
+        catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    //底层逻辑
+    private String getVariable(String constraint) throws Exception {
+        try {
+            //e.g. 2*js_jobs[0][1].start
+            String varName;
+            Pattern pattern = Pattern.compile("[0-9]*");
+            boolean isNum=pattern.matcher(constraint).matches();
+            if (isNum)
+                return constraint;
+
+            boolean isFirstNum=Character.isDigit(constraint.charAt(0));
+            if (!isFirstNum) {
+                varName=constraint.substring(0, constraint.indexOf("["));
+            }
+            else {
+                varName=constraint.substring(constraint.indexOf("*")+1, constraint.indexOf("["));
+            }
+
+            String realConstraint=constraint.replace(varName,"all_tasks");
+            return realConstraint;
+        }catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
     @Comment("Standardize job format")
-    public Result standardize(List<ArrayList<ArrayList<Integer>>> jobs) {
+    public JSONObject standardize(RuntimeContext context, List<ArrayList<ArrayList<Integer>>> jobs) {
         try {
             LinkedHashMap<String, Object> decisionVar=Parser.getJsonDecision();
             JSONObject realVars=getDecisionVar(decisionVar);
@@ -40,7 +99,7 @@ public class AlgorithmFunction implements MagicModule {
 
             ArrayList<Integer> testJob=jobs.get(0).get(0);
             if (testJob.size()!=2) {
-                return Result.fail("Wrong size of jobs");
+                return new JSONObject();
             }
             JSONArray jobArr=new JSONArray();
             JSONArray machineArr=new JSONArray();
@@ -57,7 +116,7 @@ public class AlgorithmFunction implements MagicModule {
                     object.put("duration", task.get(1));
                     object.put(startKey, startVal);
                     object.put(endKey, endVal);
-                    object.put(priorityKey,priorityVal.get(i));
+                    //object.put(priorityKey,priorityVal.get(i));
                     oneJob.add(object);
 
                     //for tasks
@@ -69,6 +128,8 @@ public class AlgorithmFunction implements MagicModule {
                     machineTask.put(startKey, startVal);
                     machineTask.put(endKey, endVal);
                     machineTask.put("job_index",i+"_"+j);
+                    int priority= priorityVal.get(i);
+                    machineTask.put(priorityKey,priority);
                     if (index==-1) {
                         taskArr.add(machineTask);
                         curMachine.put("machine_id", task.get(0));
@@ -91,9 +152,9 @@ public class AlgorithmFunction implements MagicModule {
             formatJob.put("machines", machineArr);
 
             formatJob.put("priority", priorityVal);
-            return Result.succeed(formatJob);
+            return formatJob;
         } catch (Exception e) {
-            return Result.fail(e.getMessage());
+            return new JSONObject();
         }
     }
 
@@ -113,9 +174,9 @@ public class AlgorithmFunction implements MagicModule {
         return -1;
     }
 
-    private Object getKeywordVal(RuntimeContext context) {
+    private Object getJobPriority(RuntimeContext context) {
         Map<String, Object> map=context.getVarMap();
-        Object object=map.get("keyword");
+        Object object=map.get("job_priority");
         return object;
     }
 

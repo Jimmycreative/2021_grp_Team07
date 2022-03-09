@@ -4,7 +4,6 @@ import React, {useEffect, useState} from 'react';
 import * as ReactTable from 'react-table';
 import {useTable} from "react-table";
 import "./PlannerAssign.css";
-import Contact from "./contact.json";
 import { domain } from "../../../global"
 import {Button,Card,CardHeader,CardBody,CardTitle,Table,Row,Col,FormGroup,Form,Input,UncontrolledAlert} from "reactstrap";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
@@ -83,13 +82,7 @@ export default function PlannerAssign() {
     <Card className="card-plain">
       <CardHeader>
         <div className='MessageTitle'  ><h4>Messages</h4></div>
-        <UncontrolledAlert color="danger" fade={true} className='WarningBox'>
-                          <div className='WarningUnread'>
-                            <b>Undefined Assignments - </b>
-                            {countmessages} undefined assignments. Please check!
-                            
-                          </div>
-       </UncontrolledAlert>
+     <br/>
                     <InputGroup>  {/* Search Box */}
                       <InputGroupAddon addonType="prepend">
                       <InputGroupText><i className="nc-icon nc-single-02"></i> </InputGroupText>
@@ -233,6 +226,3 @@ export default function PlannerAssign() {
 
 
 }
-
-
-                

@@ -1,6 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { domain } from "../../../global"
+import NotificationAlert from "react-notification-alert";
+import {
+
+    Button,
+    Card,
+    CardHeader,
+    CardBody,
+    CardFooter,
+    CardTitle,
+    FormGroup,
+    Form,
+    Input,
+    Row,
+    Col,
+  } from "reactstrap";
+import "./invitation.css";
+import addUser from 'assets/img/addUser.png';
+import Check from 'assets/img/check.png';
 
 // Uk.JgBsQn]bQp[2u
 function Invatation() {
@@ -20,42 +38,45 @@ function Invatation() {
     const [isConfirmed, setIsConfirmed] = useState(false);
 
 
+    
+    
+   
     //link to backend
 
     const getToken = () => {
         let date = JSdatetimeToMySQLdatetime();
-        var mydata = {
-            expirationDate: date,
-            rank: 0,
-            uses: uses
-        }
+         var mydata = {
+             expirationDate: date,
+             rank: 0,
+             uses: uses
+         }
         console.log(mydata)
-        fetch(domain + "/genToken", {
+         fetch(domain +"/genToken", {
 
-            body: JSON.stringify(mydata),
-            cache: 'no-cache',
+             body: JSON.stringify(mydata),
+             cache: 'no-cache',
 
-            headers: new Headers({
+             headers: new Headers({
                 'Content-Type': 'application/json'
-            }),
+              }),
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
             mode: 'cors', // no-cors, cors, *same-origin
             redirect: 'follow', // manual, *follow, error
             referrer: 'no-referrer', // *client, no-referrer
-        }).then(response => {
-            if (response.ok) {
-                return response.json()
+         }).then(response => {
+             if (response.ok) {
+                 return response.json()
+             }
+         }
+         ).then(
+             data => {
+                 //console.log("line 143", data)
+                 if (data.code === 1) {
+                     setToken(data.data);
+                 }
             }
-        }
-        ).then(
-            data => {
-                //console.log("line 143", data)
-                if (data.code === 1) {
-                    setToken(data.data);
-                }
-            }
-        )
-    };
+         )
+     };
 
 
     // show token form backend
@@ -113,19 +134,19 @@ function Invatation() {
         }
 
         if (isNaN(expiration)) {
-            setExpirationError('Please input a number');
+            setExpirationError(<p className="text-danger">Please input a number</p>);
             return false;
         } else if (expiration < 0) {
-            setExpirationError('Please input a positive number');
+            setExpirationError(<p className="text-danger">Please input a positive number</p>);
             return false;
         } else if (expiration == null) {
-            setExpirationError('Please input a number');
+            setExpirationError(<p className="text-danger">Please input a number</p>);
             return false;
         } else if (expiration === 0) {
-            setExpirationError('Please input a number greater than 0');
+            setExpirationError(<p className="text-danger">Please input a number greater than 0</p>);
             return false;
         } else if (expiration >= 10000000000) {
-            setExpirationError('Please input a smaller number');
+            setExpirationError(<p className="text-danger">Please input a smaller number</p>);
             return false;
         }
 
@@ -143,22 +164,22 @@ function Invatation() {
         }
 
         if (isNaN(uses)) {
-            setUsesError('Please input a number');
+            setUsesError(<p className="text-danger">Please input a number</p>);
             return false;
         } else if (uses < 0) {
-            setUsesError('Please input a positive number');
+            setUsesError(<p className="text-danger">Please input a positive number</p>);
             return false;
         } else if (uses % 1 !== 0) {
-            setUsesError('Please input a non decimal number');
+            setUsesError(<p className="text-danger">Please input a non decimal number</p>);
             return false;
         } else if (uses == null) {
-            setUsesError('Please input a number');
+            setUsesError(<p className="text-danger">Please input a number</p>);
             return false;
         } else if (uses === 0) {
-            setUsesError('Please input a number greater than 0');
+            setUsesError(<p className="text-danger">Please input a number greater than 0</p>);
             return false;
         } else if (uses >= 10000000000) {
-            setUsesError('Please input a smaller number');
+            setUsesError(<p className="text-danger">Please input a smaller number</p>);
             return false;
         }
 
@@ -185,14 +206,14 @@ function Invatation() {
             default:
         }
 
-
+        
         return seconds;
     }
 
 
 
     const JSdatetimeToMySQLdatetime = () => {
-
+        
         if (time === "Unlimited") {
             setExpiration('');
             setExpirationError('');
@@ -203,7 +224,7 @@ function Invatation() {
             document.getElementById("dateexpire").disabled = false;
         }
 
-
+        
         // get current datetime in sconeds
         let currentTimeInSeconds = (new Date().getTime() / 1000) + (new Date().getTimezoneOffset() * -60);
 
@@ -248,84 +269,150 @@ function Invatation() {
         }
     }
 
+        //alert (pop up message)
 
-    const copyTokenLink = () => {
+        const notificationAlert = React.useRef();
 
-        var copyLink = document.getElementById("token");
+        const notify = (place) => {
+            var copyLink = document.getElementById("token");
 
-        copyLink.select();
-        copyLink.setSelectionRange(0, 99999);
+            copyLink.select();
+            copyLink.setSelectionRange(0, 99999);
 
-        navigator.clipboard.writeText(copyLink.value);
+            navigator.clipboard.writeText(copyLink.value);
 
-        alert("Copied the link: " + copyLink.value);
-    }
-
-
-
+            var type;
+            var options = {};
+                options = {
+                place: place,
+                message: (
+                    <div>
+                    <div>
+                    Copied the link: {copyLink.value}
+                    </div>
+                    </div>
+                ),
+                type: type,
+                icon: "nc-icon nc-bell-55",
+                autoDismiss: 7,
+                };
+                notificationAlert.current.notificationAlert(options);
+            };
+  
 
     return (
         <div className="invite">
-
+            <NotificationAlert ref={notificationAlert} />
             <br />
             <br />
             <br />
             <br />
             <br />
-
+                    {/*second page */}
             {isConfirmed
 
                 ?
 
-                <div style={{ textAlign: "center" }} className="confirmed">
-                    <h3>Issued token link</h3>
+                <div className="confirmed">
 
-                    <input
-                        readOnly
-                        type="text"
-                        name="token"
-                        id="token"
-                        value={token}
-                    />
-                    <button type="button" onClick={() => { copyTokenLink(); }}>Copy link</button>
+                <Card className='CardBox'>
+                    
+                       
+                        
+                    <Form onSubmit={handleSubmit}>
+                   
+                   
+                    <img className='CheckImg' alt='CheckImg' align="left" src={Check} style={{width:"310", height:"360px" }}/> 
+                    <Row  md="10">
+                        <Col  className='TextBox' >
+                        <CardHeader  className='fstTitle' tag="h5"> Issued token link </CardHeader> 
+                        <Row md="3" className='sameBox'>
+                         <Col md="6">
+                                <Input
+                                readOnly
+                                type="text"
+                                name="token"
+                                id="token"
+                                value={token}
+                                className="token"
+                            />
+                        </Col>  
+                        <Col md="4">
+                          <Button
+                          className='copyButton'
+                            block
+                            color="success"
+                            onClick={() => {
+                                notify("tc");
+                                
+                                }
+                            }
+                          >
+                            Copy link
+                          </Button>
 
-                    <br />
-                    <br />
-
+                        </Col> 
+                        <br />
+                        <br />
+                         <Col md="12" >
+                        <div  className="blockquote blockquote-primary" >
                     {expirationDate == null ?
                         <div>token expiration time is Unlimited</div>
                         :
-                        <div>token expiration time is {expirationDate}</div>
+                        <div>token expiration time is <b>{expirationDate}</b></div>
                     }
 
                     {uses == null ?
                         <div>limit of token uses is Unlimited</div>
                         :
-                        <div>limit of token uses is {uses}</div>
+                        <div>limit of token uses is <b>{uses}</b></div>
                     }
 
-                    <div>time is in {time}</div>
-                </div>
+                    
+                    </div>
+                    </Col>
+                       </Row>
+                    </Col>
+                </Row>
+            </Form>
+        </Card>
 
+                    
+                   
+                </div>
+               
                 :
 
-                <div style={{ textAlign: "center" }}>
-
-                    <form onSubmit={handleSubmit} >
-
-                        <input
+                <div>
+                   
+                    <Card className='CardBox'>
+                    
+                       
+                        
+                     <Form onSubmit={handleSubmit}>
+                    
+                    
+                     <img className='InvitationImg' alt='InvitationImg' align="left" src={addUser} style={{width:"310", height:"360px" }}/> 
+                     <Row  md="10">
+                         <Col  className='TextBox' >
+                         <CardHeader  className='fstTitle' tag="h5"> Invite Users </CardHeader> 
+                         <Row md="3" className='sameBox'>
+                        <Input 
                             type="text"
                             placeholder="expiration"
                             name="dateexpire"
                             id="dateexpire"
                             value={expiration}
                             onChange={(e) => setExpiration(e.target.value)}
+                            className="expiration"
                         />
 
-                        <select
+                        <Input
+                            type="select"
                             id="dateexpireSelect"
                             name="dateexpireSelect"
-                            onChange={(e) => setTime(e.target.value)}
+                            onChange={(e) => setTime(e.target.value) }
+                            className="date"
                         >
                             <option
                                 value="minutes"
@@ -354,31 +441,44 @@ function Invatation() {
                             >
                                 Unlimited
                             </option>
-                        </select>
+                        </Input>
+                        </Row>
+
+
+                         </Col>  {/* end this here */}
+                     
+                    
+                    </Row>
+                      
 
                         {<div className="Error">{expirationError}</div>}
 
 
                         <br />
                         <br />
-
-                        <input
-                            type="text"
-                            placeholder="uses"
-                            name="uses"
-                            id="uses"
-                            value={uses}
-                            onChange={(e) => setUses(e.target.value)}
-                        />
-
-                        <input
-                            type="checkbox"
-                            id="usesCheckbox"
-                            name="usesCheckbox"
-                            value="usesCheckbox"
-                            onChange={() => { changeCheckBox(); }}
-                        />
-                        <label for="Unlimited">Unlimited</label>
+                    <Row  md="4">
+                        <Input
+                                type="text"
+                                placeholder="uses"
+                                name="uses"
+                                id="uses"
+                                value={uses}
+                                onChange={(e) => setUses(e.target.value)}
+                                className="uses"
+                            />
+                            <FormGroup>
+                            
+                                <Input
+                                    type="checkbox"
+                                    id="usesCheckbox"
+                                    name="usesCheckbox"
+                                    value="usesCheckbox"
+                                    onChange={() => { changeCheckBox(); }}
+                                />
+                            <label for="Unlimited">Unlimited</label>
+                            </FormGroup>
+                    </Row>
+                      
 
 
                         {<div className="Error">{usesError}</div>}
@@ -386,9 +486,11 @@ function Invatation() {
                         <br />
                         <br />
 
-                        <button type="submit" className="Confirm">Confirm</button>
+                        <Button type="submit" color="primary" className="Confirm">Confirm</Button>
 
-                    </form>
+                    </Form>
+                    </Card>
+                    
                 </div>
             }
 

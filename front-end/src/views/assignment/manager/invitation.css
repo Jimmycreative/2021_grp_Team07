@@ -1,0 +1,51 @@
+.CardBox{
+    margin-top: 5%;
+    margin-left: 10%;
+    margin-right:14%;
+}
+
+.TextBox{
+    margin-left: 20%;
+}
+
+.fstTitle{
+    margin-right: 25%;
+}
+
+.sameBox{
+    margin-top: 5%;
+
+}
+
+.date{
+    margin-left: 2%;
+}
+
+.uses{
+    margin-left: 20%;
+}
+
+.token{
+    height: 38px;
+}
+
+.copyButton{
+    margin-top: -1%;
+    margin-right: 20%;
+    transition-duration: 0.4s;
+}
+.copyButton:hover {
+    background-color: #1e9ce6; 
+    color: white;
+  }
+
+.text-danger{
+    margin-top: 2%;
+}
+.Confirm{
+    margin-top:-2%;
+}
+
+.blockquote{
+    margin-right: 15%;
+}
