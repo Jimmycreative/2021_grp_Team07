@@ -21,7 +21,7 @@ class testSaveSchedule(unittest.TestCase):
 
         response = app.test_client().post('/saveSchedule',
                                           data=json.dumps(
-                                              dict(aid=1, name="lau", description="", script="", result="", timelength=1, status=0, errlog="", startdate="2022-03-08", uuid="")),
+                                              dict(aid=1, name="lau", description="", script="", result="", timelength=1, status=0, errlog="", uuid="")),
                                           content_type='application/json')
 
         json_data = response.data
