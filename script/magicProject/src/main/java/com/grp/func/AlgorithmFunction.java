@@ -93,9 +93,20 @@ public class AlgorithmFunction implements MagicModule {
             String endKey=endObj.getString("name");
             int endVal=endObj.getIntValue("value");
 
+            boolean hasPriority=false;
             JSONObject priorityObj=realVars.getJSONObject("priority");
-            String priorityKey=priorityObj.getString("name");
-            ArrayList<Integer> priorityVal=(ArrayList<Integer>) priorityObj.get("value");
+            String priorityKey;
+            ArrayList<Integer> priorityVal;
+            if (priorityObj!=null) {
+                hasPriority=true;
+                priorityKey=priorityObj.getString("name");
+                priorityVal=(ArrayList<Integer>) priorityObj.get("value");
+            }
+            else {
+                priorityKey="priority";
+                priorityVal=new ArrayList<>();
+            }
+
 
             ArrayList<Integer> testJob=jobs.get(0).get(0);
             if (testJob.size()!=2) {
@@ -128,7 +139,7 @@ public class AlgorithmFunction implements MagicModule {
                     machineTask.put(startKey, startVal);
                     machineTask.put(endKey, endVal);
                     machineTask.put("job_index",i+"_"+j);
-                    int priority= priorityVal.get(i);
+                    int priority= hasPriority?priorityVal.get(i):-1;
                     machineTask.put(priorityKey,priority);
                     if (index==-1) {
                         taskArr.add(machineTask);
