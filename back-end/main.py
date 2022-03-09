@@ -58,10 +58,13 @@ Session(app)
 
 
 database = mysql.connector.connect(
-
-    host="192.168.64.2",
-    user="unnc",
-    password="Uk.JgBsQn]bQp[2u",
+    # host="192.168.64.2",
+    # user="unnc",
+    # password="Uk.JgBsQn]bQp[2u",
+    # database="grp"
+    host="127.0.0.1",
+    user="root",
+    password="",
     database="grp"
 
 )
