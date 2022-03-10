@@ -59,7 +59,7 @@ public class ModelFunction implements MagicModule {
 
             List<ArrayList<ArrayList>> realJobs=JSToList(jobArr);
             if (type==1) {
-                return runBasic(context, realJobs);
+                return runBasic(context, realJobs, type);
             }
             else if (type==2) {
                 ArrayList<Integer> priorityArr =(ArrayList<Integer>) myData.get("priority");
@@ -123,8 +123,9 @@ public class ModelFunction implements MagicModule {
      * @return result which contains uuid or error
      */
     @Comment("run basic model")
-    public Result runBasic(RuntimeContext context, @Comment("jobs")List<ArrayList<ArrayList>> jobs) {
+    public Result runBasic(RuntimeContext context, @Comment("jobs")List<ArrayList<ArrayList>> jobs, int type) {
         FuncVariable funcVariable=new FuncVariable();
+        funcVariable.setType(type);
         try {
             funcVariable.setRuntimeContext(context);
             initialize(jobs, funcVariable);
@@ -134,7 +135,7 @@ public class ModelFunction implements MagicModule {
             String objective=funcVariable.getObjective();
             HashMap<String, String> nameMap= funcVariable.getNameMap();
             ArrayList<String> myConstraints=funcVariable.getMyConstraints();
-            modelService.runBasic(jobs, uuid, objective, nameMap, myConstraints);
+            modelService.runBasic(jobs, uuid, objective, nameMap, myConstraints, type);
             System.out.println(getUUid(funcVariable));
             return getUUid(funcVariable);
         } catch (Exception e) {

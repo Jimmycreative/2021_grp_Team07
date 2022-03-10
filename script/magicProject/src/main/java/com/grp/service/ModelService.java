@@ -32,8 +32,9 @@ public class ModelService {
      * @param nameMap name map for jobs and machines
      */
     @Async
-    public void runBasic(List<ArrayList<ArrayList>> jobs, String uuid, String objective, HashMap<String, String> nameMap, ArrayList<String> myConstraints) {
+    public void runBasic(List<ArrayList<ArrayList>> jobs, String uuid, String objective, HashMap<String, String> nameMap, ArrayList<String> myConstraints, int type) {
         ServiceVariable serviceVariable=new ServiceVariable();
+        serviceVariable.setJobType(type);
         serviceVariable.setUuid(uuid);
         serviceVariable.setType(basicType);
         System.out.println("Constraint: "+myConstraints);
@@ -255,9 +256,14 @@ public class ModelService {
 
                 //define customized constraints
                 else if (line.contains("#define the constraints")) {
-                    ArrayList<String> myConstraints=serviceVariable.getMyConstraints();
-                    for (String constraint:myConstraints) {
-                        buf.append(constraint+"\n");
+                    if (serviceVariable.getJobType()==1 || serviceVariable.getJobType()==2) {
+                        ArrayList<String> myConstraints=serviceVariable.getMyConstraints();
+                        for (String constraint:myConstraints) {
+                            buf.append(constraint+"\n");
+                        }
+                    }
+                    else {
+                        throw new Exception("Wrong constraints.");
                     }
                 }
 
