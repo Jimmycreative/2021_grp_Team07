@@ -20,6 +20,7 @@ import org.ssssssss.script.parsing.ast.statement.Spread;
 import org.ssssssss.script.parsing.ast.statement.*;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 import static org.ssssssss.script.parsing.TokenType.*;
 
@@ -69,11 +70,15 @@ public class Parser {
 	private boolean requiredNew = true;
 	private TokenStream stream;
 	private final List<String> defines = new ArrayList<>();
+	private final List<String> varName = new ArrayList<>();// the name for basic constraint determination
 	private ArrayList<String> constraint = new ArrayList<>();
 	private static LinkedHashMap<String, Object> jsonDecision = new LinkedHashMap<>();
 	private boolean isDecision;
 	private ArrayList<String> decisions = new ArrayList<>(); // decision variable names
-	private String varName; // the name for basic constraint determination
+	private Boolean isBasic = false;
+	private ArrayList<String> subjectConstraints=new ArrayList<>();
+
+
 	public Set<VarIndex> getVarIndices() {
 		return varIndices;
 	}
@@ -351,6 +356,7 @@ public class Parser {
 
 		return null;
 	}
+
 	private List<Node> parseFunctionBody() throws Exception {
 		stream.expect("{");
 		List<Node> blocks = new ArrayList<>();
@@ -375,7 +381,7 @@ public class Parser {
 
 		System.out.println(inputConstraint);
 
-		parseConstraint(inputConstraint); // handle basic constraint;
+		//parseConstraint(inputConstraint); // handle basic constraint;
 		expectCloseing();
 		return blocks;
 	}
@@ -425,20 +431,27 @@ public class Parser {
 	}
 
 	private BasicStatement parseBasicStatement() throws Exception {
+		isBasic = true;
 		Span openingBasic = stream.expect("basic").getSpan();
 		push();
 		List<Node> basicBlock = parseFunctionBody();
 		Span closingEnd = stream.getPrev().getSpan();
 		pop();
+		isBasic = false;
 		return new BasicStatement(addSpan(openingBasic, closingEnd), basicBlock);
 	}
 	private SubjectStatement parseSubjectStatement() throws Exception {
 		Span openingSubject = stream.expect("subject_to").getSpan();
 		push();
-		List<Node> basicBlock = parseFunctionBody();
+		List<Node> subjectBlock = parseFunctionBody();
+		String customizedConstraint = "";
+		for (int i=0;i<subjectBlock.size();i++){
+			customizedConstraint+=subjectBlock.get(i).getSpan().getText()+";";
+		}
+		subjectConstraints = analyzeConstraint(customizedConstraint);
 		Span closingEnd = stream.getPrev().getSpan();
 		pop();
-		return new SubjectStatement(addSpan(openingSubject, closingEnd), basicBlock);
+		return new SubjectStatement(addSpan(openingSubject, closingEnd), subjectBlock);
 	}
 	private WhileStatement parseWhileStatement() throws Exception {
 		Span openingWhile = stream.expect("while").getSpan();
@@ -459,7 +472,7 @@ public class Parser {
 		Span index = null;
 		Span value = stream.expect(Identifier).getSpan();
 		checkKeyword(value);
-		defines.add(value.getText());
+		varName.add(value.getText());
 		if (stream.match(Comma, true)) {
 			index = value;
 			value = stream.expect(Identifier).getSpan();
@@ -492,7 +505,6 @@ public class Parser {
 		requiredNew = false;
 		Expression condition = parseExpression();
 
-		varName = condition.getSpan().getText();
 		requiredNew = true;
 		push();
 		List<Node> trueBlock = parseFunctionBody();
@@ -1019,58 +1031,20 @@ public class Parser {
 		//System.out.println(handle);
 		String[] lines = handle.split(";");
 
-		String job = "";
-		String index = "";
-		if (varName!=null){
-			varName = varName.replace("\n", ""); //remove newline
-			varName = varName.replaceAll("\\s", ""); //remove space
-
-			int flag = 0;
-			for (int i = 0; i < varName.length(); i++) {
-				System.out.println(varName.charAt(i));
-				if (varName.charAt(i)=='=' && varName.charAt(i+1)=='='){
-					flag = 1;
-					i+=1;
-				}
-				else if (flag==0){
-					index+=varName.charAt(i);
-				}
-				else if (flag==1){
-					String temp = "";
-
-					while(true){
-						if (temp.equals("count(") && varName.charAt(i)==')'){
-							break;
-						}
-						else if (temp.equals("count(")){
-							job+=varName.charAt(i);
-						}
-						else if (temp!="count("){
-							temp+=varName.charAt(i);
-						}
-
-						i+=1;
-					}
-
-				}
-				System.out.println(job);
-				System.out.println(index);
-			}
-		}
-
-
 
 
 		//System.out.println(lines.length);
 		for (int i=0; i<lines.length; i++)
 		{
 			System.out.println("this:"+lines[i]);
-			if (lines[i].equals(job+"["+index+"1]."+decisions.get(0)+">="+job+"["+index+"]."+decisions.get(1))){
-				constraint.add("1"); // for precedence constraint
+			if (varName.size()!=2){
+				break;
 			}
-			else if (lines[i].equals(job+"["+index+"1]."+decisions.get(0)+">="+job+"["+index+"]."+decisions.get(1)) && job.equals("machine")){
-				constraint.add("2"); // for overlap constraint
+
+			else if ((lines[i].equals(varName.get(0)+"["+varName.get(1)+"1]."+decisions.get(0)+">="+varName.get(0)+"["+varName.get(1)+"]."+decisions.get(1))) || ((lines[i].equals(varName.get(0)+"["+varName.get(1)+"]."+decisions.get(1)+"<="+varName.get(0)+"["+varName.get(1)+"1]."+decisions.get(0))))){
+				constraint.add("1"); // for precedence constraint overlap constraint
 			}
+
 			//else if (lines[i].equals("for(taskintasks){if(len(task)>1){task.chooseOption<=1}}")){
 
 				//for(task in tasks){if(len(task)>1){task.selectOneMachine())
@@ -1082,7 +1056,7 @@ public class Parser {
 			//	}
 
 			//}
-			else if(lines[i].equals(job+".tasks["+index+"+1].priority<="+job+".tasks["+index+"].priority")&& job.equals("machine")){
+			else if(lines[i].equals(varName.get(0)+".tasks["+varName.get(1)+"+1].priority<="+varName.get(0)+".tasks["+varName.get(1)+"].priority")){
 				//for(machineinmachines)
 				//	for (index in range(0,len(machine.tasks))
 				// 		if(index==len(machine.tasks)-1)
@@ -1114,6 +1088,67 @@ public class Parser {
 
 		}
 		System.out.println(constraint);
+		varName.removeAll(varName);
+		System.out.println(varName);
+	}
+	//底层逻辑
+	public ArrayList<String> analyzeConstraint(String customizedConstraint) throws Exception {
+		if (customizedConstraint.equals(""))
+			return new ArrayList<>();
+		try {
+			customizedConstraint=customizedConstraint.replace("\n", "");
+			customizedConstraint=customizedConstraint.replace("\r", "");
+			customizedConstraint=customizedConstraint.replace(" ", "");
+			ArrayList<String> myConstraints=new ArrayList<>();
+			String [] constraints=customizedConstraint.split(";");
+			for (String constraint:constraints) {
+				//find the job and task index
+				//e.g. 2*js_jobs[0][1].start
+				StringBuilder expr= new StringBuilder();
+				expr.append("    model.Add(");
+				//TODO change start to variable name
+				if (!constraint.contains(".start") && !constraint.contains(".end")) {
+					throw new Exception("Please input correct constraint format");
+				}
 
+				constraint=constraint.replace(" ","");
+				expr.append(getVariable(constraint));
+				expr.append(")");
+				myConstraints.add(expr.toString());
+
+			}
+			return myConstraints;
+		}
+		catch (Exception e) {
+			throw new Exception(e.getMessage());
+		}
+	}
+
+	//底层逻辑
+	private String getVariable(String constraint) throws Exception {
+		try {
+			//e.g. 2*js_jobs[0][1].start
+			String varName;
+			Pattern pattern = Pattern.compile("[0-9]*");
+			boolean isNum=pattern.matcher(constraint).matches();
+			if (isNum)
+				return constraint;
+
+			boolean isFirstNum=Character.isDigit(constraint.charAt(0));
+			if (!isFirstNum) {
+				varName=constraint.substring(0, constraint.indexOf("["));
+			}
+			else {
+				varName=constraint.substring(constraint.indexOf("*")+1, constraint.indexOf("["));
+			}
+
+			String realConstraint=constraint.replace(varName,"all_tasks");
+			return realConstraint;
+		}catch (Exception e) {
+			throw new Exception(e.getMessage());
+		}
+	}
+	public ArrayList<String> getSubjectConstraints(){
+		return subjectConstraints;
 	}
 }
