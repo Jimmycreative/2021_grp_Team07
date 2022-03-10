@@ -125,6 +125,7 @@ public class ModelFunction implements MagicModule {
     @Comment("run basic model")
     public Result runBasic(RuntimeContext context, @Comment("jobs")List<ArrayList<ArrayList>> jobs) {
         FuncVariable funcVariable=new FuncVariable();
+        //
         try {
             funcVariable.setRuntimeContext(context);
             initialize(jobs, funcVariable);
@@ -136,6 +137,7 @@ public class ModelFunction implements MagicModule {
             ArrayList<String> myConstraints=funcVariable.getMyConstraints();
             modelService.runBasic(jobs, uuid, objective, nameMap, myConstraints);
             System.out.println(getUUid(funcVariable));
+            //
             return getUUid(funcVariable);
         } catch (Exception e) {
             return Result.fail(e.getMessage());

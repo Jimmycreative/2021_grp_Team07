@@ -33,6 +33,7 @@ public class ModelService {
      */
     @Async
     public void runBasic(List<ArrayList<ArrayList>> jobs, String uuid, String objective, HashMap<String, String> nameMap, ArrayList<String> myConstraints) {
+        //
         ServiceVariable serviceVariable=new ServiceVariable();
         serviceVariable.setUuid(uuid);
         serviceVariable.setType(basicType);
@@ -255,6 +256,7 @@ public class ModelService {
 
                 //define customized constraints
                 else if (line.contains("#define the constraints")) {
+                    //
                     ArrayList<String> myConstraints=serviceVariable.getMyConstraints();
                     for (String constraint:myConstraints) {
                         buf.append(constraint+"\n");
