@@ -1106,6 +1106,8 @@ public class Parser {
 				//e.g. 2*js_jobs[0][1].start
 				StringBuilder expr= new StringBuilder();
 				expr.append("    model.Add(");
+				System.out.println(constraint.contains("."+decisions.get(0)));
+				System.out.println(constraint.contains(".start"));
 				//TODO change start to variable name
 				if (!constraint.contains("."+decisions.get(0)) && !constraint.contains("."+ decisions.get(1))) {
 					throw new Exception("Please input correct constraint format");

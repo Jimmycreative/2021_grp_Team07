@@ -225,10 +225,10 @@ public class ModelService {
     private void getPyPath(ServiceVariable serviceVariable) {
         String curPath = System.getProperty("user.dir");
         //TODO
-        //curPath=curPath.replace("magicProject", "algorithm\\");
-        //serviceVariable.setPath(curPath+"pymodel\\");
-        curPath = curPath.replace("magicProject", "algorithm/");
-        serviceVariable.setPath(curPath + "pymodel/");
+        curPath=curPath.replace("magicProject", "algorithm\\");
+        serviceVariable.setPath(curPath+"pymodel\\");
+//        curPath = curPath.replace("magicProject", "algorithm/");
+//        serviceVariable.setPath(curPath + "pymodel/");
         serviceVariable.setExePath(curPath);
     }
 

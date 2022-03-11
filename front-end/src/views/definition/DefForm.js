@@ -345,6 +345,11 @@ class DefForm extends React.Component {
                     }
                     )
                 }
+                else if (data.code==-1) {
+                    this.setState({uuid: ""})
+                    this.setState({flag: 0})
+                    alert(data.message)
+                }
             })
         .catch(error => console.log(error))
     }
