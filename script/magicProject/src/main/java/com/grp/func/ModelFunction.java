@@ -315,8 +315,10 @@ public class ModelFunction implements MagicModule {
             //ArrayList<String> myConstraint=parseConstraint(basicConstraint);
             //TODO
             //whether subject_to is valid
-            String customizedConstraint=getKeywordVal(funcVariable.getCustomizedConstraint(), funcVariable)==null?"":(String) getKeywordVal(funcVariable.getCustomizedConstraint(), funcVariable);
-            analyzeConstraint(customizedConstraint, funcVariable);
+
+            //String customizedConstraint=getKeywordVal(funcVariable.getCustomizedConstraint(), funcVariable)==null?"":(String) getKeywordVal(funcVariable.getCustomizedConstraint(), funcVariable);
+            funcVariable.setMyConstraints();
+            //analyzeConstraint(customizedConstraint, funcVariable);
 
             assert machine_names != null;
             if (machine_names.size()!= funcVariable.getMachineLen()) {
