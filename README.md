@@ -1,16 +1,14 @@
 # front end branch
 # do not modify script folder
 ### Report
-1. Chapter 1 conflict
-2. Chapter 2 Market Research
-3. Chapter 4 Problem Definition and Visualization
-4. Chapter 5 Back-end and Testing
-5. Chapter 6 Requirement
-6. Chapter 7 Back end
-7. Chapter 8 Conclusion
-8. Appendix A Non-Functional Testing and Back-end Testing
-9. Appendix C User Manual
-10. Appendix D Updated Time Plan
+1. Chapter 4 Problem Definition and Visualization
+2. Chapter 5 Back-end and Testing
+3. Chapter 6 Requirement
+4. Chapter 7 Back end
+5. Chapter 8 Conclusion
+6. Appendix A Non-Functional Testing and Back-end Testing
+7. Appendix C User Manual
+8. Appendix D Updated Time Plan
 
 ### TODO
 1. Software documentation: each file should have docs in front of the code (each function for back end / script / algorithm)
