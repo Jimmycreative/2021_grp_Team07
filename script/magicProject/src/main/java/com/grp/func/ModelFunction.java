@@ -13,6 +13,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.ssssssss.magicapi.config.MagicModule;
 import org.ssssssss.script.annotation.Comment;
+import org.ssssssss.script.parsing.Parser;
 import org.ssssssss.script.reflection.JavaReflection;
 import org.ssssssss.script.runtime.RuntimeContext;
 
@@ -50,7 +51,7 @@ public class ModelFunction implements MagicModule {
             Result originalRes=Result.succeed(originalData);
             if (type==3 || type==4) {
                 List<ArrayList<ArrayList>> jobs=getJobKeyword(context);
-                Result res=type==3?runFlexible(context, jobs):runMulti(context, jobs);
+                Result res=type==3?runFlexible(context, jobs, type):runMulti(context, jobs, type);
                 return res;
             }
             JSONObject myData = (JSONObject) originalRes.getData();
@@ -59,11 +60,11 @@ public class ModelFunction implements MagicModule {
 
             List<ArrayList<ArrayList>> realJobs=JSToList(jobArr);
             if (type==1) {
-                return runBasic(context, realJobs);
+                return runBasic(context, realJobs, type);
             }
             else if (type==2) {
                 ArrayList<Integer> priorityArr =(ArrayList<Integer>) myData.get("priority");
-                return runDynamic(context, realJobs, priorityArr);
+                return runDynamic(context, realJobs, priorityArr, type);
             }
             else {
                 return Result.fail("Wrong type");
@@ -123,9 +124,11 @@ public class ModelFunction implements MagicModule {
      * @return result which contains uuid or error
      */
     @Comment("run basic model")
-    public Result runBasic(RuntimeContext context, @Comment("jobs")List<ArrayList<ArrayList>> jobs) {
+    public Result runBasic(RuntimeContext context, @Comment("jobs")List<ArrayList<ArrayList>> jobs, int type) {
         FuncVariable funcVariable=new FuncVariable();
-        //
+
+        funcVariable.setType(type);
+
         try {
             funcVariable.setRuntimeContext(context);
             initialize(jobs, funcVariable);
@@ -135,7 +138,7 @@ public class ModelFunction implements MagicModule {
             String objective=funcVariable.getObjective();
             HashMap<String, String> nameMap= funcVariable.getNameMap();
             ArrayList<String> myConstraints=funcVariable.getMyConstraints();
-            modelService.runBasic(jobs, uuid, objective, nameMap, myConstraints);
+            modelService.runBasic(jobs, uuid, objective, nameMap, myConstraints, type);
             System.out.println(getUUid(funcVariable));
             //
             return getUUid(funcVariable);
@@ -151,8 +154,10 @@ public class ModelFunction implements MagicModule {
      * @return result which contains uuid or error
      */
     @Comment("run flexible model")
-    public Result runFlexible(RuntimeContext context, @Comment("jobs")List<ArrayList<ArrayList>> jobs) {
+    public Result runFlexible(RuntimeContext context, @Comment("jobs")List<ArrayList<ArrayList>> jobs, int type) {
         FuncVariable funcVariable=new FuncVariable();
+
+        funcVariable.setType(type);
         try {
             funcVariable.setRuntimeContext(context);
             initialize(jobs, funcVariable);
@@ -161,7 +166,7 @@ public class ModelFunction implements MagicModule {
             String uuid=funcVariable.getUuid();
             String objective=funcVariable.getObjective();
             HashMap<String, String> nameMap= funcVariable.getNameMap();
-            modelService.runFlexible(jobs, uuid, objective, nameMap);
+            modelService.runFlexible(jobs, uuid, objective, nameMap,type);
             System.out.println(getUUid(funcVariable));
             return getUUid(funcVariable);
         } catch (Exception e) {
@@ -177,8 +182,9 @@ public class ModelFunction implements MagicModule {
      * @return result which contains uuid or error
      */
     @Comment("run dynamic model")
-    public Result runDynamic(RuntimeContext context, @Comment("jobs")List<ArrayList<ArrayList>> jobs, @Comment("expected duration")List<Integer> expected_duration) throws Exception {
+    public Result runDynamic(RuntimeContext context, @Comment("jobs")List<ArrayList<ArrayList>> jobs, @Comment("expected duration")List<Integer> expected_duration,int type) throws Exception {
         FuncVariable funcVariable=new FuncVariable();
+        funcVariable.setType(type);
         if (expected_duration==null) {
             throw new Exception("Please define expected duration for each job");
         }
@@ -190,7 +196,7 @@ public class ModelFunction implements MagicModule {
             String uuid=funcVariable.getUuid();
             String objective=funcVariable.getObjective();
             HashMap<String, String> nameMap= funcVariable.getNameMap();
-            modelService.runDynamic(jobs, expected_duration, uuid, objective, nameMap);
+            modelService.runDynamic(jobs, expected_duration, uuid, objective, nameMap,type);
             return getUUid(funcVariable);
         } catch (Exception e) {
             return Result.fail(e.getMessage());
@@ -204,8 +210,9 @@ public class ModelFunction implements MagicModule {
      * @return result which contains uuid or error
      */
     @Comment("run multi resource model")
-    public Result runMulti(RuntimeContext context, @Comment("jobs")List<ArrayList<ArrayList>> jobs) {
+    public Result runMulti(RuntimeContext context, @Comment("jobs")List<ArrayList<ArrayList>> jobs,int type) {
         FuncVariable funcVariable=new FuncVariable();
+        funcVariable.setType(type);
         try {
             funcVariable.setRuntimeContext(context);
             initialize(jobs, funcVariable);
@@ -214,7 +221,7 @@ public class ModelFunction implements MagicModule {
             String uuid=funcVariable.getUuid();
             String objective=funcVariable.getObjective();
             HashMap<String, String> nameMap= funcVariable.getNameMap();
-            modelService.runMulti(jobs, uuid, objective, nameMap);
+            modelService.runMulti(jobs, uuid, objective, nameMap,type);
             return getUUid(funcVariable);
         } catch (Exception e) {
             return Result.fail(e.getMessage());
@@ -316,8 +323,9 @@ public class ModelFunction implements MagicModule {
             //ArrayList<String> myConstraint=parseConstraint(basicConstraint);
             //TODO
             //whether subject_to is valid
-            String customizedConstraint=getKeywordVal(funcVariable.getCustomizedConstraint(), funcVariable)==null?"":(String) getKeywordVal(funcVariable.getCustomizedConstraint(), funcVariable);
-            analyzeConstraint(customizedConstraint, funcVariable);
+            funcVariable.setMyConstraints(Parser.getSubjectConstraints());
+            //String customizedConstraint=getKeywordVal(funcVariable.getCustomizedConstraint(), funcVariable)==null?"":(String) getKeywordVal(funcVariable.getCustomizedConstraint(), funcVariable);
+            //analyzeConstraint(customizedConstraint, funcVariable);
 
             assert machine_names != null;
             if (machine_names.size()!= funcVariable.getMachineLen()) {

@@ -17,27 +17,30 @@ import java.util.List;
  */
 @Service
 public class ModelService {
-    private static final String basicType="basic";
-    private static final String flexibleType="flexible";
-    private static final String dynamicType="dynamic";
-    private static final String multiResourceType="multiresource";
-    private static final String myException="Exception: ";
+    private static final String basicType = "basic";
+    private static final String flexibleType = "flexible";
+    private static final String dynamicType = "dynamic";
+    private static final String multiResourceType = "multiresource";
+    private static final String myException = "Exception: ";
 
 
     /**
      * Basic Type
-     * @param jobs jobs to be defined
-     * @param uuid schedule uuid
+     *
+     * @param jobs      jobs to be defined
+     * @param uuid      schedule uuid
      * @param objective objective function
-     * @param nameMap name map for jobs and machines
+     * @param nameMap   name map for jobs and machines
      */
     @Async
-    public void runBasic(List<ArrayList<ArrayList>> jobs, String uuid, String objective, HashMap<String, String> nameMap, ArrayList<String> myConstraints) {
-        //
-        ServiceVariable serviceVariable=new ServiceVariable();
+
+    public void runBasic(List<ArrayList<ArrayList>> jobs, String uuid, String objective, HashMap<String, String> nameMap, ArrayList<String> myConstraints, int type) throws FileNotFoundException {
+
+        ServiceVariable serviceVariable = new ServiceVariable();
+        serviceVariable.setJobType(type);
         serviceVariable.setUuid(uuid);
         serviceVariable.setType(basicType);
-        System.out.println("Constraint: "+myConstraints);
+        System.out.println("Constraint: " + myConstraints);
         initialize(objective, nameMap, myConstraints, serviceVariable);
 
         readCode(changeNestedArrForm(jobs, serviceVariable), "", basicType, serviceVariable);
@@ -45,14 +48,16 @@ public class ModelService {
 
     /**
      * Flexible Type
-     * @param jobs jobs to be defined
-     * @param uuid schedule uuid
+     *
+     * @param jobs      jobs to be defined
+     * @param uuid      schedule uuid
      * @param objective objective function
-     * @param nameMap name map for jobs and machines
+     * @param nameMap   name map for jobs and machines
      */
     @Async
-    public void runFlexible(List<ArrayList<ArrayList>> jobs, String uuid, String objective, HashMap<String, String> nameMap) {
-        ServiceVariable serviceVariable=new ServiceVariable();
+    public void runFlexible(List<ArrayList<ArrayList>> jobs, String uuid, String objective, HashMap<String, String> nameMap, int type) throws FileNotFoundException {
+        ServiceVariable serviceVariable = new ServiceVariable();
+        serviceVariable.setJobType(type);
         serviceVariable.setUuid(uuid);
         serviceVariable.setType(flexibleType);
 
@@ -64,21 +69,23 @@ public class ModelService {
 
     /**
      * Dynamic Type
-     * @param jobs jobs to be defined
+     *
+     * @param jobs              jobs to be defined
      * @param expected_duration expected duration
-     * @param uuid schedule uuid
-     * @param objective objective function
-     * @param nameMap name map for jobs and machines
+     * @param uuid              schedule uuid
+     * @param objective         objective function
+     * @param nameMap           name map for jobs and machines
      */
     @Async
-    public void runDynamic(List<ArrayList<ArrayList>> jobs, List<Integer> expected_duration, String uuid, String objective, HashMap<String, String> nameMap) {
-        ServiceVariable serviceVariable=new ServiceVariable();
+    public void runDynamic(List<ArrayList<ArrayList>> jobs, List<Integer> expected_duration, String uuid, String objective, HashMap<String, String> nameMap, int type) throws FileNotFoundException {
+        ServiceVariable serviceVariable = new ServiceVariable();
+        serviceVariable.setJobType(type);
         serviceVariable.setUuid(uuid);
         serviceVariable.setType(dynamicType);
         initialize(objective, nameMap, new ArrayList<>(), serviceVariable);
 
         //for dynamic type
-        String pyDurations= changeArrForm(expected_duration);
+        String pyDurations = changeArrForm(expected_duration);
 
         readCode(changeNestedArrForm(jobs, serviceVariable), pyDurations, dynamicType, serviceVariable);
     }
@@ -86,14 +93,16 @@ public class ModelService {
 
     /**
      * Multi resource Type
-     * @param jobs jobs to be defined
-     * @param uuid schedule uuid
+     *
+     * @param jobs      jobs to be defined
+     * @param uuid      schedule uuid
      * @param objective objective function
-     * @param nameMap name map for jobs and machines
+     * @param nameMap   name map for jobs and machines
      */
     @Async
-    public void runMulti(List<ArrayList<ArrayList>> jobs, String uuid, String objective, HashMap<String, String> nameMap) {
-        ServiceVariable serviceVariable=new ServiceVariable();
+    public void runMulti(List<ArrayList<ArrayList>> jobs, String uuid, String objective, HashMap<String, String> nameMap,int type) throws FileNotFoundException {
+        ServiceVariable serviceVariable = new ServiceVariable();
+        serviceVariable.setJobType(type);
         serviceVariable.setUuid(uuid);
         serviceVariable.setType(multiResourceType);
         initialize(objective, nameMap, new ArrayList<>(), serviceVariable);
@@ -103,8 +112,9 @@ public class ModelService {
 
     /**
      * initialize serviceVariable
-     * @param objective objective function
-     * @param nameMap name map for jobs and machines
+     *
+     * @param objective       objective function
+     * @param nameMap         name map for jobs and machines
      * @param serviceVariable to store variables
      */
     private void initialize(String objective, HashMap<String, String> nameMap, ArrayList<String> myConstraints, ServiceVariable serviceVariable) {
@@ -117,69 +127,69 @@ public class ModelService {
 
     /**
      * standardize string format
-     * @param jobs job list
+     *
+     * @param jobs            job list
      * @param serviceVariable to store variables
      * @return standardized string
      */
     private String changeNestedArrForm(List<ArrayList<ArrayList>> jobs, ServiceVariable serviceVariable) {
-        String pyJobs=jobs.toString();
+        String pyJobs = jobs.toString();
         if (serviceVariable.getType().equals(multiResourceType)) {
-            pyJobs=handleBracket(jobs);
-        }
-        else {
-            pyJobs= midToSmall(pyJobs);
+            pyJobs = handleBracket(jobs);
+        } else {
+            pyJobs = midToSmall(pyJobs);
         }
         //delete the out most brackets
-        pyJobs=pyJobs.substring(1,pyJobs.length()-1);
+        pyJobs = pyJobs.substring(1, pyJobs.length() - 1);
 
         return pyJobs;
     }
 
     /**
      * standardize string format
+     *
      * @param jobs job list
      * @return standardized string
      */
     private String handleBracket(List<ArrayList<ArrayList>> jobs) {
-        String output="";
-        for (int i=0;i< jobs.size();i++) {
-            String tempStr="";
-            for (int j=0;j< jobs.get(i).size();j++) {
-                Object temp=jobs.get(i).get(j);
-                Object subTemp=jobs.get(i).get(j).get(0);
+        String output = "";
+        for (int i = 0; i < jobs.size(); i++) {
+            String tempStr = "";
+            for (int j = 0; j < jobs.get(i).size(); j++) {
+                Object temp = jobs.get(i).get(j);
+                Object subTemp = jobs.get(i).get(j).get(0);
                 if (subTemp instanceof List) {
-                    String temp1=temp.toString();
-                    temp1= midToSmall(temp1);
-                    temp1=j==jobs.get(i).size()-1?temp1:temp1+", ";
-                    tempStr+=temp1;
-                }
-                else {
+                    String temp1 = temp.toString();
+                    temp1 = midToSmall(temp1);
+                    temp1 = j == jobs.get(i).size() - 1 ? temp1 : temp1 + ", ";
+                    tempStr += temp1;
+                } else {
                     String temp2 = temp.toString().replace("[", "(");
-                    temp2=temp2.replace("]", ")");
-                    temp2="["+temp2+"]";
-                    temp2=j==jobs.get(i).size()-1?temp2:temp2+", ";
-                    tempStr+=temp2;
+                    temp2 = temp2.replace("]", ")");
+                    temp2 = "[" + temp2 + "]";
+                    temp2 = j == jobs.get(i).size() - 1 ? temp2 : temp2 + ", ";
+                    tempStr += temp2;
                 }
             }
-            tempStr="["+tempStr+"]";
-            tempStr=i==jobs.size()-1?tempStr:tempStr+", ";
-            output+=tempStr;
+            tempStr = "[" + tempStr + "]";
+            tempStr = i == jobs.size() - 1 ? tempStr : tempStr + ", ";
+            output += tempStr;
         }
         return output;
     }
 
     /**
      * change bracket
+     *
      * @param str string
      * @return standardized string
      */
     private String midToSmall(String str) {
-        for (int i=1;i<str.length()-1;i++) {
-            if (Character.isDigit(str.charAt(i+1))) {
-                str=str.substring(0,i)+str.substring(i,i+1).replace("[","(")+str.substring(i+1);
-            }
-            else if (Character.isDigit(str.charAt(i-1))) {
-                str=str.substring(0,i)+str.substring(i,i+1).replace("]",")")+str.substring(i+1);
+        for (int i = 1; i < str.length() - 1; i++) {
+            if (Character.isDigit(str.charAt(i + 1))) {
+                str = str.substring(0, i) + str.substring(i, i + 1).replace("[", "(") + str.substring(i + 1);
+            } else if (Character.isDigit(str.charAt(i - 1))) {
+                str = str.substring(0, i) + str.substring(i, i + 1).replace("]", ")") + str.substring(i + 1);
             }
         }
         return str;
@@ -188,13 +198,14 @@ public class ModelService {
 
     /**
      * standardize string format
+     *
      * @param expected_duration expected duration for jobs
      * @return standardized string
      */
     private String changeArrForm(List expected_duration) {
-        String duration=expected_duration.toString();
-        duration=duration.replace("[","");
-        duration=duration.replace("]","");
+        String duration = expected_duration.toString();
+        duration = duration.replace("[", "");
+        duration = duration.replace("]", "");
         return duration;
     }
 
@@ -208,34 +219,36 @@ public class ModelService {
 
     /**
      * get python model path
+     *
      * @param serviceVariable to store variables
      */
     private void getPyPath(ServiceVariable serviceVariable) {
-        String curPath=System.getProperty("user.dir");
+        String curPath = System.getProperty("user.dir");
         //TODO
         //curPath=curPath.replace("magicProject", "algorithm\\");
         //serviceVariable.setPath(curPath+"pymodel\\");
-        curPath=curPath.replace("magicProject", "algorithm/");
-        serviceVariable.setPath(curPath+"pymodel/");
+        curPath = curPath.replace("magicProject", "algorithm/");
+        serviceVariable.setPath(curPath + "pymodel/");
         serviceVariable.setExePath(curPath);
     }
 
     /**
      * read the original template file
+     *
      * @param jobs variable to replace in the template
      */
-    private void readCode(String jobs, String modifiedContent, String modelType, ServiceVariable serviceVariable) {
-        String myPath= serviceVariable.getPath()+modelType+".py";
+    private void readCode(String jobs, String modifiedContent, String modelType, ServiceVariable serviceVariable) throws FileNotFoundException {
+        String myPath = serviceVariable.getPath() + modelType + ".py";
         String line;
         StringBuffer buf = new StringBuffer();
-        BufferedReader reader=null;
+        BufferedReader reader = null;
 
         try {
-            File file=new File(myPath);
+            File file = new File(myPath);
             InputStream input = new FileInputStream(file);
 
             InputStreamReader inputStreamReader = new InputStreamReader(input);
-            reader=new BufferedReader(inputStreamReader);
+            reader = new BufferedReader(inputStreamReader);
 
 
             while ((line = reader.readLine()) != null) {
@@ -256,27 +269,28 @@ public class ModelService {
 
                 //define customized constraints
                 else if (line.contains("#define the constraints")) {
-                    //
-                    ArrayList<String> myConstraints=serviceVariable.getMyConstraints();
-                    for (String constraint:myConstraints) {
-                        buf.append(constraint+"\n");
-                    }
-                }
 
-                else {
-                    buf.append(line+"\n");
+                    if (serviceVariable.getJobType() == 1 || serviceVariable.getJobType() == 2) {
+                        ArrayList<String> myConstraints = serviceVariable.getMyConstraints();
+                        for (String constraint : myConstraints) {
+                            buf.append(constraint + "\n");
+                        }
+                    } else {
+                        throw new Exception("Wrong constraints.");
+
+                    }
+                } else {
+                    buf.append(line + "\n");
                 }
             }
-        }
-        catch (Exception e) {
-            writeFile(myException+e.getMessage(), serviceVariable);
-        }
-        finally {
+        } catch (Exception e) {
+            writeFile(myException + e.getMessage(), serviceVariable);
+        } finally {
             if (reader != null) {
                 try {
                     reader.close();
                 } catch (IOException e) {
-                    writeFile(myException+e.getMessage(), serviceVariable);
+                    writeFile(myException + e.getMessage(), serviceVariable);
                 }
             }
         }
@@ -284,14 +298,15 @@ public class ModelService {
         try {
             createPy(buf.toString(), serviceVariable);
         } catch (Exception e) {
-            writeFile(myException+e.getMessage(), serviceVariable);
+            writeFile(myException + e.getMessage(), serviceVariable);
         }
 
 
     }
 
 
-    /**
+
+        /**
      * Create runtime python file
      * @param content code to be executed
      */

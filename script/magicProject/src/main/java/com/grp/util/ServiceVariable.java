@@ -21,7 +21,7 @@ public class ServiceVariable {
      */
     private String exePath="";
 
-
+    private int JobType=1;
     private String uuid="";
     private String pyJobs="";
     private ArrayList<String> myConstraints=new ArrayList<>();

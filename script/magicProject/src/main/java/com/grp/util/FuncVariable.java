@@ -16,6 +16,7 @@ public class FuncVariable {
     private RuntimeContext runtimeContext;
     private int jobsLen=-1;
     private int machineLen=-1;
+    private int type=1;
     String uuid="";
     List<ArrayList<ArrayList>> jobs=new ArrayList();
     ArrayList<String> machineNameList=new ArrayList<>();

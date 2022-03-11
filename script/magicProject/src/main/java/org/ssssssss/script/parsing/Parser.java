@@ -76,7 +76,7 @@ public class Parser {
 	private boolean isDecision;
 	private ArrayList<String> decisions = new ArrayList<>(); // decision variable names
 	private Boolean isBasic = false;
-	private ArrayList<String> subjectConstraints=new ArrayList<>();
+	private static ArrayList<String> subjectConstraints=new ArrayList<>();
 
 
 	public Set<VarIndex> getVarIndices() {
@@ -1107,7 +1107,7 @@ public class Parser {
 				StringBuilder expr= new StringBuilder();
 				expr.append("    model.Add(");
 				//TODO change start to variable name
-				if (!constraint.contains(".start") && !constraint.contains(".end")) {
+				if (!constraint.contains("."+decisions.get(0)) && !constraint.contains("."+ decisions.get(1))) {
 					throw new Exception("Please input correct constraint format");
 				}
 
@@ -1148,7 +1148,7 @@ public class Parser {
 			throw new Exception(e.getMessage());
 		}
 	}
-	public ArrayList<String> getSubjectConstraints(){
+	public static ArrayList<String> getSubjectConstraints(){
 		return subjectConstraints;
 	}
 }

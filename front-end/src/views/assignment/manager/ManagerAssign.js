@@ -215,7 +215,7 @@ const getAssignedSchedules = () => {
                       size="sm"
                       onClick={() => {setModal(!modal);setPlannername(val.username)}}
                       >  {/*pop up function */}
-                    <i className="fa fa-envelope" /> </Button>
+                    <i className="nc-email-85" /> </Button>
 
                     
                     
