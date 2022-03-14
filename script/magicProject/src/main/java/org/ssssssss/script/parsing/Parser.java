@@ -1145,6 +1145,7 @@ public class Parser {
 			}
 
 			String realConstraint=constraint.replace(varName,"all_tasks");
+			realConstraint=realConstraint.replace("][", ", ");
 			return realConstraint;
 		}catch (Exception e) {
 			throw new Exception(e.getMessage());
