@@ -244,6 +244,10 @@ public class APIController {
             String uuid= MyThreadLocal.get();
             MyThreadLocal.remove();
 
+            if (result!=null && uuid==null) {
+                return Result.succeed(result);
+            }
+
             if (uuid==null) {
                 return Result.fail("Fail to get UUID");
             }
