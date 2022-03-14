@@ -53,18 +53,18 @@ console.log("line 50", user, isManager)
 
 var routes = [
  
+  // {
+  //   path: "/home",
+  //   name: "Dashboard",
+  //   icon: "nc-icon nc-bank",
+  //   component: Dashboard,
+  //   layout: "/admin",
+  //   toView:true,
+  //   managerSee: true,
+  //   plannerSee:true
+  // },
   {
     path: "/dashboard",
-    name: "Dashboard",
-    icon: "nc-icon nc-bank",
-    component: Dashboard,
-    layout: "/admin",
-    toView:true,
-    managerSee: true,
-    plannerSee:true
-  },
-  {
-    path: "/home",
     name: "Home",
     icon: "nc-icon nc-bank",
     layout: "/admin",
@@ -195,84 +195,84 @@ var routes = [
       // }
     ]
   },
-  {
-    path: "/icons",
-    name: "Icons",
-    icon: "nc-icon nc-diamond",
-    component: Icons,
-    layout: "/admin",
-    toView:true,
-    managerSee: true,
-    plannerSee:true,
-    isManager:isManager
-  },
-  {
-    path: "/maps",
-    name: "Maps",
-    icon: "nc-icon nc-pin-3",
-    component: Maps,
-    layout: "/admin",
-    toView:true,
-    managerSee: true,
-    plannerSee:true,
-    isManager:isManager
-  },
-  {
-    path: "/notifications",
-    name: "Notifications",
-    icon: "nc-icon nc-bell-55",
-    component: Notifications,
-    layout: "/admin",
-    toView:true,
-    managerSee: true,
-    plannerSee:true,
-    isManager:isManager
-  },
-  {
-    path: "/user-page",
-    name: "User Profile",
-    icon: "nc-icon nc-single-02",
-    component: UserPage,
-    layout: "/admin",
-    toView:true,
-    managerSee: true,
-    plannerSee:true,
-    isManager:isManager
-  },
-  {
-    path: "/tables",
-    name: "Table List",
-    icon: "nc-icon nc-tile-56",
-    component: TableList,
-    layout: "/admin",
-    toView:true,
-    managerSee: true,
-    plannerSee:true,
-    isManager:isManager
-  },
-  {
-    path: "/typography",
-    name: "Typography",
-    icon: "nc-icon nc-caps-small",
-    component: Typography,
-    layout: "/admin",
-    toView:true,
-    managerSee: true,
-    plannerSee:true,
-    isManager:isManager
-  },
-  {
-    //pro: true,
-    path: "/upgrade",
-    name: "Upgrade to PRO",
-    icon: "nc-icon nc-spaceship",
-    component: UpgradeToPro,
-    layout: "/admin",
-    toView:true,
-    managerSee: true,
-    plannerSee:true,
-    isManager:isManager
-  },
+  // {
+  //   path: "/icons",
+  //   name: "Icons",
+  //   icon: "nc-icon nc-diamond",
+  //   component: Icons,
+  //   layout: "/admin",
+  //   toView:true,
+  //   managerSee: true,
+  //   plannerSee:true,
+  //   isManager:isManager
+  // },
+  // {
+  //   path: "/maps",
+  //   name: "Maps",
+  //   icon: "nc-icon nc-pin-3",
+  //   component: Maps,
+  //   layout: "/admin",
+  //   toView:true,
+  //   managerSee: true,
+  //   plannerSee:true,
+  //   isManager:isManager
+  // },
+  // {
+  //   path: "/notifications",
+  //   name: "Notifications",
+  //   icon: "nc-icon nc-bell-55",
+  //   component: Notifications,
+  //   layout: "/admin",
+  //   toView:true,
+  //   managerSee: true,
+  //   plannerSee:true,
+  //   isManager:isManager
+  // },
+  // {
+  //   path: "/user-page",
+  //   name: "User Profile",
+  //   icon: "nc-icon nc-single-02",
+  //   component: UserPage,
+  //   layout: "/admin",
+  //   toView:true,
+  //   managerSee: true,
+  //   plannerSee:true,
+  //   isManager:isManager
+  // },
+  // {
+  //   path: "/tables",
+  //   name: "Table List",
+  //   icon: "nc-icon nc-tile-56",
+  //   component: TableList,
+  //   layout: "/admin",
+  //   toView:true,
+  //   managerSee: true,
+  //   plannerSee:true,
+  //   isManager:isManager
+  // },
+  // {
+  //   path: "/typography",
+  //   name: "Typography",
+  //   icon: "nc-icon nc-caps-small",
+  //   component: Typography,
+  //   layout: "/admin",
+  //   toView:true,
+  //   managerSee: true,
+  //   plannerSee:true,
+  //   isManager:isManager
+  // },
+  // {
+  //   //pro: true,
+  //   path: "/upgrade",
+  //   name: "Upgrade to PRO",
+  //   icon: "nc-icon nc-spaceship",
+  //   component: UpgradeToPro,
+  //   layout: "/admin",
+  //   toView:true,
+  //   managerSee: true,
+  //   plannerSee:true,
+  //   isManager:isManager
+  // },
   
 ];
 export default routes;
