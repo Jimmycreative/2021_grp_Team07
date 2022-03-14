@@ -20,7 +20,7 @@ class testRegistration(unittest.TestCase):
 
 # ===========================================================================================================================
 
-    def testNullRegistration(self):
+    def testNull(self):
 
         response = app.test_client().post('/registration',
                                           data=json.dumps(dict()),
@@ -49,7 +49,7 @@ class testRegistration(unittest.TestCase):
 
 # ===========================================================================================================================
 
-    def testSuccessRegistration(self):
+    def testSuccess(self):
 
         randomStr = ''.join(secrets.choice(string.ascii_letters + string.digits)
                             for _ in range(8))
