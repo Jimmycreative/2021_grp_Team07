@@ -89,14 +89,14 @@ function LoginSignup() {
         var mydata={
             //planner
 
-            //username:"fyyc",
-            //password:"123456"
+            username:"fyyc",
+            password:"123456"
 
             //manager
             // username:"sheldon",
             // password:"imthequeen"
-            username:username,
-            password:password
+            // username:username,
+            // password:password
 
         }
         fetch(domain+"/login", {
@@ -104,7 +104,9 @@ function LoginSignup() {
           credentials:"include",
           headers: new Headers({
               'Content-Type': 'application/json',
-              'Access-Control-Allow-Credentials': true
+              'Access-Control-Allow-Credentials': true,
+              "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Methods": "POST, GET, OPTIONS, DELETE, HEAD,PUT"
             }),
             
           method: 'POST', // *GET, POST, PUT, DELETE, etc.
