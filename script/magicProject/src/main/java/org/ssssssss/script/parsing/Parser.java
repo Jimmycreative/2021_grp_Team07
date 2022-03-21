@@ -87,6 +87,8 @@ public class Parser {
 		return jsonDecision;
 	}
 
+	public static void clearJsonDecision() {jsonDecision.clear();}
+
 	public List<Node> parse(String source) throws Exception {
 		List<Node> nodes = new ArrayList<>();
 		push();
@@ -1031,7 +1033,7 @@ public class Parser {
 		//System.out.println(handle);
 		String[] lines = handle.split(";");
 
-
+		System.out.println("decision: "+decisions);
 
 		//System.out.println(lines.length);
 		for (int i=0; i<lines.length; i++)
