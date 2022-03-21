@@ -74,7 +74,7 @@ public class Parser {
 	private ArrayList<String> constraint = new ArrayList<>();
 	private static LinkedHashMap<String, Object> jsonDecision = new LinkedHashMap<>();
 	private boolean isDecision;
-	private ArrayList<String> decisions = new ArrayList<>(); // decision variable names
+	private static ArrayList<String> decisions = new ArrayList<>(); // decision variable names
 	private Boolean isBasic = false;
 	private static ArrayList<String> subjectConstraints=new ArrayList<>();
 
@@ -1154,4 +1154,5 @@ public class Parser {
 	public static ArrayList<String> getSubjectConstraints(){
 		return subjectConstraints;
 	}
+	public static void clearDecisions(){decisions.clear();}
 }
