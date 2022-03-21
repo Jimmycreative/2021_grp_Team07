@@ -142,9 +142,11 @@ public class ModelFunction implements MagicModule {
             System.out.println(getUUid(funcVariable));
             //
             Parser.clearDecisions();
+            Parser.clearJsonDecision();
             return getUUid(funcVariable);
         } catch (Exception e) {
             Parser.clearDecisions();
+            Parser.clearJsonDecision();
             return Result.fail(e.getMessage());
         }
     }
@@ -171,9 +173,11 @@ public class ModelFunction implements MagicModule {
             modelService.runFlexible(jobs, uuid, objective, nameMap,type);
             System.out.println(getUUid(funcVariable));
             Parser.clearDecisions();
+            Parser.clearJsonDecision();
             return getUUid(funcVariable);
         } catch (Exception e) {
             Parser.clearDecisions();
+            Parser.clearJsonDecision();
             return Result.fail(e.getMessage());
         }
     }
@@ -202,9 +206,11 @@ public class ModelFunction implements MagicModule {
             HashMap<String, String> nameMap= funcVariable.getNameMap();
             modelService.runDynamic(jobs, expected_duration, uuid, objective, nameMap,type);
             Parser.clearDecisions();
+            Parser.clearJsonDecision();
             return getUUid(funcVariable);
         } catch (Exception e) {
             Parser.clearDecisions();
+            Parser.clearJsonDecision();
             return Result.fail(e.getMessage());
         }
     }
@@ -229,9 +235,11 @@ public class ModelFunction implements MagicModule {
             HashMap<String, String> nameMap= funcVariable.getNameMap();
             modelService.runMulti(jobs, uuid, objective, nameMap,type);
             Parser.clearDecisions();
+            Parser.clearJsonDecision();
             return getUUid(funcVariable);
         } catch (Exception e) {
             Parser.clearDecisions();
+            Parser.clearJsonDecision();
             return Result.fail(e.getMessage());
         }
     }
