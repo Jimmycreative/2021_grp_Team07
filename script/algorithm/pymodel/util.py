@@ -90,9 +90,13 @@ def addBasicConstraints(all_machines, model, machine_to_intervals, jobs_data, al
 def addPriorityConstraint(expected_duration, dict, jobs_data, model, all_tasks):
     for index in range(len(expected_duration)-2):
         order=getDictKeys(dict, expected_duration[index])
+        if len(order)==0:
+            continue
         dict[order[0]]=-1
 
         next_order=getDictKeys(dict, expected_duration[index+1])
+        if len(next_order)==0:
+            continue
         dict[next_order[0]]=-1
         
         # priority constraint

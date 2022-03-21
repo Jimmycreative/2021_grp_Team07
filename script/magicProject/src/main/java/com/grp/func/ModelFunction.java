@@ -44,7 +44,12 @@ public class ModelFunction implements MagicModule {
 
     @Comment("run model")
     public Result runModel(RuntimeContext context, @Comment("job_type") int type, @Comment("js_jobs") @Nullable JSONObject originalData) {
-        if (type<1 || (originalData==null && type<3) || (Objects.requireNonNull(originalData).isEmpty() && type<3) || type>4) {
+        if (originalData==null) {
+            if (type<3) {
+                return Result.fail("Wrong Definition.");
+            }
+        }
+        else if (type<1 || (originalData.isEmpty() && type<3) || type>4) {
             return Result.fail("Wrong Definition.");
         }
         try {
