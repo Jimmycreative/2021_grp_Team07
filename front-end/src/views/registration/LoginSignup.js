@@ -88,6 +88,7 @@ function LoginSignup() {
         console.log(body)
         var mydata={
             //planner
+
             //username:"fyyc",
             //password:"123456"
 
@@ -96,6 +97,7 @@ function LoginSignup() {
             // password:"imthequeen"
             username:username,
             password:password
+
         }
         fetch(domain+"/login", {
           body: JSON.stringify(mydata),
