@@ -276,8 +276,8 @@ def getAssignedSchedules():
         cur = database.cursor(dictionary=True)
         # TODO get manager from session
 
-        # manager = 'fyyc'
-        manager = "Jimmy"
+        manager = 'fyyc'
+        # manager = "Jimmy"
         sql = "SELECT * FROM assignment WHERE manager='%s';" % (manager)
         cur.execute(sql)
         for assignement in cur:
