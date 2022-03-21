@@ -88,28 +88,32 @@ function LoginSignup() {
         console.log(body)
         var mydata={
             //planner
-            username:"fyyc",
-            password:"123456"
+            //username:"fyyc",
+            //password:"123456"
 
             //manager
             // username:"sheldon",
             // password:"imthequeen"
-            //    username:username,
-            //    password:password
+            username:username,
+            password:password
         }
         fetch(domain+"/login", {
           body: JSON.stringify(mydata),
           credentials:"include",
           headers: new Headers({
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Credentials': true
             }),
+            
           method: 'POST', // *GET, POST, PUT, DELETE, etc.
           mode: 'cors', // no-cors, cors, *same-origin
           redirect: 'follow', // manual, *follow, error
           referrer: 'no-referrer', // *client, no-referrer
         })
-      .then(response=>{
+        .then(response=>{
+      
         if(response.ok){
+            
           return response.json()
           }
         }

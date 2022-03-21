@@ -18,70 +18,63 @@ import {
   import { setTrueDate } from "../../gantt/helper"
 
 const basic = `
-decision_var start = 0;
+decision_var start = 0
 decision_var end = 5
 //task=[machine_id, duration]
 job1=[[0, 3], [1, 2], [2, 2]]
-job2=[[0, 2], [12, 1], [1, 4]]
+job2=[[0, 2], [2, 1], [1, 4]]
 job3=[[1, 4], [2, 3]]
 jobs=[job1,job2,job3]
 
 //optional
-job_names=["job_1","job_2", "job_3"]
+job_names=["job_aaa","job_bbb", "job_ccc"]
 //optional
-machine_names=["machine_0","machine_1", "machine_2", "machine_12"]
+machine_names=["machine_0","machine_1", "machine_2"]
 
 myformat=algorithm.standardize(jobs)
-
 js_jobs=myformat.jobs
 js_machines=myformat.machines
 
 basic {
-    //precedence
+    //precedence constraint
     for (job in js_jobs) {
-        for (index in job) {
-            if (index==count(job)-1) {
-                break;
-            }
+        for (index in range(0, (count(job)-2))) {
+            print(index)
             job[index+1].start>=job[index].end
         }
     }
 
-    //no overlap
+    //no overlap constraint
     for (machine in js_machines) {
-        for (index in machine) {
-            if (index==len(job)-1) {
-                break;
-            }
-            mahine[index+].start>=machine[index].end
+        for (index in range(0, (count(machine)-2))) {
+            mahine[index+1].start>=machine[index].end
         }
     }
+    
 }
 subject_to {
-  2job1.start>5;
-  job2.end>10;
+  2*js_jobs[0][0].start<=5;
+  1*js_jobs[0][1].end>10;
 }
 //remember to return
 return model.runModel(type=1, originalData=myformat)`
 
 const dynamic = `//task=[machine_id, duration]
-decision_var start = 0;
+decision_var start = 0
 decision_var end = 5
+decision_var priority = [1,5,3]
+
 job1=[[0, 3], [1, 2], [2, 2]]
-job2=[[0, 2], [12, 1], [1, 4]]
+job2=[[0, 2], [4, 1], [1, 4]]
 job3=[[1, 4], [2, 3]]
 jobs=[job1,job2,job3]
-
-//priorities will be set in ascending order of expected duration
-expected_duration=[15,15,10]
 
 //optional
 job_names=["job_1","job_2", "job_3"]
 //optional
-machine_names=["machine_0","machine_1", "machine_2", "machine_12"]
+machine_names=["machine_0","machine_1", "machine_2", "machine_3"]
 
 myformat=algorithm.standardize(jobs)
-
 js_jobs=myformat.jobs
 js_machines=myformat.machines
 
@@ -105,10 +98,17 @@ basic {
             mahine[index+].start>=machine[index].end
         }
     }
+    //priority constraint
+    for(machine in js_machines) {
+        for (index in range(0, (count(machine.tasks)-2))) {
+            machine.tasks[index+1].priority<=machine.tasks[index].priority
+        }
+    }
+
 }
 
 //remember to return
-return model.runDynamic(jobs,expected_duration)`
+return model.runModel(type=2, originalData=myformat)`
 
 const flexible = `//task=[machine_id, duration]
 //if one task has multiple machine choices, it can be defined as below
@@ -118,12 +118,12 @@ job3=[[0, 4], [2, 3]]
 jobs=[job1,job2,job3]
 
 //optional
-job_names=["job_1","job_2", "job_3"]
+job_names=["job_aaa","job_bbb", "job_ccc"]
 //optional
 machine_names=["machine_0","machine_2", "machine_3", "machine_4"]
 
 //remember to return
-return model.runFlexible(jobs)`
+return model.runModel(type=3,originalData=null)`
 
 const multi = `//task=[machine_id, duration]
 //if one task has multiple concurrent processes on different machines, it can be defined as below
@@ -138,10 +138,9 @@ job_names=["job_1","job_2", "job_3"]
 machine_names=["machine_0","machine_1", "machine_2", "machine_10", "machine_12"]
 
 //remember to return
-return model.runMulti(jobs)
-`
-const noTemplate = ``
+return model.runModel(type=4,originalData=null)`
 
+const noTemplate = ""
 const jobType = [basic,dynamic,flexible,multi,noTemplate];
 
 class DefForm extends React.Component {

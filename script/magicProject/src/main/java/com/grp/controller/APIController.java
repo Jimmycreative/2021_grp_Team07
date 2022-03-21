@@ -39,12 +39,10 @@ public class APIController {
     private String exePath="";
 
 
-//    @RequestMapping(value = "/test",method = {RequestMethod.GET, RequestMethod.POST}, produces = "application/json")
-//    public Result test() {
-//        Result res=Result.succeed("uuid");
-//
-//        return res;
-//    }
+    @RequestMapping(value = "/test",method = {RequestMethod.GET, RequestMethod.POST})
+    public String test() {
+        return "res";
+    }
 
 
     /**
@@ -124,8 +122,8 @@ public class APIController {
     private void getPyPath() {
         String curPath=System.getProperty("user.dir");
         //TODO
-        curPath=curPath.replace("magicProject", "algorithm\\");
-        //curPath=curPath.replace("magicProject", "algorithm/");
+        //curPath=curPath.replace("magicProject", "algorithm\\");
+        curPath=curPath.replace("magicProject", "algorithm/");
         exePath=curPath;
     }
 

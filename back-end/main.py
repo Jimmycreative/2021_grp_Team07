@@ -2,6 +2,7 @@
 # You can, however, import additional functionalities
 # from the flask and sqlite3 modules
 from distutils.cygwinccompiler import CygwinCCompiler
+import resource
 from turtle import title
 from unicodedata import name
 from click.types import convert_type
@@ -9,6 +10,7 @@ from flask import Flask, request, session
 import mysql.connector
 from flask import jsonify
 from flask_cors import CORS
+from cross import crossdomain
 import json
 import requests
 import secrets
@@ -40,14 +42,15 @@ class MyEncoder(json.JSONEncoder):
 
 
 app = Flask(__name__)
+CORS(app, origins=['http://localhost:3000'],supports_credentials=True)
+
 
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SECRET_KEY'] = '123456'
 app.config['SESSION_PERMANENT'] = False
 app.config['SESSION_USE_SIGNER'] = True
-# app.secret_key = "hello"
+app.secret_key = "hello"
 
-CORS(app, supports_credentials=True)
 Session(app)
 
 # host="192.168.64.2",
@@ -56,24 +59,18 @@ Session(app)
 #     password="Uk.JgBsQn]bQp[2u",
 #     database="unnc_team_2021-07-p16"
 
-
 database = mysql.connector.connect(
-
-
 
     host="127.0.0.1",
     user="root",
-    password="",
-    database="grp"
-    # password="12345678",
-    # database="try"
-
+    database="grp",
+    password="12345678",
+    auth_plugin='mysql_native_password'
+    
     # host="192.168.64.2",
     # user="unnc",
     # password="Uk.JgBsQn]bQp[2u",
     # database="grp"
-
-
 
 )
 # login_info = {
@@ -550,18 +547,20 @@ def save_schedule():
 
 
 @app.route('/login', methods=['GET', 'POST'])
+
 def login():
     # session.pop("username")
     data = request.json       # how to get data in request.json from test.py
-
+    print(data)
     result = {}
 
     login_info = {
         "code": -1,
         "message": ""
     }
+    
     if data:
-
+        print("e")
         username = data['username']
         password = data['password']
         cur = database.cursor(dictionary=True)
@@ -692,13 +691,17 @@ def genToken():
     return
 
 
+
+  
 @app.route("/")
 def hello_world():
+    return "hello"
     # post_script() #right no it's used to test the connectivity between backend and the algorithm
 
     return "hello world"
 
 
 if __name__ == "__main__":
+    app.after_request(after_request)
     app.debug = True
     app.run(port=5000)
