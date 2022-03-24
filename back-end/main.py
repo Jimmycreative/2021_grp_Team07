@@ -6,7 +6,7 @@ import resource
 from turtle import title
 from unicodedata import name
 from click.types import convert_type
-from flask import Flask, request, session
+from flask import Flask, request, session, make_response
 import mysql.connector
 from flask import jsonify
 from flask_cors import CORS
@@ -42,7 +42,7 @@ class MyEncoder(json.JSONEncoder):
 
 
 app = Flask(__name__)
-CORS(app, origins=['http://localhost:3000'],supports_credentials=True)
+CORS(app,supports_credentials=True)
 
 
 app.config['SESSION_TYPE'] = 'filesystem'
@@ -61,12 +61,15 @@ Session(app)
 
 database = mysql.connector.connect(
 
+    #host="10.6.2.51",
+    #user="Team202107",
+    #database="Team202107",
+    #password="Team202107",
+    #auth_plugin='mysql_native_password'
     host="127.0.0.1",
     user="root",
     database="grp",
     password="12345678",
-    auth_plugin='mysql_native_password'
-    
     # host="192.168.64.2",
     # user="unnc",
     # password="Uk.JgBsQn]bQp[2u",
@@ -547,10 +550,10 @@ def save_schedule():
 
 
 @app.route('/login', methods=['GET', 'POST'])
-
 def login():
-    # session.pop("username")
-    data = request.json       # how to get data in request.json from test.py
+    res = make_response()
+    res.set_cookie("name", value="I am cookie", samesite='Lax')
+    data = request.json       
     print(data)
     result = {}
 
@@ -702,6 +705,6 @@ def hello_world():
 
 
 if __name__ == "__main__":
-    app.after_request(after_request)
+    
     app.debug = True
     app.run(port=5000)

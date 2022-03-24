@@ -16,6 +16,7 @@
     "bootstrap": "^4.6.0",
     "bootstrap-react-treetable": "^2.0.2",
     "chart.js": "3.2.1",
+    "cors": "^2.8.5",
     "element-react": "^1.4.34",
     "element-theme-default": "^1.4.13",
     "formik": "^2.2.9",

@@ -103,8 +103,10 @@ function LoginSignup() {
           body: JSON.stringify(mydata),
           credentials:"include",
           headers: new Headers({
-              'Content-Type': 'application/json',
-              'Access-Control-Allow-Credentials': true
+            
+                
+              'Content-Type': 'application/json'
+              
             }),
             
           method: 'POST', // *GET, POST, PUT, DELETE, etc.
@@ -113,7 +115,7 @@ function LoginSignup() {
           referrer: 'no-referrer', // *client, no-referrer
         })
         .then(response=>{
-      
+            
         if(response.ok){
             
           return response.json()
@@ -135,7 +137,9 @@ function LoginSignup() {
           }
           
         }
-      )
+      ).catch(error => {
+        console.log(error)
+        })
     }
     const insertData2= (body)=>{
         fetch(domain+"/registration", {
