@@ -151,7 +151,6 @@ try:
                     for cur_machine in task:
                         machine=cur_machine[0]
                         #print(solver.Value(all_tasks[job_id, task_id, option].selected))
-                        print(solver.Value(all_tasks[job_id, task_id, option].duration))
                         assigned_jobs[machine].append(
                             assigned_task_type(start=solver.Value(
                                 all_tasks[job_id, task_id, option].start),

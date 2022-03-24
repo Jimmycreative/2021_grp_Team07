@@ -89,24 +89,22 @@ function LoginSignup() {
         var mydata={
             //planner
 
-            //username:"fyyc",
-            //password:"123456"
+            username:"fyyc",
+            password:"123456"
 
             //manager
             // username:"sheldon",
             // password:"imthequeen"
-            username:username,
-            password:password
+            // username:username,
+            // password:password
 
         }
         fetch(domain+"/login", {
           body: JSON.stringify(mydata),
           credentials:"include",
           headers: new Headers({
-            
-                
+  
               'Content-Type': 'application/json'
-              
             }),
             
           method: 'POST', // *GET, POST, PUT, DELETE, etc.

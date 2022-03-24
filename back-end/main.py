@@ -2,7 +2,6 @@
 # You can, however, import additional functionalities
 # from the flask and sqlite3 modules
 from distutils.cygwinccompiler import CygwinCCompiler
-import resource
 from turtle import title
 from unicodedata import name
 from click.types import convert_type
@@ -61,15 +60,18 @@ Session(app)
 
 database = mysql.connector.connect(
 
-    #host="10.6.2.51",
-    #user="Team202107",
-    #database="Team202107",
-    #password="Team202107",
-    #auth_plugin='mysql_native_password'
-    host="127.0.0.1",
+
+    # host="10.6.2.51",
+    # user="Team202107",
+    # database="Team202107",
+    # password="Team202107",
+    # auth_plugin='mysql_native_password'
+    host="localhost",
     user="root",
     database="grp",
-    password="12345678",
+    password="",
+    auth_plugin='mysql_native_password'
+    
     # host="192.168.64.2",
     # user="unnc",
     # password="Uk.JgBsQn]bQp[2u",
@@ -705,6 +707,6 @@ def hello_world():
 
 
 if __name__ == "__main__":
-    
+
     app.debug = True
     app.run(port=5000)
