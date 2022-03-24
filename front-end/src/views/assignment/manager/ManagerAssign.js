@@ -210,7 +210,7 @@ const getAssignedSchedules = () => {
                         <tr>
                             <td>{val.username}</td>
                             <td>{val.displayname}</td>
-                            <td> <Button className="btn-round btn-icon"
+                            <td> <Button className="btn-icon"
                       color="success"
                       size="sm"
                       onClick={() => {setModal(!modal);setPlannername(val.username)}}
