@@ -50,7 +50,7 @@ INSERT IGNORE INTO `schedule` (`scheduleid`, `aid`, `name`, `description`, `scri
 -- Dumping data for table `token`
 --
 
-INSERT IGNORE INTO `token` (`tokenid`, `datecreated`, `dateexpire`, `role`, `uses`, `disabled`) VALUES
+INSERT IGNORE INTO `token` (`token`, `datecreated`, `dateexpire`, `role`, `uses`, `disabled`) VALUES
 ('aaaaa', '2022-01-08 12:55:22', NULL, 0, 0, 0),
 ('aaaaaa', '2022-01-08 14:01:49', NULL, 0, 0, 0),
 ('abc', '2022-01-08 13:20:21', NULL, 0, 1, 0),
