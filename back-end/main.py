@@ -9,7 +9,7 @@ from flask import Flask, request, session, make_response
 import mysql.connector
 from flask import jsonify
 from flask_cors import CORS
-from cross import crossdomain
+# from cross import crossdomain
 import json
 import requests
 import secrets
@@ -66,7 +66,7 @@ database = mysql.connector.connect(
     # database="Team202107",
     # password="Team202107",
     # auth_plugin='mysql_native_password'
-    host="localhost",
+    host="127.0.0.1",
     user="root",
     database="grp",
     password="",

@@ -151,6 +151,7 @@ class DefForm extends React.Component {
             modalImport: false,
             showGantt: false,
             selectedOption:"Basic Type",
+            selectedOption1:"Basic Type",
             assignmentId:"",
             description:"",
             
@@ -169,10 +170,18 @@ class DefForm extends React.Component {
               },
               success:false,
               flag: 1,
-              selectedFile: null
+              selectedFile: null,
+              selectedData:null,
+              selectedIndex: 0,
+              dataModal: false,
+              dataTypeModal: false,
+              dataCode: jobType[0],
+              dataIndex:0
         };
         this.toggle = this.toggle.bind(this);
         this.toggleImport = this.toggleImport.bind(this);
+        this.toggleImportData=this.toggleImportData.bind(this);
+        this.toggleDataType=this.toggleDataType.bind(this);
         this.updateSolution = this.updateSolution.bind(this);
         this.handleCodeChange = this.handleCodeChange.bind(this);
     }
@@ -223,16 +232,54 @@ class DefForm extends React.Component {
           
     }
 
+    clickConfirmData = ()=>{
+
+        let index
+        if(this.state.selectedOption1=== "Basic Type")
+            index = 0
+        else if(this.state.selectedOption1=== "Dynamic Type")
+            index = 1
+        else if(this.state.selectedOption1=== "Flexible Type")
+            index = 2
+        else if(this.state.selectedOption1=== "Multi-Resource Type")
+            index = 3
+        else if(this.state.selectedOption1=== "No template")
+            index = 4
+        
+        console.log("line 249", index)
+        console.log("line 250", this.state.selectedOption1)
+        this.setState({
+            dataTypeModal: !this.state.dataTypeModal,
+            selectedIndex: index
+        })
+        console.log("line 253",this.state.selectedIndex)
+        this.handleDataRun()
+          
+    }
+
     toggleImport(){
         this.setState({
             modalImport: !this.state.modalImport,
             
           });
     };
+    toggleImportData(){
+        this.setState({
+            dataModal: !this.state.dataModal,
+          });
+          console.log("line 264",this.state.dataModal)
+    };
 
     toggle() {
         this.setState({
           modal: !this.state.modal,
+          
+        });
+      };
+
+      toggleDataType() {
+        this.setState({
+          dataTypeModal: !this.state.dataTypeModal,
           
         });
       };
@@ -243,6 +290,13 @@ class DefForm extends React.Component {
             selectedOption:changeEvent.target.value
         })        
     };
+
+    changeOption1 = changeEvent =>{    
+            
+        this.setState({
+          selectedOption1:changeEvent.target.value
+      })
+  };
 
     changeAssignmentId = changeEvent =>{
 
@@ -307,6 +361,49 @@ class DefForm extends React.Component {
         } 
     ).catch(error => console.log(error))
     }
+
+    handleDataRun = ()=> {
+        
+        //event.preventDefault();
+        var mydata={
+            scriptData:this.state.dataCode,
+            typeIndex: this.state.selectedIndex
+
+        }
+        console.log("line 372",mydata)
+    //     fetch(domain+"/inputData", {
+    //         body: JSON.stringify(mydata),
+    //         headers: new Headers({
+    //             'Content-Type': 'application/json'
+    //           }),
+    //         method: 'POST', // *GET, POST, PUT, DELETE, etc.
+    //         credentials: 'include',
+    //         mode: 'cors', // no-cors, cors, *same-origin
+    //         redirect: 'follow', // manual, *follow, error
+    //         referrer: 'no-referrer', // *client, no-referrer
+    //       })
+    //       .then(response => {
+              
+    //         if(response.ok) {
+    //             return response.json();
+    //         }
+    //     }).then(
+    //         data=>{
+    //             console.log("line 142", data)
+    //             if(data.code===1){
+    //                 console.log(data.data)
+    //                 this.setState({uuid: data.data})
+    //                 this.setState({result:"Schedule "+this.state.uuid+" is running."})
+    //                 this.setState({flag: 1})
+    //                 //this.sendUuid(data.data)
+    //             }
+    //             else {
+    //                 alert(data.message)
+    //             }
+          
+    //     } 
+    // ).catch(error => console.log(error))
+    }
     
     sendUuid() {
         var mydata={
@@ -352,6 +449,8 @@ class DefForm extends React.Component {
             })
         .catch(error => console.log(error))
     }
+
+    
 
     
       updateSolution(event) {
@@ -418,6 +517,19 @@ class DefForm extends React.Component {
         })
       })
 
+      dataSelectedHandler = (event=>{
+        console.log(event.target.files[0])
+        if(event.target.files[0].type==="text/plain"){
+            console.log("correct!")
+        }
+        else{
+            console.log("wrong format!")
+        }
+        this.setState({
+            selectedData: event.target.files[0]
+        })
+      })
+
       fileUploadHandler = ()=>{
         this.setState({
             modalImport: !this.state.modalImport
@@ -429,6 +541,24 @@ class DefForm extends React.Component {
         }
         reader.onerror = ()=>{
             console.log("file error",reader.error)
+        }
+        
+      }
+
+      dataUploadHandler = ()=>{
+        this.setState({
+            dataModal: !this.state.dataModal,
+            dataTypeModal:!this.state.dataTypeModal
+        })
+        const reader1 = new FileReader()
+        reader1.readAsText(this.state.selectedData)
+        reader1.onload = ()=>{
+            this.setState({dataCode:reader1.result})
+        }
+        console.log("line 513", this.state.dataCode)
+        console.log(this.state.dataCode)
+        reader1.onerror = ()=>{
+            console.log("file error",reader1.error)
         }
         
       }
@@ -450,9 +580,33 @@ class DefForm extends React.Component {
                     round
                     onClick={this.toggleImport}
                     >
-                    <i className="nc-icon nc-share-66"></i> Import Existing File
+                    <i className="nc-icon nc-share-66"></i> Import Script
+                </Button>
+                <Button
+                    className="import-button"
+                    round
+                    onClick={this.toggleImportData}
+                    >
+                    <i className="nc-icon nc-share-66"></i> Import Data
                 </Button>
             </div>
+
+            <Modal 
+                isOpen={this.state.dataModal}
+                className={this.props.className}
+                style={{width: "120%"}}
+            
+            >
+                <ModalHeader>Import Data</ModalHeader>
+                <ModalBody>
+                    <input type="file" onChange={this.dataSelectedHandler}/>
+                    
+                </ModalBody>
+                <ModalFooter>
+                    <Button className="cancel-btn" onClick={this.toggleImportData}>Cancel</Button>{' '}
+                    <Button color="secondary" onClick={this.dataUploadHandler}>Upload</Button>    
+                </ModalFooter>
+            </Modal>
             <Modal 
                 isOpen={this.state.modalImport}
                 className={this.props.className}
@@ -469,6 +623,108 @@ class DefForm extends React.Component {
                     <Button color="secondary" onClick={this.fileUploadHandler}>Upload</Button>    
                 </ModalFooter>
             </Modal>
+            <Modal
+                isOpen={this.state.dataTypeModal}
+                
+                className={this.props.className}
+                style={{width: "120%"}}
+                >
+                <ModalHeader toggle={this.toggleDataType}>Type Choice</ModalHeader>
+                <ModalBody>
+                    <Form>
+                        {/* Basic Type */}
+                        <div className="form-check">
+                            <label style={{marginLeft: "-15px"}}>
+                                <input
+                                    type="radio"
+                                    name="react-tips"
+                                    value="Basic Type"
+                                    
+                                    checked={this.state.selectedOption1 === "Basic Type"}
+                                    onChange={this.changeOption1}
+                                    className="form-check-input"
+                                />
+                                Basic Type
+                            </label>
+                            
+                        </div>
+
+                        {/* Flexible Type */}
+                        <div className="form-check">
+                            <label style={{marginLeft: "-1px"}}>
+                                <input
+                                    type="radio"
+                                    name="react-tips"
+                                    value="Flexible Type"
+                                    
+                                    checked={this.state.selectedOption1 === "Flexible Type"}
+                                    onChange={this.changeOption1}
+                                    className="form-check-input"
+                                />
+                                Flexible Type
+                            </label>
+                            
+                        </div>
+
+                        {/* Dynamic Type */}
+                        <div className="form-check">
+                            <label style={{marginLeft: "8px"}}>
+                                <input
+                                    type="radio"
+                                    name="react-tips"
+                                    value="Dynamic Type"
+                                    
+                                    checked={this.state.selectedOption1 === "Dynamic Type"}
+                                    onChange={this.changeOption1}
+                                    className="form-check-input"
+                                />
+                                Dynamic Type
+                            </label>
+                            
+                        </div>
+
+                        {/* Multi-Resource Type */}
+                        <div className="form-check">
+                            <label style={{marginLeft: "50px"}}>
+                                <input
+                                    type="radio"
+                                    name="react-tips"
+                                    value="Multi-Resource Type"
+                                    
+                                    checked={this.state.selectedOption1 === "Multi-Resource Type"}
+                                    onChange={this.changeOption1}
+                                    className="form-check-input"
+                                />
+                                Multi-Resource Type
+                            </label>
+                          
+                        </div>
+
+                        {/* No template */}
+                        <div className="form-check">
+                            <label style={{marginLeft: "-3px"}}>
+                                <input
+                                    type="radio"
+                                    name="react-tips"
+                                    value="No template"
+                                    
+                                    checked={this.state.selectedOption1 === "No template"}
+                                    onChange={this.changeOption1}
+                                    className="form-check-input"
+                                />
+                                No template
+                            </label>
+                          
+                        </div>
+                    </Form>
+                </ModalBody>
+                <ModalFooter>
+                    <Button className="cancel-btn" onClick={this.toggleDataType}>Cancel</Button>{' '}
+                <Button color="secondary" onClick={this.clickConfirmData}>Confirm</Button>
+                    
+                </ModalFooter>
+            </Modal>
+
             <Modal
                 isOpen={this.state.modal}
                 
