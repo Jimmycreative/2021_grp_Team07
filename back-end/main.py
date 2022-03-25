@@ -553,8 +553,7 @@ def save_schedule():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    res = make_response()
-    res.set_cookie("name", value="I am cookie", samesite='Lax')
+
     data = request.json       
     print(data)
     result = {}
@@ -696,7 +695,41 @@ def genToken():
     return
 
 
+@app.route('/inputData', methods=['POST'])
+def genToken():
+    data = request.json
+    print(data)
+    if data:
+       
+        # send the data to the algorithm. It should have parameter string, but for testing the connectivity I defined in the post_script
+        result = data.split("\n")
+        output = ""
+        for i in range(0,len(result)):
+            output += "job"+str(i+1)+" = "+result[i]+"\n"
+            if i==len(result)-1:
+                temp = "jobs" + " = "+"["
+                for i in range(0,len(result)):
+                    if i==len(result)-1:
+                        temp+="job"+str(i+1)+"]"+"\n"
+                    else:
+                        temp+="job"+str(i+1)+","
+                output+=temp
 
+        if tp == 1:
+            output += '''myformat=algorithm.standardize(jobs)\njs_jobs=myformat.jobs\njs_machines=myformat.machines'''
+            output += "\n"+"return model.runModel(type=1, originalData=myformat)"
+            uuid = post_script(data)
+        elif tp == 2:
+            output += '''myformat=algorithm.standardize(jobs)\njs_jobs=myformat.jobs\njs_machines=myformat.machines'''
+            output += "\n"+"return model.runModel(type=2, originalData=myformat)"
+            uuid = post_script(data)
+        elif tp == 3:
+            output += "\n"+"return model.runModel(type=3, originalData=null)"
+            uuid = post_script(data)
+        else:
+            output += "\n"+"return model.runModel(type=3, originalData=null)"
+            uuid = post_script(data)
+        return uuid
   
 @app.route("/")
 def hello_world():
