@@ -95,8 +95,8 @@ function LoginSignup() {
             //manager
             // username:"sheldon",
             // password:"imthequeen"
-            // username:username,
-            // password:password
+            //  username:username,
+            //  password:password
 
         }
         fetch(domain+"/login", {
