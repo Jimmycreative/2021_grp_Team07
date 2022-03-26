@@ -42,6 +42,13 @@ public class ModelFunction implements MagicModule {
         System.out.println(test);
     }
 
+    /**
+     *
+     * @param context magic script context
+     * @param type index of job type
+     * @param originalData json format of job data
+     * @return result of the algorithm
+     */
     @Comment("run model")
     public Result runModel(RuntimeContext context, @Comment("job_type") int type, @Comment("js_jobs") @Nullable JSONObject originalData) {
         if (originalData==null) {
@@ -411,47 +418,14 @@ public class ModelFunction implements MagicModule {
         return object;
     }
 
-    private void analyzeConstraint(String customizedConstraint, FuncVariable funcVariable) throws Exception {
-        if (customizedConstraint.equals(""))
-            return;
-        try {
-            customizedConstraint=customizedConstraint.replace("\n", "");
-            ArrayList<String> myConstraints=new ArrayList<>();
-            String [] constraints=customizedConstraint.split(";");
-            for (String constraint:constraints) {
-                //find the job name
-                //e.g. 2job1.task[0].start
-                StringBuilder expr= new StringBuilder();
-                expr.append("    model.Add(");
-                if (!constraint.contains(".start") && !constraint.contains(".end")) {
-                    throw new Exception("Please input correct constraint format");
-                }
-                constraint=constraint.replace(" ","");
-                constraint=constraint.replace("-","+(-1)");
-                if (constraint.contains("+")) {
-                    String [] exprConstraints=constraint.split("\\+");
-                    for (String exprConstraint:exprConstraints) {
-                        if (exprConstraint.contains("<") || exprConstraint.contains(">") || exprConstraint.contains("=")) {
-                            getExpression(expr, exprConstraint, funcVariable);
-                        } else {
-                            expr.append(getVariable(exprConstraint, funcVariable) + "+");
-                        }
-                    }
-                }
-                else {
-                    getExpression(expr,constraint,funcVariable);
-                }
-                expr.append(")");
-                myConstraints.add(expr.toString());
 
-            }
-            funcVariable.setMyConstraints(myConstraints);
-        }
-        catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
-    }
-
+    /**
+     * get variables from script
+     * @param constraint original constraint
+     * @param funcVariable where stores the data
+     * @return constraint that can be passed to the algorithm
+     * @throws Exception potential exception
+     */
     private String getVariable(String constraint, FuncVariable funcVariable) throws Exception {
         try {
             String jobName=constraint.substring(0, constraint.indexOf("."));
@@ -492,49 +466,6 @@ public class ModelFunction implements MagicModule {
         }catch (Exception e) {
             throw new Exception(e.getMessage());
         }
-    }
-
-    private String getExpression(StringBuilder expr, String exprConstraint, FuncVariable funcVariable) throws Exception {
-        if (exprConstraint.contains(">")) {
-            String[] finalExprs=exprConstraint.split(">");
-            expr.append(getVariable(finalExprs[0], funcVariable));
-            expr.append(">").append(finalExprs[1]);
-        }
-        else if (exprConstraint.contains("<")) {
-            String[] finalExprs=exprConstraint.split("<");
-            expr.append(getVariable(finalExprs[0], funcVariable));
-            expr.append("<").append(finalExprs[1]);
-        }
-
-        else if (exprConstraint.contains("=")) {
-            String[] finalExprs=exprConstraint.split("=");
-            expr.append(getVariable(finalExprs[0], funcVariable));
-            expr.append("=").append(finalExprs[1]);
-        }
-        return expr.toString();
-    }
-
-
-    public String handleParse(String inputConstraint){
-
-        String handle = inputConstraint;
-
-        for (int i=0;i<handle.length();i++){
-            if (handle.charAt(i)=='/' && handle.charAt(i+1)=='/'){
-                int start = i;
-                while(handle.charAt(i)!='\n'){
-                    //System.out.println(i);
-                    //System.out.println(handle.charAt(i));
-                    i = i+1;
-                }
-                int end = i;
-                handle = handle.replace(handle.substring(start,end),"");
-
-                i = start;
-            }
-        }
-        System.out.println(handle);
-        return handle;
     }
 
 
