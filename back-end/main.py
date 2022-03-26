@@ -69,7 +69,7 @@ database = mysql.connector.connect(
     host="127.0.0.1",
     user="root",
     database="grp",
-    password="12345678",
+    password="",
     auth_plugin='mysql_native_password'
     
     # host="192.168.64.2",

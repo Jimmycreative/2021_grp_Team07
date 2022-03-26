@@ -247,15 +247,37 @@ class DefForm extends React.Component {
             index = 4
         
         console.log("line 249", index)
-        console.log("line 250", this.state.selectedOption1)
+        //console.log("line 250", this.state.selectedOption1)
         this.setState({
             dataTypeModal: !this.state.dataTypeModal,
-            selectedIndex: index
+            selectedIndex: index,
+            dataModal: !this.state.dataModal
         })
         console.log("line 253",this.state.selectedIndex)
         this.handleDataRun()
           
     }
+
+    dataUploadHandler = ()=>{
+        this.setState({
+            dataModal: !this.state.dataModal
+        })
+        const reader1 = new FileReader()
+        reader1.readAsText(this.state.selectedData)
+        reader1.onload = ()=>{
+            
+            this.setState({
+                dataCode:reader1.result,
+                code: reader1.result
+            })
+        }
+        console.log("line 513", this.state.dataCode)
+        console.log(this.state.dataCode)
+        reader1.onerror = ()=>{
+            console.log("file error",reader1.error)
+        }
+        
+      }
 
     toggleImport(){
         this.setState({
@@ -292,10 +314,11 @@ class DefForm extends React.Component {
     };
 
     changeOption1 = changeEvent =>{    
-            
+        
         this.setState({
           selectedOption1:changeEvent.target.value
       })
+      console.log(this.state.selectedOption1)
   };
 
     changeAssignmentId = changeEvent =>{
@@ -544,27 +567,7 @@ class DefForm extends React.Component {
         
       }
 
-      dataUploadHandler = ()=>{
-        this.setState({
-            dataModal: !this.state.dataModal,
-            dataTypeModal:!this.state.dataTypeModal
-        })
-        const reader1 = new FileReader()
-        reader1.readAsText(this.state.selectedData)
-        reader1.onload = ()=>{
-            
-            this.setState({
-                dataCode:reader1.result,
-                code: reader1.result
-            })
-        }
-        console.log("line 513", this.state.dataCode)
-        console.log(this.state.dataCode)
-        reader1.onerror = ()=>{
-            console.log("file error",reader1.error)
-        }
-        
-      }
+      
 
     render() {
         
@@ -588,7 +591,7 @@ class DefForm extends React.Component {
                 <Button
                     className="import-button"
                     round
-                    onClick={this.toggleImportData}
+                    onClick={this.toggleDataType}
                     >
                     <i className="nc-icon nc-share-66"></i> Import Data
                 </Button>

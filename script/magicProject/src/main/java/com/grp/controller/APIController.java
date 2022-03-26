@@ -123,7 +123,7 @@ public class APIController {
         String curPath=System.getProperty("user.dir");
         //TODO
         //curPath=curPath.replace("magicProject", "algorithm\\");
-        curPath=curPath.replace("magicProject", "algorithm/");
+        //curPath=curPath.replace("magicProject", "algorithm/");
         exePath=curPath;
     }
 
