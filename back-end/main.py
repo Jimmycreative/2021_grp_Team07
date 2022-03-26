@@ -69,7 +69,7 @@ database = mysql.connector.connect(
     host="127.0.0.1",
     user="root",
     database="grp",
-    password="",
+    password="12345678",
     auth_plugin='mysql_native_password'
     
     # host="192.168.64.2",
@@ -731,8 +731,19 @@ def inputData():
             uuid = post_script(result)
         elif tp == 1:
             #dynamic
-            output += '''myformat=algorithm.standardize(jobs)\njs_jobs=myformat.jobs\njs_machines=myformat.machines'''
+            temp2 = "decision_var start = 0\ndecision_var end = 5\ndecision_var priority = ["
+
+            for i in range(1,len(result)+1):
+                
+                if i==len(result):
+                    
+                    temp2+=str(i)+"]"+"\n"
+                else:
+                    temp2 += str(i)+","
+            output = temp2+output
+            output += "myformat=algorithm.standardize(jobs)\njs_jobs=myformat.jobs\njs_machines=myformat.machines"
             output += "\n"+"return model.runModel(type=2, originalData=myformat)"
+            print(output)
             result = {"script":output}
             uuid = post_script(result)
         elif tp == 2:
@@ -741,7 +752,7 @@ def inputData():
             result = {"script":output}
             uuid = post_script(result)
         else:
-            
+            #multi
             output += "\n"+"return model.runModel(type=4, originalData=null)"
             print(output)
             result = {"script":output}
