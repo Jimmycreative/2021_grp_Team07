@@ -25,30 +25,49 @@ public class AlgorithmFunction implements MagicModule {
     @Comment("Standardize job format")
     public JSONObject standardize(RuntimeContext context, List<ArrayList<ArrayList<Integer>>> jobs) {
         try {
+
             LinkedHashMap<String, Object> decisionVar=Parser.getJsonDecision();
             JSONObject realVars=getDecisionVar(decisionVar);
 
-            JSONObject startObj=realVars.getJSONObject("start");
-            String startKey=startObj.getString("name");
-            int startVal=startObj.getIntValue("value");
-
-            JSONObject endObj=realVars.getJSONObject("end");
-            String endKey=endObj.getString("name");
-            int endVal=endObj.getIntValue("value");
-
+            String startKey;
+            int startVal;
+            String endKey;
+            int endVal;
             boolean hasPriority=false;
-            JSONObject priorityObj=realVars.getJSONObject("priority");
             String priorityKey;
             ArrayList<Integer> priorityVal;
-            if (priorityObj!=null) {
-                hasPriority=true;
-                priorityKey=priorityObj.getString("name");
-                priorityVal=(ArrayList<Integer>) priorityObj.get("value");
-            }
-            else {
+
+            if (realVars.isEmpty()) {
+                startKey="start";
+                startVal=0;
+                endKey="end";
+                endVal=0;
                 priorityKey="priority";
                 priorityVal=new ArrayList<>();
+
             }
+            else {
+                JSONObject startObj=realVars.getJSONObject("start");
+                startKey=startObj.getString("name");
+                startVal=startObj.getIntValue("value");
+
+                JSONObject endObj=realVars.getJSONObject("end");
+                endKey=endObj.getString("name");
+                endVal=endObj.getIntValue("value");
+
+                JSONObject priorityObj=realVars.getJSONObject("priority");
+
+                if (priorityObj!=null) {
+                    hasPriority=true;
+                    priorityKey=priorityObj.getString("name");
+                    priorityVal=(ArrayList<Integer>) priorityObj.get("value");
+                }
+                else {
+                    priorityKey="priority";
+                    priorityVal=new ArrayList<>();
+                }
+            }
+
 
 
             ArrayList<Integer> testJob=jobs.get(0).get(0);
@@ -108,6 +127,8 @@ public class AlgorithmFunction implements MagicModule {
             formatJob.put("priority", priorityVal);
             return formatJob;
         } catch (Exception e) {
+            Parser.clearDecisions();
+            Parser.clearJsonDecision();
             return new JSONObject();
         }
     }

@@ -69,7 +69,7 @@ database = mysql.connector.connect(
     host="127.0.0.1",
     user="root",
     database="grp",
-    password="",
+    password="12345678",
     auth_plugin='mysql_native_password'
     
     # host="192.168.64.2",
@@ -426,7 +426,8 @@ def get_script():
 
 
 def post_script(data):  # string will replace the variable s below
-
+    
+    print(type(data))
     url = 'http://localhost:8083/home/getuuid'
     s = '''
         job1=[[0, 3, 0], [1, 2, 1], [2, 2, 1]]
@@ -692,18 +693,23 @@ def genToken():
         else:
             # puttoken(token, dateexpire, role, uses)
             return jsonify({"code": 1, "data": token, "message": "Successfully generating token!"})
-    return
+    #return
 
 
 @app.route('/inputData', methods=['POST'])
-def genToken():
+def inputData():
     data = request.json
     print(data)
     if data:
        
         # send the data to the algorithm. It should have parameter string, but for testing the connectivity I defined in the post_script
-        result = data.split("\n")
+        result = data["scriptData"].split("\n")
+        #print(result)
+        tp = data["typeIndex"]
+        print("index:",tp)
         output = ""
+        result = [i for i in result if i]
+        #print(result)
         for i in range(0,len(result)):
             output += "job"+str(i+1)+" = "+result[i]+"\n"
             if i==len(result)-1:
@@ -714,21 +720,32 @@ def genToken():
                     else:
                         temp+="job"+str(i+1)+","
                 output+=temp
+            
 
-        if tp == 1:
+        if tp == 0:
+            #basic
             output += '''myformat=algorithm.standardize(jobs)\njs_jobs=myformat.jobs\njs_machines=myformat.machines'''
             output += "\n"+"return model.runModel(type=1, originalData=myformat)"
-            uuid = post_script(data)
-        elif tp == 2:
+            print(output)
+            result = {"script":output}
+            uuid = post_script(result)
+        elif tp == 1:
+            #dynamic
             output += '''myformat=algorithm.standardize(jobs)\njs_jobs=myformat.jobs\njs_machines=myformat.machines'''
             output += "\n"+"return model.runModel(type=2, originalData=myformat)"
-            uuid = post_script(data)
-        elif tp == 3:
+            result = {"script":output}
+            uuid = post_script(result)
+        elif tp == 2:
+            #flexible
             output += "\n"+"return model.runModel(type=3, originalData=null)"
-            uuid = post_script(data)
+            result = {"script":output}
+            uuid = post_script(result)
         else:
-            output += "\n"+"return model.runModel(type=3, originalData=null)"
-            uuid = post_script(data)
+            
+            output += "\n"+"return model.runModel(type=4, originalData=null)"
+            print(output)
+            result = {"script":output}
+            uuid = post_script(result)
         return uuid
   
 @app.route("/")

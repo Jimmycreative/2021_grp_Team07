@@ -371,38 +371,37 @@ class DefForm extends React.Component {
 
         }
         console.log("line 372",mydata)
-    //     fetch(domain+"/inputData", {
-    //         body: JSON.stringify(mydata),
-    //         headers: new Headers({
-    //             'Content-Type': 'application/json'
-    //           }),
-    //         method: 'POST', // *GET, POST, PUT, DELETE, etc.
-    //         credentials: 'include',
-    //         mode: 'cors', // no-cors, cors, *same-origin
-    //         redirect: 'follow', // manual, *follow, error
-    //         referrer: 'no-referrer', // *client, no-referrer
-    //       })
-    //       .then(response => {
+        fetch(domain+"/inputData", {
+            body: JSON.stringify(mydata),
+            headers: new Headers({
+             'Content-Type': 'application/json'
+            }),
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, cors, *same-origin
+            redirect: 'follow', // manual, *follow, error
+            referrer: 'no-referrer', // *client, no-referrer
+           })
+           .then(response => {
               
-    //         if(response.ok) {
-    //             return response.json();
-    //         }
-    //     }).then(
-    //         data=>{
-    //             console.log("line 142", data)
-    //             if(data.code===1){
-    //                 console.log(data.data)
-    //                 this.setState({uuid: data.data})
-    //                 this.setState({result:"Schedule "+this.state.uuid+" is running."})
-    //                 this.setState({flag: 1})
-    //                 //this.sendUuid(data.data)
-    //             }
-    //             else {
-    //                 alert(data.message)
-    //             }
+             if(response.ok) {
+                 return response.json();
+            }
+        }).then(
+            data=>{
+                 console.log("line 392", data)
+                 if(data.code===1){
+                    console.log(data.data)
+                    this.setState({uuid: data.data})
+                    this.setState({result:"Schedule "+this.state.uuid+" is running."})
+                    this.setState({flag: 1})
+                    //this.sendUuid(data.data)
+                }
+                else {
+                    alert(data.message)
+                }
           
-    //     } 
-    // ).catch(error => console.log(error))
+        } 
+    ).catch(error => console.log(error))
     }
     
     sendUuid() {
@@ -553,7 +552,11 @@ class DefForm extends React.Component {
         const reader1 = new FileReader()
         reader1.readAsText(this.state.selectedData)
         reader1.onload = ()=>{
-            this.setState({dataCode:reader1.result})
+            
+            this.setState({
+                dataCode:reader1.result,
+                code: reader1.result
+            })
         }
         console.log("line 513", this.state.dataCode)
         console.log(this.state.dataCode)
@@ -700,22 +703,6 @@ class DefForm extends React.Component {
                           
                         </div>
 
-                        {/* No template */}
-                        <div className="form-check">
-                            <label style={{marginLeft: "-3px"}}>
-                                <input
-                                    type="radio"
-                                    name="react-tips"
-                                    value="No template"
-                                    
-                                    checked={this.state.selectedOption1 === "No template"}
-                                    onChange={this.changeOption1}
-                                    className="form-check-input"
-                                />
-                                No template
-                            </label>
-                          
-                        </div>
                     </Form>
                 </ModalBody>
                 <ModalFooter>

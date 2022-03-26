@@ -148,6 +148,7 @@ public class ModelFunction implements MagicModule {
             //
             Parser.clearDecisions();
             Parser.clearJsonDecision();
+            System.out.println(Parser.getJsonDecision());
             return getUUid(funcVariable);
         } catch (Exception e) {
             Parser.clearDecisions();
