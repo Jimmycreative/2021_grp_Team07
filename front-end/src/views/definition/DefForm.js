@@ -244,13 +244,14 @@ class DefForm extends React.Component {
                 dataCode:reader1.result,
                 code: reader1.result
             })
+            this.handleDataRun()
         }
         console.log("line 513", this.state.dataCode)
         console.log(this.state.dataCode)
         reader1.onerror = ()=>{
             console.log("file error",reader1.error)
         }
-        this.handleDataRun()
+        
         
       }
 
