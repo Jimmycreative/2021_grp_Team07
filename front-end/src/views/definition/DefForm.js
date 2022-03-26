@@ -254,7 +254,6 @@ class DefForm extends React.Component {
             dataModal: !this.state.dataModal
         })
         console.log("line 253",this.state.selectedIndex)
-        this.handleDataRun()
           
     }
 
@@ -276,6 +275,7 @@ class DefForm extends React.Component {
         reader1.onerror = ()=>{
             console.log("file error",reader1.error)
         }
+        this.handleDataRun()
         
       }
 
@@ -397,9 +397,10 @@ class DefForm extends React.Component {
         fetch(domain+"/inputData", {
             body: JSON.stringify(mydata),
             headers: new Headers({
-             'Content-Type': 'application/json'
-            }),
+                'Content-Type': 'application/json'
+              }),
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            credentials: 'include',
             mode: 'cors', // no-cors, cors, *same-origin
             redirect: 'follow', // manual, *follow, error
             referrer: 'no-referrer', // *client, no-referrer
