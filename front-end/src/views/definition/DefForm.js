@@ -181,7 +181,6 @@ class DefForm extends React.Component {
         this.toggle = this.toggle.bind(this);
         this.toggleImport = this.toggleImport.bind(this);
         this.toggleImportData=this.toggleImportData.bind(this);
-        this.toggleDataType=this.toggleDataType.bind(this);
         this.updateSolution = this.updateSolution.bind(this);
         this.handleCodeChange = this.handleCodeChange.bind(this);
     }
@@ -231,31 +230,7 @@ class DefForm extends React.Component {
         })
           
     }
-
-    clickConfirmData = ()=>{
-
-        let index
-        if(this.state.selectedOption1=== "Basic Type")
-            index = 0
-        else if(this.state.selectedOption1=== "Dynamic Type")
-            index = 1
-        else if(this.state.selectedOption1=== "Flexible Type")
-            index = 2
-        else if(this.state.selectedOption1=== "Multi-Resource Type")
-            index = 3
-        else if(this.state.selectedOption1=== "No template")
-            index = 4
-        
-        console.log("line 249", index)
-        //console.log("line 250", this.state.selectedOption1)
-        this.setState({
-            dataTypeModal: !this.state.dataTypeModal,
-            selectedIndex: index,
-            dataModal: !this.state.dataModal
-        })
-        console.log("line 253",this.state.selectedIndex)
-          
-    }
+    
 
     dataUploadHandler = ()=>{
         this.setState({
@@ -298,13 +273,7 @@ class DefForm extends React.Component {
           
         });
       };
-
-      toggleDataType() {
-        this.setState({
-          dataTypeModal: !this.state.dataTypeModal,
-          
-        });
-      };
+      
 
     changeOption = changeEvent =>{    
             
@@ -592,7 +561,7 @@ class DefForm extends React.Component {
                 <Button
                     className="import-button"
                     round
-                    onClick={this.toggleDataType}
+                    onClick={this.toggleImportData}
                     >
                     <i className="nc-icon nc-share-66"></i> Import Data
                 </Button>
@@ -630,91 +599,7 @@ class DefForm extends React.Component {
                     <Button color="secondary" onClick={this.fileUploadHandler}>Upload</Button>    
                 </ModalFooter>
             </Modal>
-            <Modal
-                isOpen={this.state.dataTypeModal}
-                
-                className={this.props.className}
-                style={{width: "120%"}}
-                >
-                <ModalHeader toggle={this.toggleDataType}>Type Choice</ModalHeader>
-                <ModalBody>
-                    <Form>
-                        {/* Basic Type */}
-                        <div className="form-check">
-                            <label style={{marginLeft: "-15px"}}>
-                                <input
-                                    type="radio"
-                                    name="react-tips"
-                                    value="Basic Type"
-                                    
-                                    checked={this.state.selectedOption1 === "Basic Type"}
-                                    onChange={this.changeOption1}
-                                    className="form-check-input"
-                                />
-                                Basic Type
-                            </label>
-                            
-                        </div>
-
-                        {/* Flexible Type */}
-                        <div className="form-check">
-                            <label style={{marginLeft: "-1px"}}>
-                                <input
-                                    type="radio"
-                                    name="react-tips"
-                                    value="Flexible Type"
-                                    
-                                    checked={this.state.selectedOption1 === "Flexible Type"}
-                                    onChange={this.changeOption1}
-                                    className="form-check-input"
-                                />
-                                Flexible Type
-                            </label>
-                            
-                        </div>
-
-                        {/* Dynamic Type */}
-                        <div className="form-check">
-                            <label style={{marginLeft: "8px"}}>
-                                <input
-                                    type="radio"
-                                    name="react-tips"
-                                    value="Dynamic Type"
-                                    
-                                    checked={this.state.selectedOption1 === "Dynamic Type"}
-                                    onChange={this.changeOption1}
-                                    className="form-check-input"
-                                />
-                                Dynamic Type
-                            </label>
-                            
-                        </div>
-
-                        {/* Multi-Resource Type */}
-                        <div className="form-check">
-                            <label style={{marginLeft: "50px"}}>
-                                <input
-                                    type="radio"
-                                    name="react-tips"
-                                    value="Multi-Resource Type"
-                                    
-                                    checked={this.state.selectedOption1 === "Multi-Resource Type"}
-                                    onChange={this.changeOption1}
-                                    className="form-check-input"
-                                />
-                                Multi-Resource Type
-                            </label>
-                          
-                        </div>
-
-                    </Form>
-                </ModalBody>
-                <ModalFooter>
-                    <Button className="cancel-btn" onClick={this.toggleDataType}>Cancel</Button>{' '}
-                <Button color="secondary" onClick={this.clickConfirmData}>Confirm</Button>
-                    
-                </ModalFooter>
-            </Modal>
+        
 
             <Modal
                 isOpen={this.state.modal}
