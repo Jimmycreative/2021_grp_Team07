@@ -11,7 +11,7 @@ from main import app
 
 # ===========================================================================================================================
 
-
+# Testing Registration page
 class testRegistration(unittest.TestCase):
 
     def setUp(self):
@@ -20,6 +20,7 @@ class testRegistration(unittest.TestCase):
 
 # ===========================================================================================================================
 
+    # Testing Empty Registration
     def testNull(self):
 
         response = app.test_client().post('/registration',
@@ -34,6 +35,7 @@ class testRegistration(unittest.TestCase):
 
 # ===========================================================================================================================
 
+    # Testing Registration with bad token
     def testBadToken(self):
 
         response = app.test_client().post('/registration',
@@ -49,6 +51,7 @@ class testRegistration(unittest.TestCase):
 
 # ===========================================================================================================================
 
+    # Testing successful Registration 
     def testSuccess(self):
 
         randomStr = ''.join(secrets.choice(string.ascii_letters + string.digits)
@@ -67,6 +70,7 @@ class testRegistration(unittest.TestCase):
 
 # ===========================================================================================================================
 
+    # Testing Registration with existing Username in database
     def testExistingUsername(self):
 
         response = app.test_client().post('/registration',
