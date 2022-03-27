@@ -18,21 +18,22 @@ class testLogin(unittest.TestCase):
 # ===========================================================================================================================
 
     def testNullLogin(self):
-
+        #send an empty json to /login
         response = app.test_client().post('/login',
                                           data=json.dumps(dict()),
                                           content_type='application/json')
 
         json_data = response.data
         json_dict = json.loads(json_data)
-
+        #check if json has 'code'
         self.assertIn('code', json_dict, 'Wrong format')
+        #check if 'code' = -1
         self.assertEqual(json_dict['code'], -1, 'Wrong code')
 
 # ===========================================================================================================================
 
     def testErrorLogin(self):
-
+        #send a bad json to /login
         response = app.test_client().post('/login',
                                           data=json.dumps(
                                               dict(username="roeigferggrger", password="4646gegegg")),
@@ -40,14 +41,16 @@ class testLogin(unittest.TestCase):
 
         json_data = response.data
         json_dict = json.loads(json_data)
-
+        
+        #check if json has 'code'        
         self.assertIn('code', json_dict, 'Wrong format')
+        #check if 'code' = 0
         self.assertEqual(json_dict['code'], 0, 'Wrong code')
 
 # ===========================================================================================================================
 
     def testSuccessLogin(self):
-
+        #send a good json to /login
         response = app.test_client().post('/login',
                                           data=json.dumps(
                                               dict(username="admin", password="admin")),
@@ -55,8 +58,10 @@ class testLogin(unittest.TestCase):
 
         json_data = response.data
         json_dict = json.loads(json_data)
-
+        
+        #check if json has 'code'  
         self.assertIn('code', json_dict, 'Wrong format')
+        #check if 'code' = 1
         self.assertEqual(json_dict['code'], 1, 'Wrong code')
 
 
