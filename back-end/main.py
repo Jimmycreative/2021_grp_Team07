@@ -69,7 +69,7 @@ database = mysql.connector.connect(
     host="127.0.0.1",
     user="root",
     database="grp",
-    password="",
+    password="12345678",
     auth_plugin='mysql_native_password'
     
     # host="192.168.64.2",
@@ -704,11 +704,12 @@ def inputData():
        
         # send the data to the algorithm. It should have parameter string, but for testing the connectivity I defined in the post_script
         result = data["scriptData"].split("\n")
-        #print(result)
-        tp = data["typeIndex"]
-        print("index:",tp)
+        
+        
         output = ""
         result = [i for i in result if i]
+        index_type = int(result.pop(0))
+        print("index:",index_type)
         #print(result)
         for i in range(0,len(result)):
             output += "job"+str(i+1)+" = "+result[i]+"\n"
@@ -721,16 +722,17 @@ def inputData():
                         temp+="job"+str(i+1)+","
                 output+=temp
             
-
-        if tp == 0:
+        
+        if index_type == 0:
             #basic
             output += '''myformat=algorithm.standardize(jobs)\njs_jobs=myformat.jobs\njs_machines=myformat.machines'''
             output += "\n"+"return model.runModel(type=1, originalData=myformat)"
             print(output)
             result = {"script":output}
             uuid = post_script(result)
-        elif tp == 1:
+        elif index_type == 1:
             #dynamic
+            
             temp2 = "decision_var start = 0\ndecision_var end = 5\ndecision_var priority = ["
 
             for i in range(1,len(result)+1):
@@ -746,12 +748,12 @@ def inputData():
             print(output)
             result = {"script":output}
             uuid = post_script(result)
-        elif tp == 2:
+        elif index_type == 2:
             #flexible
             output += "\n"+"return model.runModel(type=3, originalData=null)"
             result = {"script":output}
             uuid = post_script(result)
-        else:
+        elif index_type == 3:
             #multi
             output += "\n"+"return model.runModel(type=4, originalData=null)"
             print(output)
