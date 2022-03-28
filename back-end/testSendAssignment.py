@@ -7,9 +7,10 @@ import json
 import unittest
 from flask import session
 
-
+# This file is for the testing of method save_schedule() found by path /saveSchedule
+# METHODS:
+## testsendAssignment(self)
 # ===========================================================================================================================
-
 
 class testSendAssignment(unittest.TestCase):
 
@@ -18,6 +19,14 @@ class testSendAssignment(unittest.TestCase):
         self.client = app.test_client()
 
 # ===========================================================================================================================
+# testSendAssignment(self)
+## Test sendAssignment() output for empty json from front end
+## DESTINATION:
+### '/sendAssignment'
+## POST:
+### {'planner'="exampleplanner", 'title'="nelrnf234r5", 'description'="nci34u89d"}
+## EXPECTED:
+### {'code' = 1, 'message' = 'success'}
 
     def testSendAssignment(self):
         
