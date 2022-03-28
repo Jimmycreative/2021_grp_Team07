@@ -38,14 +38,21 @@ class testLogin(unittest.TestCase):
                                           data=json.dumps(
                                               dict(username="roeigferggrger", password="4646gegegg")),
                                           content_type='application/json')
-
+        
+        #get return json
         json_data = response.data
+        #convert json to dictionary
         json_dict = json.loads(json_data)
         
-        #check if json has 'code'        
+        #check if dict has 'code'        
         self.assertIn('code', json_dict, 'Wrong format')
+        #check if dictionary has 'message'        
+        self.assertIn('message', json_dict, 'Wrong format')
+        
         #check if 'code' = 0
         self.assertEqual(json_dict['code'], 0, 'Wrong code')
+        #check if message is correct
+        self.assertEqual(json_dict['message'], 'Login not successful', "Wrong message")
 
 # ===========================================================================================================================
 
@@ -55,14 +62,21 @@ class testLogin(unittest.TestCase):
                                           data=json.dumps(
                                               dict(username="admin", password="admin")),
                                           content_type='application/json')
-
+        
+        #get return json
         json_data = response.data
+        #convert json to dictionary
         json_dict = json.loads(json_data)
         
-        #check if json has 'code'  
+        #check if dictionary has 'code'  
         self.assertIn('code', json_dict, 'Wrong format')
+        #check if dictionary has 'message'
+        self.assertIn('message', json_dict, 'Wrong format')
+        
         #check if 'code' = 1
         self.assertEqual(json_dict['code'], 1, 'Wrong code')
+        #chck if message is correct
+        self.assertEqual(json_dict['message'], "Login successfully!", 'Wrong code')
 
 
 # ===========================================================================================================================
