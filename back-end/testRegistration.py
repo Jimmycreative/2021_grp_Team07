@@ -119,7 +119,7 @@ class testRegistration(unittest.TestCase):
         # check if code = 0
         self.assertEqual(json_dict['code'], 0, 'Wrong code')
         self.assertEqual(json_dict['message'],
-                         'Succesfully register.', 'Username already exist.')
+                         'Succesfully register.', 'Wrong message')
 
 
 # ===========================================================================================================================
