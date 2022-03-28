@@ -22,6 +22,12 @@ public class AlgorithmFunction implements MagicModule {
     }
 
 
+    /**
+     * Transfer the jobs to the JSON format
+     * @param context magic script context
+     * @param jobs original jobs
+     * @return JSON format jobs
+     */
     @Comment("Standardize job format")
     public JSONObject standardize(RuntimeContext context, List<ArrayList<ArrayList<Integer>>> jobs) {
         try {
@@ -149,12 +155,13 @@ public class AlgorithmFunction implements MagicModule {
         return -1;
     }
 
-    private Object getJobPriority(RuntimeContext context) {
-        Map<String, Object> map=context.getVarMap();
-        Object object=map.get("job_priority");
-        return object;
-    }
 
+    /**
+     * get the decision variables for the right format
+     * @param decisionVars vars get from scripts
+     * @return decision vars with the right format
+     * @throws Exception potential exception
+     */
     private JSONObject getDecisionVar(LinkedHashMap<String, Object> decisionVars) throws Exception {
         JSONObject realVars=new JSONObject();
         int count=0;

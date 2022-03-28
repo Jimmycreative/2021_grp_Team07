@@ -13,10 +13,12 @@
 ### TODO
 1. Software documentation: each file should have docs in front of the code (each function for back end / script / algorithm)
 2. code license
-3. environment deployment
-4. test cases (including comments)
-5. api validation
-6. session
+3. database deployment
+4. test cases comments
+5. front api validation
+6. user manual on the website
+7. report combination and proof-reading
+6. session (user profile, my schedule, send schedule etc.)
 
 ### Deadline
 
@@ -30,9 +32,9 @@
 
 FrontEnd
 
-1. Role separation: Manager and planner should have different pages
+1. Role separation: Manager and planner should have different pages (done)
 2. FrontEnd api testing
-3. User profile( Display name functionality and Email)
+3. User profile
 4. User manual not done
 5. Style in different browsers might be inconsistent 
 
