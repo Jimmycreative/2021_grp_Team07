@@ -6,6 +6,10 @@ from urllib import response
 from flask import jsonify
 from main import app
 
+# This file is for the testing of method genToken() found by path /genToken
+# METHODS:
+## testToken(self)
+
 # ===========================================================================================================================
 
 
