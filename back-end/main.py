@@ -61,16 +61,16 @@ Session(app)
 database = mysql.connector.connect(
 
 
-    # host="10.6.2.51",
-    # user="Team202107",
-    # database="Team202107",
-    # password="Team202107",
-    # auth_plugin='mysql_native_password'
-    host="127.0.0.1",
-    user="root",
-    database="grp",
-    password="",
+    host="10.6.2.51",
+    user="Team202107",
+    database="Team202107",
+    password="Team202107",
     auth_plugin='mysql_native_password'
+    # host="127.0.0.1",
+    # user="root",
+    # database="grp",
+    # password="",
+    # auth_plugin='mysql_native_password'
     
     # host="192.168.64.2",
     # user="unnc",
