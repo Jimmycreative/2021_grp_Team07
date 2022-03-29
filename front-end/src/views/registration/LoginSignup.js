@@ -89,14 +89,24 @@ function LoginSignup() {
         var mydata={
             //planner
 
+<<<<<<< HEAD
             // username:"fyyc",
             // password:"123456"
+=======
+            //username:"fyyc",
+            //password:"123456"
+>>>>>>> ec39ad75992bb442253709dd21c2cecbbdb00f84
 
             //manager
             // username:"sheldon",
             // password:"imthequeen"
+<<<<<<< HEAD
              username:username,
              password:password
+=======
+              username:username,
+              password:password
+>>>>>>> ec39ad75992bb442253709dd21c2cecbbdb00f84
 
         }
         fetch(domain+"/login", {

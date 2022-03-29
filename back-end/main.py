@@ -65,7 +65,12 @@ database = mysql.connector.connect(
     user="Team202107",
     database="Team202107",
     password="Team202107",
-    auth_plugin='mysql_native_password'
+    #auth_plugin='mysql_native_password'
+    # host="127.0.0.1",
+    # user="root",
+    # database="grp",
+    # password="12345678",
+    # auth_plugin='mysql_native_password'
     # host="127.0.0.1",
     # user="root",
     # database="grp",
@@ -278,7 +283,7 @@ def getAssignedSchedules():
         cur = database.cursor(dictionary=True)
         # TODO get manager from session
 
-        manager = 'fyyc'
+        manager = 'admin'
         # manager = "Jimmy"
         sql = "SELECT * FROM assignment WHERE manager='%s';" % (manager)
         cur.execute(sql)
@@ -287,7 +292,24 @@ def getAssignedSchedules():
             assignement_json = json.loads(assignement_str)
             assignments.append(assignement_json)
 
+        
+
+        sql = "SELECT *, IF(a.aid IN (SELECT s.aid from `schedule` s),'Complete', 'Incomplete') AS `_status` FROM assignment a WHERE manager = '%s';"%(manager)
+        cur.execute(sql)
+        
+        status_list = []
+        all_status = cur.fetchall()
+        print(all_status)
+
+        for status in all_status:
+            status_list.append(status["_status"])
+
+        for index in range(0,len(assignments)):
+            assignments[index]["status"] = status_list[index]
+
+        print(assignments)
         res_json['data'] = assignments
+
     except Exception as e:
 
         res_json['code'] = -2
@@ -320,7 +342,8 @@ def getMySchedules():
         sql = """
         SELECT manager, COUNT(*) AS unfinished_assignment, GROUP_CONCAT(title) AS title,
             GROUP_CONCAT(description) AS description,
-            GROUP_CONCAT(datecreated) AS datecreated
+            GROUP_CONCAT(datecreated) AS datecreated,
+            GROUP_CONCAT(IF(a.aid IN (SELECT s.aid from `schedule` s),1, 0)) AS `_status`
             FROM assignment a
             WHERE a.planner = %s
             AND NOT a.aid IN (SELECT ss.aid from schedule ss)
@@ -517,12 +540,12 @@ def save_schedule():
         try:
             cur = database.cursor(dictionary=True)
 
-            name = data["name"]
+            name = "jimmy"
             #startdate = data["startdate"]
             # uid = session["uid"]
             # uid = "123"
             script = data["script"]
-            timelength = data["timelength"]
+            timelength = 1
             result = data["result"]
             status = data["status"]
             errlog = data["errlog"]
@@ -542,8 +565,8 @@ def save_schedule():
             """, (aid, name, description, script, result, timelength, status, errlog, uuid,))
             # INSERT INTO schedule (name, uid, script, timelength, result, status, errlog, description, uuid) VALUES ('schedule 1',1,'i am handsome',3,"[{'start':0,'name':'Maachine 0','progress':0,'end':5,'id':'Machine 0','type':'project','hideChildren':false},{'start':0,'name':'job_0 task_0','progress':0,'project':'Machine 0','end':3,'id':'job_0|task_0','type':'task'},{'start':3,'name':'job_1 task_0','progress':0,'project':'Machine 0','end':5,'id':'job_1|task_0','type':'task'},{'start':0,'name':'Maachine 1','progress':0,'end':10,'id':'Machine 1','type':'project','hideChildren':false},{'start':0,'name':'job_2 task_0','progress':0,'project':'Machine 1','end':4,'id':'job_2|task_0','type':'task'},{'start':4,'name':'job_0 task_1','progress':0,'project':'Machine 1','end':6,'id':'job_0|task_1','type':'task','dependencies':['job_0|task_0']},{'start':6,'name':'job_1 task_2','progress':0,'project':'Machine 1','end':10,'id':'job_1|task_2','type':'task','dependencies':['job_1|task_1']},{'start':4,'name':'Maachine 2','progress':0,'end':9,'id':'Machine 2','type':'project','hideChildren':false},{'start':4,'name':'job_2 task_1','progress':0,'project':'Machine 2','end':7,'id':'job_2|task_1','type':'task','dependencies':['job_2|task_0']},{'start':7,'name':'job_0 task_2','progress':0,'project':'Machine 2','end':9,'id':'job_0|task_2','type':'task','dependencies':['job_0|task_1']},{'start':5,'name':'Maachine 12','progress':0,'end':6,'id':'Machine 12','type':'project','hideChildren':false},{'start':5,'name':'job_1 task_1','progress':0,'project':'Machine 12','end':6,'id':'job_1|task_1','type':'task','dependencies':['job_1|task_0']}]", -1, "none",'good schedule','8jug7g7g');
             database.commit()
-            # cur.execute(
-            #     "UPDATE assignment SET _status = 1 WHERE aid = %s;", (aid))
+            cur.execute(
+                 "UPDATE assignment SET _status = 1 WHERE aid = %s;", (aid))
             database.commit()
             return jsonify({"code": 1, "data": "", "message": "Successfully stored schedule and update assignment!"})
         except Exception as e:
@@ -704,11 +727,12 @@ def inputData():
        
         # send the data to the algorithm. It should have parameter string, but for testing the connectivity I defined in the post_script
         result = data["scriptData"].split("\n")
-        #print(result)
-        tp = data["typeIndex"]
-        print("index:",tp)
+        
+        
         output = ""
         result = [i for i in result if i]
+        index_type = int(result.pop(0))
+        print("index:",index_type)
         #print(result)
         for i in range(0,len(result)):
             output += "job"+str(i+1)+" = "+result[i]+"\n"
@@ -721,16 +745,17 @@ def inputData():
                         temp+="job"+str(i+1)+","
                 output+=temp
             
-
-        if tp == 0:
+        
+        if index_type == 1:
             #basic
             output += '''myformat=algorithm.standardize(jobs)\njs_jobs=myformat.jobs\njs_machines=myformat.machines'''
             output += "\n"+"return model.runModel(type=1, originalData=myformat)"
             print(output)
             result = {"script":output}
             uuid = post_script(result)
-        elif tp == 1:
+        elif index_type == 2:
             #dynamic
+            
             temp2 = "decision_var start = 0\ndecision_var end = 5\ndecision_var priority = ["
 
             for i in range(1,len(result)+1):
@@ -746,12 +771,12 @@ def inputData():
             print(output)
             result = {"script":output}
             uuid = post_script(result)
-        elif tp == 2:
+        elif index_type == 3:
             #flexible
             output += "\n"+"return model.runModel(type=3, originalData=null)"
             result = {"script":output}
             uuid = post_script(result)
-        else:
+        elif index_type == 4:
             #multi
             output += "\n"+"return model.runModel(type=4, originalData=null)"
             print(output)

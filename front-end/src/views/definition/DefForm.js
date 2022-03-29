@@ -79,23 +79,18 @@ js_jobs=myformat.jobs
 js_machines=myformat.machines
 
 basic {
-    //precedence
+    //precedence constraint
     for (job in js_jobs) {
-        for (index in job) {
-            if (index==count(job)-1) {
-                break;
-            }
+        for (index in range(0, (count(job)-2))) {
+            print(index)
             job[index+1].start>=job[index].end
         }
     }
 
-    //no overlap
+    //no overlap constraint
     for (machine in js_machines) {
-        for (index in machine) {
-            if (index==len(job)-1) {
-                break;
-            }
-            mahine[index+].start>=machine[index].end
+        for (index in range(0, (count(machine)-2))) {
+            mahine[index+1].start>=machine[index].end
         }
     }
     //priority constraint
@@ -472,7 +467,7 @@ class DefForm extends React.Component {
             timelength: this.state.timelength,
             result:this.state.result,
             //0 for new, 1 for compelete, -1 for err
-            status:this.state.user_json==null?-1:0,
+            status:this.state.result_gantt==null?-1:1,
             errlog:"",
             description:this.state.description,
             uuid:this.state.uuid,
@@ -480,7 +475,8 @@ class DefForm extends React.Component {
             //uid:this.state.uid,
             aid: this.state.assignmentId
         }
-        fetch(this.domain+'/saveSchedule',{
+        console.log(mydata)
+        fetch(domain+'/saveSchedule',{
             body: JSON.stringify(mydata),
             cache: 'no-cache',
             headers: new Headers({
@@ -628,6 +624,23 @@ class DefForm extends React.Component {
                             
                         </div>
 
+                        {/* Dynamic Type */}
+                        <div className="form-check">
+                            <label style={{marginLeft: "8px"}}>
+                                <input
+                                    type="radio"
+                                    name="react-tips"
+                                    value="Dynamic Type"
+                                    
+                                    checked={this.state.selectedOption === "Dynamic Type"}
+                                    onChange={this.changeOption}
+                                    className="form-check-input"
+                                />
+                                Dynamic Type
+                            </label>
+                            
+                        </div>
+                        
                         {/* Flexible Type */}
                         <div className="form-check">
                             <label style={{marginLeft: "-1px"}}>
@@ -645,22 +658,7 @@ class DefForm extends React.Component {
                             
                         </div>
 
-                        {/* Dynamic Type */}
-                        <div className="form-check">
-                            <label style={{marginLeft: "8px"}}>
-                                <input
-                                    type="radio"
-                                    name="react-tips"
-                                    value="Dynamic Type"
-                                    
-                                    checked={this.state.selectedOption === "Dynamic Type"}
-                                    onChange={this.changeOption}
-                                    className="form-check-input"
-                                />
-                                Dynamic Type
-                            </label>
-                            
-                        </div>
+                        
 
                         {/* Multi-Resource Type */}
                         <div className="form-check">

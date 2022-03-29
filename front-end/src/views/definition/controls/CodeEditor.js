@@ -29,8 +29,8 @@ class CodeEditor extends React.Component {
         style={editorStyle}
         readOnly={false}
         onChange={this.onChange}
-        width="100%"
-        height="300px"
+        width="110%"
+        height="700px"
         mode="java"
         theme="github"
         name="aceCodeEditor"

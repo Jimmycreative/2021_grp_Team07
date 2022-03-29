@@ -209,13 +209,6 @@ public class ModelService {
         return duration;
     }
 
-//    private String changeDictForm(LinkedHashMap machine_count) {
-//        String m_count=machine_count.toString();
-//        m_count=m_count.replace("=",":");
-//        m_count=m_count.replace("{","");
-//        m_count=m_count.replace("}","");
-//        return m_count;
-//    }
 
     /**
      * get python model path
