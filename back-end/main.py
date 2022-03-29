@@ -283,8 +283,9 @@ def getAssignedSchedules():
         cur = database.cursor(dictionary=True)
         # TODO get manager from session
 
-        manager = 'admin'
-        # manager = "Jimmy"
+        # manager = 'admin'
+        manager = session.get("username")
+        print (manager)
         sql = "SELECT * FROM assignment WHERE manager='%s';" % (manager)
         cur.execute(sql)
         for assignement in cur:
@@ -583,7 +584,7 @@ def login():
     result = {}
 
     login_info = {
-        "code": -1,
+        "code": 0,
         "message": ""
     }
     
@@ -774,6 +775,7 @@ def inputData():
         elif index_type == 3:
             #flexible
             output += "\n"+"return model.runModel(type=3, originalData=null)"
+            print(output)
             result = {"script":output}
             uuid = post_script(result)
         elif index_type == 4:

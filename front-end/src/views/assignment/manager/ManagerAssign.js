@@ -212,12 +212,12 @@ const getAssignedSchedules = () => {
                         <tr>
                             <td>{val.username}</td>
                             <td>{val.displayname}</td>
-                            <td> <Button className="btn-icon"
+                            <td> <Button className="my-btn"
                       color="success"
                       size="sm"
                       onClick={() => {setModal(!modal);setPlannername(val.username)}}
-                      >  {/*pop up function */}
-                    <i className="nc-email-85" /> </Button>
+                      >  {/*pop up function */}Send
+                      </Button>
 
                     
                     
