@@ -320,7 +320,8 @@ def getMySchedules():
         sql = """
         SELECT manager, COUNT(*) AS unfinished_assignment, GROUP_CONCAT(title) AS title,
             GROUP_CONCAT(description) AS description,
-            GROUP_CONCAT(datecreated) AS datecreated
+            GROUP_CONCAT(datecreated) AS datecreated,
+            GROUP_CONCAT(IF(a.aid IN (SELECT s.aid from `schedule` s),1, 0)) AS `_status`
             FROM assignment a
             WHERE a.planner = %s
             AND NOT a.aid IN (SELECT ss.aid from schedule ss)
