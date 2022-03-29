@@ -1,3 +1,0 @@
-Started	 Tue Mar 29 23:11:26 2022
-Model created	 Tue Mar 29 23:11:26 2022
-Algorithm exception: 'int' object is not subscriptable
