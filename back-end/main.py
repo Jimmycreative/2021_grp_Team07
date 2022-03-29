@@ -61,11 +61,11 @@ Session(app)
 database = mysql.connector.connect(
 
 
-    # host="10.6.2.51",
-    # user="Team202107",
-    # database="Team202107",
-    # password="Team202107",
-    # auth_plugin='mysql_native_password'
+    #host="10.6.2.51",
+    #user="Team202107",
+    #database="Team202107",
+    #password="Team202107",
+    #auth_plugin='mysql_native_password'
     host="127.0.0.1",
     user="root",
     database="grp",
@@ -287,18 +287,23 @@ def getAssignedSchedules():
             assignement_json = json.loads(assignement_str)
             assignments.append(assignement_json)
 
-        res_json['data'] = assignments
+        
 
-        sql = "SELECT _status, IF(a.aid IN (SELECT s.aid from `schedule` s),1, 0) AS `_status` FROM assignment a WHERE manager = '%s';"%(manager)
+        sql = "SELECT *, IF(a.aid IN (SELECT s.aid from `schedule` s),'Complete', 'Incomplete') AS `_status` FROM assignment a WHERE manager = '%s';"%(manager)
         cur.execute(sql)
-        print(cur)
-
+        
         status_list = []
         all_status = cur.fetchall()
+        print(all_status)
+
         for status in all_status:
             status_list.append(status["_status"])
-        print(status_list)
-        res_json['status'] = status_list
+
+        for index in range(0,len(assignments)):
+            assignments[index]["status"] = status_list[index]
+
+        print(assignments)
+        res_json['data'] = assignments
 
     except Exception as e:
 
@@ -736,14 +741,14 @@ def inputData():
                 output+=temp
             
         
-        if index_type == 0:
+        if index_type == 1:
             #basic
             output += '''myformat=algorithm.standardize(jobs)\njs_jobs=myformat.jobs\njs_machines=myformat.machines'''
             output += "\n"+"return model.runModel(type=1, originalData=myformat)"
             print(output)
             result = {"script":output}
             uuid = post_script(result)
-        elif index_type == 1:
+        elif index_type == 2:
             #dynamic
             
             temp2 = "decision_var start = 0\ndecision_var end = 5\ndecision_var priority = ["
@@ -761,12 +766,12 @@ def inputData():
             print(output)
             result = {"script":output}
             uuid = post_script(result)
-        elif index_type == 2:
+        elif index_type == 3:
             #flexible
             output += "\n"+"return model.runModel(type=3, originalData=null)"
             result = {"script":output}
             uuid = post_script(result)
-        elif index_type == 3:
+        elif index_type == 4:
             #multi
             output += "\n"+"return model.runModel(type=4, originalData=null)"
             print(output)
