@@ -278,7 +278,7 @@ def getAssignedSchedules():
         cur = database.cursor(dictionary=True)
         # TODO get manager from session
 
-        manager = 'fyyc'
+        manager = 'admin'
         # manager = "Jimmy"
         sql = "SELECT * FROM assignment WHERE manager='%s';" % (manager)
         cur.execute(sql)
@@ -288,6 +288,18 @@ def getAssignedSchedules():
             assignments.append(assignement_json)
 
         res_json['data'] = assignments
+
+        sql = "SELECT _status, IF(a.aid IN (SELECT s.aid from `schedule` s),1, 0) AS `_status` FROM assignment a WHERE manager = '%s';"%(manager)
+        cur.execute(sql)
+        print(cur)
+
+        status_list = []
+        all_status = cur.fetchall()
+        for status in all_status:
+            status_list.append(status["_status"])
+        print(status_list)
+        res_json['status'] = status_list
+
     except Exception as e:
 
         res_json['code'] = -2
@@ -517,12 +529,12 @@ def save_schedule():
         try:
             cur = database.cursor(dictionary=True)
 
-            name = data["name"]
+            name = "jimmy"
             #startdate = data["startdate"]
             # uid = session["uid"]
             # uid = "123"
             script = data["script"]
-            timelength = data["timelength"]
+            timelength = 1
             result = data["result"]
             status = data["status"]
             errlog = data["errlog"]
@@ -542,8 +554,8 @@ def save_schedule():
             """, (aid, name, description, script, result, timelength, status, errlog, uuid,))
             # INSERT INTO schedule (name, uid, script, timelength, result, status, errlog, description, uuid) VALUES ('schedule 1',1,'i am handsome',3,"[{'start':0,'name':'Maachine 0','progress':0,'end':5,'id':'Machine 0','type':'project','hideChildren':false},{'start':0,'name':'job_0 task_0','progress':0,'project':'Machine 0','end':3,'id':'job_0|task_0','type':'task'},{'start':3,'name':'job_1 task_0','progress':0,'project':'Machine 0','end':5,'id':'job_1|task_0','type':'task'},{'start':0,'name':'Maachine 1','progress':0,'end':10,'id':'Machine 1','type':'project','hideChildren':false},{'start':0,'name':'job_2 task_0','progress':0,'project':'Machine 1','end':4,'id':'job_2|task_0','type':'task'},{'start':4,'name':'job_0 task_1','progress':0,'project':'Machine 1','end':6,'id':'job_0|task_1','type':'task','dependencies':['job_0|task_0']},{'start':6,'name':'job_1 task_2','progress':0,'project':'Machine 1','end':10,'id':'job_1|task_2','type':'task','dependencies':['job_1|task_1']},{'start':4,'name':'Maachine 2','progress':0,'end':9,'id':'Machine 2','type':'project','hideChildren':false},{'start':4,'name':'job_2 task_1','progress':0,'project':'Machine 2','end':7,'id':'job_2|task_1','type':'task','dependencies':['job_2|task_0']},{'start':7,'name':'job_0 task_2','progress':0,'project':'Machine 2','end':9,'id':'job_0|task_2','type':'task','dependencies':['job_0|task_1']},{'start':5,'name':'Maachine 12','progress':0,'end':6,'id':'Machine 12','type':'project','hideChildren':false},{'start':5,'name':'job_1 task_1','progress':0,'project':'Machine 12','end':6,'id':'job_1|task_1','type':'task','dependencies':['job_1|task_0']}]", -1, "none",'good schedule','8jug7g7g');
             database.commit()
-            # cur.execute(
-            #     "UPDATE assignment SET _status = 1 WHERE aid = %s;", (aid))
+            cur.execute(
+                 "UPDATE assignment SET _status = 1 WHERE aid = %s;", (aid))
             database.commit()
             return jsonify({"code": 1, "data": "", "message": "Successfully stored schedule and update assignment!"})
         except Exception as e:

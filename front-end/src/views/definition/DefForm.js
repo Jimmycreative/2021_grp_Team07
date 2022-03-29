@@ -467,7 +467,7 @@ class DefForm extends React.Component {
             timelength: this.state.timelength,
             result:this.state.result,
             //0 for new, 1 for compelete, -1 for err
-            status:this.state.user_json==null?-1:0,
+            status:this.state.result_gantt==null?-1:1,
             errlog:"",
             description:this.state.description,
             uuid:this.state.uuid,
@@ -475,7 +475,8 @@ class DefForm extends React.Component {
             //uid:this.state.uid,
             aid: this.state.assignmentId
         }
-        fetch(this.domain+'/saveSchedule',{
+        console.log(mydata)
+        fetch(domain+'/saveSchedule',{
             body: JSON.stringify(mydata),
             cache: 'no-cache',
             headers: new Headers({

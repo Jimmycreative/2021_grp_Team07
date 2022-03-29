@@ -44,19 +44,19 @@ CREATE TABLE `assignment` (
 -- Table structure for table `schedule`
 --
 
-CREATE TABLE `schedule` (
+CREATE TABLE IF NOT EXISTS `schedule` (
   `scheduleid` int(11) NOT NULL,
   `aid` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
-  `description` varchar(512) COLLATE utf8_bin NOT NULL DEFAULT '''''',
-  `script` text COLLATE utf8_bin NOT NULL DEFAULT '',
-  `result` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
+  `description` varchar(512) COLLATE utf8_bin NOT NULL DEFAULT '',
+  `script` text COLLATE utf8_bin NOT NULL,
+  `result` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `timelength` int(11) DEFAULT NULL,
-  `status` tinyint(1) NOT NULL DEFAULT 0,
+  `status` tinyint(1) NOT NULL DEFAULT '0',
   `errlog` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `startdate` datetime NOT NULL DEFAULT current_timestamp(),
+  `startdate` datetime NOT NULL,
   `uuid` varchar(64) COLLATE utf8_bin NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
 

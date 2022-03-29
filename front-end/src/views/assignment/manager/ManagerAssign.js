@@ -73,6 +73,7 @@ useEffect(() => {
          return response.json();
        }
      }).then((data)=>{
+       console.log()
        if (data.code===1) {
          setTableData(data.result)
          console.log(tableData)
