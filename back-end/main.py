@@ -61,16 +61,21 @@ Session(app)
 database = mysql.connector.connect(
 
 
-    #host="10.6.2.51",
-    #user="Team202107",
-    #database="Team202107",
-    #password="Team202107",
+    # host="10.6.2.51",
+    # user="Team202107",
+    # database="Team202107",
+    # password="Team202107",
     #auth_plugin='mysql_native_password'
+    # host="127.0.0.1",
+    # user="root",
+    # database="grp",
+    # password="12345678",
+    # auth_plugin='mysql_native_password'
     host="127.0.0.1",
     user="root",
     database="grp",
-    password="12345678",
-    auth_plugin='mysql_native_password'
+    password="",
+    # auth_plugin='mysql_native_password'
     
     # host="192.168.64.2",
     # user="unnc",
@@ -278,8 +283,9 @@ def getAssignedSchedules():
         cur = database.cursor(dictionary=True)
         # TODO get manager from session
 
-        manager = 'admin'
-        # manager = "Jimmy"
+        # manager = 'admin'
+        manager = session.get("username")
+        print (manager)
         sql = "SELECT * FROM assignment WHERE manager='%s';" % (manager)
         cur.execute(sql)
         for assignement in cur:
@@ -769,6 +775,7 @@ def inputData():
         elif index_type == 3:
             #flexible
             output += "\n"+"return model.runModel(type=3, originalData=null)"
+            print(output)
             result = {"script":output}
             uuid = post_script(result)
         elif index_type == 4:
