@@ -73,6 +73,7 @@ useEffect(() => {
          return response.json();
        }
      }).then((data)=>{
+       console.log()
        if (data.code===1) {
          setTableData(data.result)
          console.log(tableData)
@@ -129,6 +130,7 @@ const getAssignedSchedules = () => {
    //return data
     if (data.code==1) {
       setmyHistory(data.data)
+      console.log(data)
       console.log("line 135", myHistory)
     }
     else {
@@ -210,12 +212,12 @@ const getAssignedSchedules = () => {
                         <tr>
                             <td>{val.username}</td>
                             <td>{val.displayname}</td>
-                            <td> <Button className="btn-icon"
+                            <td> <Button className="my-btn"
                       color="success"
                       size="sm"
                       onClick={() => {setModal(!modal);setPlannername(val.username)}}
-                      >  {/*pop up function */}
-                    <i className="nc-email-85" /> </Button>
+                      >  {/*pop up function */}Send
+                      </Button>
 
                     
                     
@@ -327,6 +329,7 @@ const getAssignedSchedules = () => {
                     <tr>
                       <th>Name</th>
                       <th>Date</th>
+                      <th>Status</th>
                       <th>View</th>
                     </tr>
                   </thead>
@@ -353,6 +356,7 @@ const getAssignedSchedules = () => {
                         <tr>
                             <td>{val.planner}</td>
                             <td>{val.datecreated}</td>
+                            <td>{val.status}</td>
                             <td> <Button 
                       color="success"
                       size="sm"

@@ -350,7 +350,6 @@ public class ModelFunction implements MagicModule {
                 //parseConstraint(basicConstraint);
             }
             //ArrayList<String> myConstraint=parseConstraint(basicConstraint);
-            //TODO
             //whether subject_to is valid
 
             funcVariable.setMyConstraints(Parser.getSubjectConstraints());
