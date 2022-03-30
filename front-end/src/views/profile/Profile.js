@@ -87,7 +87,7 @@ function Profile() {
                   <Button style={{backgroundColor:"rgb(164,108,87)",position:"relative"}} onClick={handleClick} >Cancel</Button>
                   </>}
 
-                  <p style={{color:"gray",fontSize:"1.2rem"}}><span className="description" style={{fontSize:"1rem"}}>Email:</span> {data.email}</p>
+                  <p style={{color:"gray",fontSize:"1.2rem"}}><span className="description" style={{fontSize:"1rem"}}>Displayname:</span> {data.username}</p>
                   
                 </div>
               </CardBody>

@@ -39,6 +39,7 @@ import {
 
 import routes from "routes.js";
 import storageUtils from "../../views/registration/userInfo/storageUtils";
+import memoryUtils from "../../views/registration/userInfo/memoryUtil";
 import Auth from "../../views/registration/Auth";
 
 function Header(props) {
@@ -81,15 +82,26 @@ function Header(props) {
     }
   };
 
-  const history = useHistory();
  
-  //logout function
+  const history = useHistory();
+
   const logout = () => {
     Auth.logout()
-    console.log(Auth.isLogin)
-    storageUtils.removeUser();
-    console.log("logout");
-    history.push("/login");
+    if(!Auth.isLogin){
+      //storageUtils.removeUser(); //this seems to cause the failure in the login after logout
+      const user = storageUtils.getUser();
+      console.log(user);
+      memoryUtils.user = user;
+      /*if(Object.keys(memoryUtils.user).length==0){
+      }*/
+      console.log("line 110","logout");
+      console.log(memoryUtils.user);
+      console.log("line 108",Auth.isLogin);
+      history.push("/login");
+    }else{
+      console.log("failed to log out")
+    }
+  
   }
 
 

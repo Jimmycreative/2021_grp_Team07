@@ -170,7 +170,7 @@ const getAssignedSchedules = () => {
               <CardHeader>
                 <CardTitle tag="h4">Assgin Schedule</CardTitle>
                 <p className="card-category">
-                  Search planner name and click the icon to send the message.
+                  Search planner username and click the button to send the message.
                 </p>
                     <InputGroup>  {/* Search Box */}
                       <InputGroupAddon addonType="prepend">
@@ -187,7 +187,6 @@ const getAssignedSchedules = () => {
                   <thead className="text-primary" >
                     <tr>
                       <th>Username</th>
-                      <th>Name</th>
                       <th>Send</th>
                     </tr>
                   </thead>
@@ -200,8 +199,7 @@ const getAssignedSchedules = () => {
 
                         } 
                         else if(
-                            val.username.toLowerCase().includes(searchPlanner.toLowerCase()) ||
-                            val.displayname.toLowerCase().includes(searchPlanner.toLowerCase())
+                            val.username.toLowerCase().includes(searchPlanner.toLowerCase())
                             
                         )
                         {
@@ -211,7 +209,6 @@ const getAssignedSchedules = () => {
                     }).map((val)=>(
                         <tr>
                             <td>{val.username}</td>
-                            <td>{val.displayname}</td>
                             <td> <Button className="my-btn"
                       color="success"
                       size="sm"
@@ -315,7 +312,7 @@ const getAssignedSchedules = () => {
                       <InputGroupAddon addonType="prepend">
                       <InputGroupText><i className="nc-icon nc-single-02"></i> </InputGroupText>
                       </InputGroupAddon>
-                      <input type = "text" placeholder='Please type plannername' className='form-control' onChange={(e) => {setSearchMessage(e.target.value) }}/>
+                      <input type = "text" placeholder='Please type planner name' className='form-control' onChange={(e) => {setSearchMessage(e.target.value) }}/>
                      
                     </InputGroup>
                     
