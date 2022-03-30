@@ -17,7 +17,8 @@
 
 */
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+//import "./DemoNavbar.css";
+import { useHistory, Link, useLocation } from "react-router-dom";
 import {
   Collapse,
   Navbar,
@@ -37,6 +38,8 @@ import {
 } from "reactstrap";
 
 import routes from "routes.js";
+import storageUtils from "../../views/registration/userInfo/storageUtils";
+import Auth from "../../views/registration/Auth";
 
 function Header(props) {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -77,6 +80,19 @@ function Header(props) {
       setColor("transparent");
     }
   };
+
+  const history = useHistory();
+ 
+  //logout function
+  const logout = () => {
+    Auth.logout()
+    console.log(Auth.isLogin)
+    storageUtils.removeUser();
+    console.log("logout");
+    history.push("/login");
+  }
+
+
   React.useEffect(() => {
     window.addEventListener("resize", updateColor.bind(this));
   });
@@ -105,6 +121,7 @@ function Header(props) {
             (color === "transparent" ? "navbar-transparent " : "")
       }
     >
+
       <Container fluid>
         <div className="navbar-wrapper">
           <div className="navbar-toggle">
@@ -127,50 +144,26 @@ function Header(props) {
           <span className="navbar-toggler-bar navbar-kebab" />
         </NavbarToggler>
         <Collapse isOpen={isOpen} navbar className="justify-content-end">
-          <form>
-            <InputGroup className="no-border">
-              <Input placeholder="Search..." />
-              <InputGroupAddon addonType="append">
-                <InputGroupText>
-                  <i className="nc-icon nc-zoom-split" />
-                </InputGroupText>
-              </InputGroupAddon>
-            </InputGroup>
-          </form>
+        
           <Nav navbar>
             <NavItem>
-              <Link to="#pablo" className="nav-link btn-magnify">
-                <i className="nc-icon nc-layout-11" />
-                <p>
-                  <span className="d-lg-none d-md-block">Stats</span>
-                </p>
-              </Link>
-            </NavItem>
             <Dropdown
               nav
               isOpen={dropdownOpen}
               toggle={(e) => dropdownToggle(e)}
             >
               <DropdownToggle caret nav>
-                <i className="nc-icon nc-bell-55" />
-                <p>
-                  <span className="d-lg-none d-md-block">Some Actions</span>
-                </p>
-              </DropdownToggle>
-              <DropdownMenu right>
-                <DropdownItem tag="a">Action</DropdownItem>
-                <DropdownItem tag="a">Another Action</DropdownItem>
-                <DropdownItem tag="a">Something else here</DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-            <NavItem>
-              <Link to="#pablo" className="nav-link btn-rotate">
-                <i className="nc-icon nc-settings-gear-65" />
+              <i className="nc-icon nc-settings-gear-65" />
                 <p>
                   <span className="d-lg-none d-md-block">Account</span>
                 </p>
-              </Link>
-            </NavItem>
+              </DropdownToggle>
+              <DropdownMenu right>
+              {/*<Link to='/admin/profile' className="pLink"><DropdownItem tag="a" > Profile</DropdownItem></Link>*/}
+                <DropdownItem tag="a" className="text-danger" onClick={logout}>Log out</DropdownItem>
+              </DropdownMenu>
+            </Dropdown> 
+            </NavItem>   
           </Nav>
         </Collapse>
       </Container>
