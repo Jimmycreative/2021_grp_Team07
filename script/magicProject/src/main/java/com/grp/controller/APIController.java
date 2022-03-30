@@ -243,7 +243,9 @@ public class APIController {
             MyThreadLocal.remove();
 
             if (result!=null && uuid==null) {
-                return Result.succeed(result);
+                Result res=Result.succeed(result);
+                res.setCode(20);
+                return res;
             }
 
             if (uuid==null) {
