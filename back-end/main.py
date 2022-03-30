@@ -578,7 +578,7 @@ def login():
     result = {}
 
     login_info = {
-        "code": -1,
+        "code": 0,
         "message": ""
     }
     
