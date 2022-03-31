@@ -2,7 +2,7 @@
 
 ## Environment requirements
 
-- Windows 7 or newer 
+- Windows 7 or Newer 
 - React 18.0.0 
 - Node.js 16.13.2
 - Python 3.7.3 
@@ -33,7 +33,7 @@ Query OK, 1 row affected (0.00 sec)
 6. Execute this in the command prompt/terminal:
 
 ```
-mysql -u <username> -p cimpo < grp_structure.sql
+mysql -u "username" -p "password" < grp_structure.sql
 ```
 
 The database is now successfully imported.
