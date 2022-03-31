@@ -46,9 +46,11 @@ mysql -u <username> -p <Insert Your Database Name> < grp_structure.sql
 
 ### Client side
 
-In the project directory, you can run:
+1. Go to front-end directory and run the following in the terminal:
 
-### `npm start`
+```
+npm start
+```
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
