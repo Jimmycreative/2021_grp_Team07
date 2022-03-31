@@ -12,17 +12,17 @@
 
 ## Setup instructions 
 ### Database
-
+1. Install MariaD (https://mariadb.org/download/).
 1. Log in as root or any user with database creation and table creation privileges:
 
 ```
-mysql -u <username> -p
+mysql -u root -p
 ```
 
 2. Create a database:
 
 ```
-    CREATE DATABASE <Insert Your Database Name>;
+    CREATE DATABASE cimpo;
 ```
 ```
 Output
@@ -33,11 +33,9 @@ Query OK, 1 row affected (0.00 sec)
 5. Execute this in the command prompt/terminal:
 
 ```
-mysql -u <username> -p <Insert Your Database Name> < grp_structure.sql
+mysql -u <username> -p cimpo < grp_structure.sql
 ```
-
-### Server side
-
+## Server
 
 
 
