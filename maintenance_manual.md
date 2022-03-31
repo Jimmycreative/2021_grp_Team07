@@ -53,7 +53,4 @@ npm start
 ```
 Runs the app in the development mode.\
 
-2. Open the following link in your browser.
-```
-[http://localhost:3000](http://localhost:3000)
-```
+2. Open [http://localhost:3000](http://localhost:3000) in your browser.
