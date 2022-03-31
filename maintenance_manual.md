@@ -51,7 +51,9 @@ mysql -u <username> -p <Insert Your Database Name> < grp_structure.sql
 ```
 npm start
 ```
-
 Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
+2. Open the following link in your browser.
+```
+[http://localhost:3000](http://localhost:3000)
+```
