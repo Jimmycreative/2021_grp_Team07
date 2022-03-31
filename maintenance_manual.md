@@ -16,7 +16,7 @@
 1. Log in as root or any user with database creation and table creation privileges:
 
 ```
-mysql -u root -p
+mysql -u <username> -p
 ```
 
 2. Create a database:
@@ -28,15 +28,13 @@ mysql -u root -p
 Output
 Query OK, 1 row affected (0.00 sec)
 ```
-Press CTRL+D to exit the MariaDB shell.
+3. Press CTRL+D to exit the MariaDB shell.
+4. Place /back-end/grp_structure.sql into the current directory.
+5. Execute this in the command prompt/terminal:
 
 ```
-mysql -u username -p new_database < data-dump.sql
+mysql -u <username> -p <Insert Your Database Name> < grp_structure.sql
 ```
-username is the username you can log in to the database with
-newdatabase is the name of the freshly created database
-data-dump.sql is the data dump file to be imported, located in the current directory
-
 
 ### Server side
 
