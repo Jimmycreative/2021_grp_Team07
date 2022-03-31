@@ -4,6 +4,7 @@
 
 - Windows 7 or newer 
 - React 18.0.0 
+- Node.js 16.13.2
 - Python 3.7.3 
 - Flask 2.0.2 
 - Java 17.0.2 
