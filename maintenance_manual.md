@@ -48,6 +48,7 @@ The database is now successfully imported.
 6. Make sure MySQL/MariaDB server is running (See above section)
 7. Go to back-end directory and execute main.py (`python main.py`)
  
+ The back end server is now running.
 
 ### Front end
 
