@@ -2,11 +2,23 @@
 
 ### Environment requirements
 
-1. macOS - Big Sur version 11.6 
-2. Windows 7 or newer 
-
-
-
+- Windows 7 or newer 
+- React 18.0.0 
+- Python 3.7.3 
+- Flask 2.0.2 
+- Java 17.0.2 
+- MariaDB 10.4.14
 
 ### Installation instructions 
-1. 
+ 
+// Back-end
+
+
+
+
+ 
+
+// Run npm start 
+
+
+
