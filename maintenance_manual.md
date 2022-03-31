@@ -38,7 +38,7 @@ mysql -u <username> -p cimpo < grp_structure.sql
 
 The database is now successfully imported.
 
-## Back end server
+### Back end server
 
 1. Install Python 3.7.3
 2. Import Flask 2.0.2 (`pip install flask`)
