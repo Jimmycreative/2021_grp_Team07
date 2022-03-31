@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.1
+-- version 5.0.2
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Generation Time: Mar 08, 2022 at 01:44 PM
--- Server version: 10.4.22-MariaDB
--- PHP Version: 8.1.1
+-- Host: 127.0.0.1
+-- Generation Time: Mar 31, 2022 at 03:46 PM
+-- Server version: 10.4.14-MariaDB
+-- PHP Version: 7.4.10
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,10 +18,8 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `grp`
+-- Database: `team202107`
 --
-CREATE DATABASE IF NOT EXISTS `grp` DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
-USE `grp`;
 
 -- --------------------------------------------------------
 
@@ -33,7 +31,7 @@ CREATE TABLE `assignment` (
   `aid` int(11) NOT NULL,
   `title` varchar(64) COLLATE utf8_bin NOT NULL,
   `description` varchar(512) COLLATE utf8_bin NOT NULL,
-  `datecreated` datetime NOT NULL DEFAULT current_timestamp(),
+  `datecreated` timestamp NOT NULL DEFAULT current_timestamp(),
   `manager` varchar(16) COLLATE utf8_bin NOT NULL,
   `planner` varchar(16) COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
@@ -44,7 +42,7 @@ CREATE TABLE `assignment` (
 -- Table structure for table `schedule`
 --
 
-CREATE TABLE IF NOT EXISTS `schedule` (
+CREATE TABLE `schedule` (
   `scheduleid` int(11) NOT NULL,
   `aid` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
@@ -52,11 +50,11 @@ CREATE TABLE IF NOT EXISTS `schedule` (
   `script` text COLLATE utf8_bin NOT NULL,
   `result` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `timelength` int(11) DEFAULT NULL,
-  `status` tinyint(1) NOT NULL DEFAULT '0',
+  `status` tinyint(1) NOT NULL DEFAULT 0,
   `errlog` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `startdate` datetime NOT NULL,
   `uuid` varchar(64) COLLATE utf8_bin NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
 
@@ -66,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `schedule` (
 
 CREATE TABLE `token` (
   `token` varchar(128) COLLATE utf8_bin NOT NULL,
-  `datecreated` datetime NOT NULL DEFAULT current_timestamp(),
+  `datecreated` timestamp NOT NULL DEFAULT current_timestamp(),
   `dateexpire` datetime DEFAULT NULL,
   `role` int(1) NOT NULL DEFAULT 0,
   `uses` int(11) NOT NULL DEFAULT 1,
@@ -84,7 +82,7 @@ CREATE TABLE `user` (
   `username` varchar(16) COLLATE utf8_bin NOT NULL,
   `displayname` varchar(64) COLLATE utf8_bin NOT NULL,
   `password` varchar(256) COLLATE utf8_bin NOT NULL,
-  `datecreated` datetime NOT NULL DEFAULT current_timestamp(),
+  `datecreated` timestamp NOT NULL DEFAULT current_timestamp(),
   `role` int(1) NOT NULL DEFAULT 0,
   `disabled` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;

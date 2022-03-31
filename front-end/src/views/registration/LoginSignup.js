@@ -106,8 +106,8 @@ function LoginSignup() {
   
               'Content-Type': 'application/json'
             }),
-        credentials: 'include',
-          method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        credentials:'include',
+        method: 'POST', // *GET, POST, PUT, DELETE, etc.
           mode: 'cors', // no-cors, cors, *same-origin
           redirect: 'follow', // manual, *follow, error
           referrer: 'no-referrer', // *client, no-referrer
