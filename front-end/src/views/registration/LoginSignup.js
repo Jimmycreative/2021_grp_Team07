@@ -106,7 +106,7 @@ function LoginSignup() {
   
               'Content-Type': 'application/json'
             }),
-            
+        credentials: 'include',
           method: 'POST', // *GET, POST, PUT, DELETE, etc.
           mode: 'cors', // no-cors, cors, *same-origin
           redirect: 'follow', // manual, *follow, error
@@ -134,6 +134,9 @@ function LoginSignup() {
             history.push("/admin/dashboard")
             window.location.reload(); //reload page
           }
+          else {
+              alert(data.message)
+          }
           
         }
       ).catch(error => {
@@ -147,6 +150,7 @@ function LoginSignup() {
           headers: new Headers({
               'Content-Type': 'application/json'
             }),
+        credentials: 'include',
           method: 'POST', // *GET, POST, PUT, DELETE, etc.
           mode: 'cors', // no-cors, cors, *same-origin
           redirect: 'follow', // manual, *follow, error

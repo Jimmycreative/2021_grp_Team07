@@ -30,7 +30,7 @@ export default function PlannerAssign() {
   const [thisDescription, setThisDescription]=useState("")
   const [viewForm, setViewForm] = React.useState(false);      {/* popup */}
   const toggleView = (row) => {
-    console.log("line 27", row)
+    console.log("line 27", row.description)
     setViewForm(!viewForm);
     setThisManager(row.manager)
     setThisDescription(row.description)
@@ -42,7 +42,6 @@ export default function PlannerAssign() {
   
   let countmessages = 0;
     plannerdata && plannerdata.map((i) => {
-      console.log("line 27", i)
         countmessages = countmessages + i.unfinished_assignment;
     });
 
@@ -55,7 +54,9 @@ export default function PlannerAssign() {
     },[])
     
   const getMyschedules= () => {
-    fetch(domain+"/getMySchedules")
+    fetch(domain+"/getMySchedules",{
+      credentials: 'include'
+    })
      
       .then(response => {
         if(response.ok){
@@ -67,6 +68,9 @@ export default function PlannerAssign() {
         console.log(data)
         if (data.code==1) {
           plannersetdata(data.data);
+        }
+        else {
+          alert(data.message)
         }
         
         
@@ -174,7 +178,7 @@ export default function PlannerAssign() {
                                         <tr>
                                           <td>{m.aid}</td>
                                           <td>{m.title}</td>
-                                          <td> {new Date(m.start).toLocaleDateString()} </td>
+                                          <td> {new Date(m.datecreated).toLocaleDateString()} </td>
                                           <td><Button onClick={()=>toggleView(m)} >View Description</Button></td>
                                           <Modal
                                             isOpen={viewForm}
@@ -189,8 +193,10 @@ export default function PlannerAssign() {
                                               <CardTitle tag="h7"> Assignment from {thisManager} </CardTitle>
                                             </ModalHeader>
                                             
-                                            <ModalBody>
-                                              {thisDescription}
+                                            <ModalBody className="my-des">
+                                              {console.log("line 197",thisDescription)}
+                                            {thisDescription}
+                                              
                                             </ModalBody>
                                             <ModalFooter>
                                             <Button className="cancel-btn" onClick={toggleViewClose}>Cancel</Button>{' '}

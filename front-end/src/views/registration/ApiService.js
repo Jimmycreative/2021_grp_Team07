@@ -6,6 +6,7 @@ export default class APIService{
 		return fetch("/login",{
       		'method':'POST',
               cache: "no-cache",
+			  credentials: 'include',
               headers : { 
                 'Content-Type': 'application/json'
                 

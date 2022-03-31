@@ -42,7 +42,6 @@ import BothHome from "views/tempo_home/BothHome";
 
 import memoryUtils from "./views/registration/userInfo/memoryUtil"
 import storageUtils from "./views/registration/userInfo/storageUtils"
-import { jsonParse } from "./variables/util/util"
 
 //const user = jsonParse(storageUtils.getUser())
 const user = storageUtils.getUser()
