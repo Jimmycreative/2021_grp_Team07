@@ -41,8 +41,12 @@ The database is now successfully imported.
 ## Back end server
 
 1. Install Python 3.7.3
-
-
+2. Import Flask 2.0.2 (`pip install flask`)
+3. Import latest version of MySQL Connector/Python (`pip install mysql-connector-python`)
+4. Import flask_session (`pip install flask-session`)
+5. Import all other dependancies
+6. Make sure MySQL/MariaDB server is running (See above section)
+7. Execute main.py (`python main.py`)
  
 
 
