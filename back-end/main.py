@@ -339,16 +339,16 @@ def getMySchedules():
         # TODO, get from session
 
         # planner=session["username"]
-        planner = "sheldon"
+        planner = "shawn"
         sql = """
-        SELECT manager, COUNT(*) AS unfinished_assignment, GROUP_CONCAT(title) AS title,
-            GROUP_CONCAT(description) AS description,
-            GROUP_CONCAT(datecreated) AS datecreated,
-            GROUP_CONCAT(IF(a.aid IN (SELECT s.aid from `schedule` s),1, 0)) AS `_status`
-            FROM assignment a
-            WHERE a.planner = %s
-            AND NOT a.aid IN (SELECT ss.aid from schedule ss)
-            GROUP BY manager;
+        SELECT manager, COUNT(*) AS unfinished_assignment, GROUP_CONCAT(a.aid) AS aid,
+        GROUP_CONCAT(a.title) AS title,
+        GROUP_CONCAT(a.description) AS description,
+        GROUP_CONCAT(a.datecreated) AS datecreated,
+        GROUP_CONCAT(IF(a.aid IN (SELECT s.aid from `schedule` s),1, 0)) AS `_status`
+        FROM assignment a
+        WHERE a.planner = %s
+        GROUP BY manager;
         """
         sql1 = """
             SELECT manager, COUNT(*) AS unfinished_assignment
@@ -370,7 +370,7 @@ def getMySchedules():
             record_str = json.dumps(record, cls=MyEncoder)
             record_json = json.loads(record_str)
             temp_list.append(record_json)
-
+        
         res_json['data'] = sortPlannerList(temp_list)
 
     except Exception as e:
@@ -394,12 +394,15 @@ def sortPlannerList(my_list):
         this_manager_json = {}
         this_manager_list = []
         manager = my_json['manager']
+
+        aid=my_json['aid']
         titles = my_json['title']
 
         # status = my_json['status']
         description = my_json['description']
         start = my_json['datecreated']
 
+        idlist=getAttributeList(aid)
         title_list = getAttributeList(titles)
         # status_list = getAttributeList(status)
         description_list = getAttributeList(description)
@@ -407,6 +410,7 @@ def sortPlannerList(my_list):
 
         for i in range(len(title_list)):
             temp_json = {}
+            temp_json['aid']=idlist[i]
             temp_json['title'] = title_list[i]
 
             # temp_json['status'] = status_list[i]

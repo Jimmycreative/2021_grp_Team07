@@ -132,6 +132,7 @@ function LoginSignup() {
             storageUtils.saveUser(user)
             console.log("line 122",user)
             history.push("/admin/dashboard")
+            window.location.reload(); //reload page
           }
           
         }

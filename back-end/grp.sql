@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `assignment` (
 --
 
 INSERT INTO `assignment` (`aid`, `title`, `description`, `datecreated`, `manager`, `planner`) VALUES
-(1, 'Try for assignment', 'jimmy is handsome', '2022-02-17 09:38:41', 'admin', 'exampleplanner'),
+(5, 'assignment', 'jimmy is handsome', '2022-02-17 09:38:41', 'admin', 'shawn'),
 (2, '範例中文任務標題', '範例中文任務内容', '2022-02-19 11:38:13', 'manager', 'examplechinese'),
 (3, 'アサインメントタイトル', 'アサインメントディスクリプション', '2022-02-19 11:42:43', 'manager', 'examplejapanese'),
 (4, 'Test For Reaaaaaaalllllyyy Long Title abcdefghijklmnopqrstuvwxyz', 'Test For Reeeeeeeeeeeeeeeeaaaaaaaaaaaaaaaaaalllllllllllllllllllyyyyyyyy Looooooooooooooooooooooooooooooooonng Description ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', '2022-02-19 11:45:54', 'manager', 'exampleplanner'),

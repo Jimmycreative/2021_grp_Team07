@@ -98,7 +98,7 @@ function UserManual() {
                 <li>job data: including tasks for each job, machine id and duration for each task. Tasks within one job are constrained by their precedence. </li>
                 <li>job names (optional): the order and length should be same as the definition of job data. Use <em>job_names</em> as keyword.</li>
                 <li>machine names (optional): the order and length should be same as the index of the machine defined in job data. Use <em>machine_names</em> as keyword.</li>
-                <li>choose <em>model.runBasic()</em></li> <br/>
+                <li>use <em>model.runModel(type=1, originalData=js)</em></li> <br/>
                 
                 See code snippet below👇:<br/>
                 <img className='CodeImg' alt='CodeImg' align="center" src={Code1} style={{width:"310", height:"360px" }}/> 
@@ -184,31 +184,24 @@ function UserManual() {
                         <td>machine_names</td>
                         <td>To define machine names</td>
                         <td>machine_names=["machine_0","machine_1", "machine_2"]</td>
-                    </tr> 
-                    <tr>
-                        <td>minimize</td>
-                        <td>To define objective function</td>
-                        <td>minimize= &#123;&#123;&#123;&#125;&#125;&#125;TODO</td>
                     </tr>
                     <tr>
-                        <td>model.runBasic()</td>
-                        <td>To use the basic type JSSP template</td>
-                        <td>return model.runBasic(jobs)</td>
+                        <td></td>
                     </tr>
                     <tr>
-                        <td>model.runDynamic</td>
-                        <td>To use the dynamic type JSSP template</td>
-                        <td>model.runDynamic(jobs,expected_duration)</td>
-                    </tr>
-                    <tr>
-                        <td>model.runFlexible()</td>
-                        <td>To use the flexible type JSSP template</td>
-                        <td>model.runFlexible(jobs)</td>
-                    </tr>
-                    <tr>
-                        <td>model.runMulti()</td>
-                        <td>To use the multi-resource type JSSP template</td>
-                        <td>model.runMulti(jobs)</td>
+                        <td>model.runModel()</td>
+                        <td>To run the model. There are two parameters: <i>index</i> and <i>originalData</i>.<br/>
+                            Users need to specify type index for each type.<br/>
+                            Basic Type: 1<br/>
+                            Dynamic Type: 2<br/>
+                            Flexible Type: 3<br/>
+                            Multi-Resource Type: 4<br/><br/>
+                            Users need to convert their data format to JSON for Basic and Dynamic Types.<br/>
+                            Users need to set originalData=null for Flexible and Multi-Resource Types.<br/>
+                        </td>
+                        <td>return model.runModel(index=1, originalData=jsData)<br/>
+                            return model.runModel(index=3, originalData=null)
+                        </td>
                     </tr>
                 </tbody>
 

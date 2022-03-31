@@ -161,6 +161,7 @@ export default function PlannerAssign() {
                                 <Table>
                                 <thead className="text-primary">
                                       <tr>
+                                        <th>Assignment ID</th>
                                         <th>Title</th>
                                         <th>Date</th>
                                         <th>Description</th>
@@ -171,6 +172,7 @@ export default function PlannerAssign() {
                                       {console.log(val.assignment)}
                                       {thisTable.map((m)=>(
                                         <tr>
+                                          <td>{m.aid}</td>
                                           <td>{m.title}</td>
                                           <td> {new Date(m.start).toLocaleDateString()} </td>
                                           <td><Button onClick={()=>toggleView(m)} >View Description</Button></td>
