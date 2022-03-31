@@ -16,6 +16,7 @@ import {
 
   import { domain } from "../../global"
   import { setTrueDate } from "../../gantt/helper"
+import { DataArray } from '@mui/icons-material';
 
 const basic = `
 decision_var start = 0
@@ -343,7 +344,14 @@ class DefForm extends React.Component {
                     //this.sendUuid(data.data)
                 }
                 else {
-                    alert(data.message)
+                    if (data.code==20) {
+                        this.setState({result:data.data})
+                        this.setState({flag: 1})
+                    }
+                    else {
+                        alert(data.message)
+                    }
+                    
                 }
           
         } 
@@ -461,6 +469,7 @@ class DefForm extends React.Component {
         this.setState({
             showGantt: !this.state.showGantt
         })
+        console.log("line 464", this.state.timelength)
         var mydata={
             //name:this.state.scheduleName,
             script:this.state.code,
