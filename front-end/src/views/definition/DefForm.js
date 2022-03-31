@@ -103,6 +103,11 @@ basic {
 
 }
 
+subject_to {
+    2*js_jobs[0][0].start<=5;
+    1*js_jobs[0][1].end>10;
+  }
+
 //remember to return
 return model.runModel(type=2, originalData=myformat)`
 
