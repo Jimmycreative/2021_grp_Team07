@@ -50,13 +50,14 @@ The database is now successfully imported.
  
 
 
-### Client side
+### Front end
 
-1. Go to front-end directory and run the following in the terminal:
+1. Install React 18.0.0
+
+2. Go to front-end directory and run the following in the terminal:
 
 ```
 npm start
 ```
-Runs the app in the development mode.\
 
-2. Open [http://localhost:3000](http://localhost:3000) in your browser.
+3. Open [http://localhost:3000](http://localhost:3000) in your browser.
