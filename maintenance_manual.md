@@ -12,7 +12,6 @@
 
 ## Installation instructions 
  
-// Back-end
 
 ### Server side
 
@@ -21,7 +20,6 @@
 
  
 
-// Run npm start 
 
 ### Client side
 
