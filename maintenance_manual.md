@@ -53,5 +53,5 @@ The database is now successfully imported.
 
 1. Install Node.js 16.13.2
 2. Install React 18.0.0
-3. Go to front-end directory and run (`npm start`) in the terminal(`npm start`)
+3. Go to front-end directory and run (`npm start`) in the terminal
 3. Open [http://localhost:3000](http://localhost:3000) in your browser.
