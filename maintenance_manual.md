@@ -1,6 +1,6 @@
 # Maintenance Manual
 
-### Environment requirements
+## Environment requirements
 
 - Windows 7 or newer 
 - React 18.0.0 
@@ -10,7 +10,7 @@
 - Java 17.0.2 
 - MariaDB 10.4.14
 
-### Installation instructions 
+## Installation instructions 
  
 // Back-end
 
@@ -21,7 +21,7 @@
 
 // Run npm start 
 
-## Client side
+### Client side
 
 In the project directory, you can run:
 
