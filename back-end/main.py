@@ -61,20 +61,20 @@ Session(app)
 database = mysql.connector.connect(
 
 
-    # host="10.6.2.51",
-    # user="Team202107",
-    # database="Team202107",
-    # password="Team202107",
-    #auth_plugin='mysql_native_password'
+     host="10.6.2.51",
+     user="Team202107",
+     database="Team202107",
+     password="Team202107",
+    auth_plugin='mysql_native_password'
     # host="127.0.0.1",
     # user="root",
     # database="grp",
     # password="12345678",
     # auth_plugin='mysql_native_password'
-    host="127.0.0.1",
-    user="root",
-    database="grp",
-    password="12345678",
+    #host="127.0.0.1",
+    #user="root",
+    #database="grp",
+    #password="12345678",
     # auth_plugin='mysql_native_password'
     
     # host="192.168.64.2",
@@ -338,7 +338,7 @@ def getMySchedules():
         cur = database.cursor(dictionary=True)
         # TODO, get from session
 
-        # planner=session["username"]
+        planner=session["username"]
         planner = "shawn"
         sql = """
         SELECT manager, COUNT(*) AS unfinished_assignment, GROUP_CONCAT(a.aid) AS aid,
@@ -545,12 +545,12 @@ def save_schedule():
         try:
             cur = database.cursor(dictionary=True)
 
-            name = "jimmy"
+        
             #startdate = data["startdate"]
             # uid = session["uid"]
             # uid = "123"
             script = data["script"]
-            timelength = 1
+            timelength = data["timelength"]
             result = data["result"]
             status = data["status"]
             errlog = data["errlog"]
@@ -566,13 +566,11 @@ def save_schedule():
             #     return jsonify({"code": -2, "data": {}, "message": "aid doesn't exist!"})
 
             cur.execute("""
-            INSERT INTO schedule (aid, name, description, script, result, timelength, status, errlog, uuid) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);
-            """, (aid, name, description, script, result, timelength, status, errlog, uuid,))
+            INSERT INTO schedule (aid, description, script, result, timelength, status, errlog, uuid) VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
+            """, (aid, description, script, result, timelength, status, errlog, uuid,))
             # INSERT INTO schedule (name, uid, script, timelength, result, status, errlog, description, uuid) VALUES ('schedule 1',1,'i am handsome',3,"[{'start':0,'name':'Maachine 0','progress':0,'end':5,'id':'Machine 0','type':'project','hideChildren':false},{'start':0,'name':'job_0 task_0','progress':0,'project':'Machine 0','end':3,'id':'job_0|task_0','type':'task'},{'start':3,'name':'job_1 task_0','progress':0,'project':'Machine 0','end':5,'id':'job_1|task_0','type':'task'},{'start':0,'name':'Maachine 1','progress':0,'end':10,'id':'Machine 1','type':'project','hideChildren':false},{'start':0,'name':'job_2 task_0','progress':0,'project':'Machine 1','end':4,'id':'job_2|task_0','type':'task'},{'start':4,'name':'job_0 task_1','progress':0,'project':'Machine 1','end':6,'id':'job_0|task_1','type':'task','dependencies':['job_0|task_0']},{'start':6,'name':'job_1 task_2','progress':0,'project':'Machine 1','end':10,'id':'job_1|task_2','type':'task','dependencies':['job_1|task_1']},{'start':4,'name':'Maachine 2','progress':0,'end':9,'id':'Machine 2','type':'project','hideChildren':false},{'start':4,'name':'job_2 task_1','progress':0,'project':'Machine 2','end':7,'id':'job_2|task_1','type':'task','dependencies':['job_2|task_0']},{'start':7,'name':'job_0 task_2','progress':0,'project':'Machine 2','end':9,'id':'job_0|task_2','type':'task','dependencies':['job_0|task_1']},{'start':5,'name':'Maachine 12','progress':0,'end':6,'id':'Machine 12','type':'project','hideChildren':false},{'start':5,'name':'job_1 task_1','progress':0,'project':'Machine 12','end':6,'id':'job_1|task_1','type':'task','dependencies':['job_1|task_0']}]", -1, "none",'good schedule','8jug7g7g');
             database.commit()
-            cur.execute(
-                 "UPDATE assignment SET _status = 1 WHERE aid = %s;", (aid))
-            database.commit()
+            
             return jsonify({"code": 1, "data": "", "message": "Successfully stored schedule and update assignment!"})
         except Exception as e:
             database.rollback()

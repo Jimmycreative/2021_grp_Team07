@@ -410,7 +410,10 @@ class DefForm extends React.Component {
     ).catch(error => console.log(error))
     }
     
+   
     sendUuid() {
+        
+        
         var mydata={
             uuid:this.state.uuid
         }
@@ -430,21 +433,23 @@ class DefForm extends React.Component {
                   return response.json()
                 }
             }).then(
-            data=>{
+            data=>{ 
                 console.log("line 143", data)
                 if(data.code===1){
                     console.log(data.data)
                     console.log(this.state.showGantt)
                     console.log(data.data.mid_msg)
-                    this.setState({
+                    this.setState(()=>{ return{
                         result: data.data.mid_msg,
-                        timelength: data.data.timelength,
+                        timelength: data.data.time_length,
                         result_gantt: data.data.result,
                         showGantt: true,
                         flag: 0
 
-                    }
-                    )
+                    }} ,() => {
+                        console.log(this.state.timelength)
+                      }
+                    );
                 }
                 
                 else if (data.code==-1) {
@@ -452,6 +457,7 @@ class DefForm extends React.Component {
                     this.setState({flag: 0})
                     alert(data.message)
                 }
+                console.log(this.state.timelength)
             })
         .catch(error => console.log(error))
     }
@@ -476,6 +482,7 @@ class DefForm extends React.Component {
 
     //invoke /saveSchedule
     saveSchedule = () => {
+        
         this.setState({
             showGantt: !this.state.showGantt
         })
