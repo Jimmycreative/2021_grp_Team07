@@ -390,6 +390,10 @@ class DefForm extends React.Component {
                     this.setState({flag: 1})
                     //this.sendUuid(data.data)
                 }
+                else if (data.code==20) {
+                    console.log(data.data)
+                    this.setState({result: data.data})
+                }
                 else {
                     alert(data.message)
                 }
@@ -434,6 +438,7 @@ class DefForm extends React.Component {
                     }
                     )
                 }
+                
                 else if (data.code==-1) {
                     this.setState({uuid: ""})
                     this.setState({flag: 0})
