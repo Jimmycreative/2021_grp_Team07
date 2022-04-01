@@ -78,8 +78,8 @@ If the back end server is not on the same LAN as the front end server, please ma
 ### Front end
 
 1. Install Node.js 16.13.2
-2. Install React 18.0.0
-3. Go to front-end directory and run (`npm start`) in the terminal
-3. Open [http://localhost:3000](http://localhost:3000) in your browser.
+2. Go to front-end directory and run (`npm install`) in the terminal
+3. In the same directory, run (`npm start`) in the terminal
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 
