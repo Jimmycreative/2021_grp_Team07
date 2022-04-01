@@ -46,17 +46,17 @@ The default port for MySQL is 3306.
 
 1. Install Python 3.8.10 
 2. Install Python dependancies:
-#### Windows Users:
+ **Windows Users:**
     - Run py-dependancies.bat
-#### Other OS:
+ **Other OS:**
     - Install Flask 2.0.2 (`pip install flask`)
     - Install latest version of MySQL Connector/Python (`pip install mysql-connector-python`)
     - Install flask_session (`pip install flask-session`)
     - Install Google OR-tool 9.2. 9972
 
 3. Install all other dependancies
-5 Make sure MySQL/MariaDB server is running (See above section)
-5 Configure database settings in main.py:
+4. Make sure MySQL/MariaDB server is running (See above section)
+5. Configure database settings in main.py:
 ```py
 database = mysql.connector.connect(
     host="mysql server address",
@@ -65,7 +65,7 @@ database = mysql.connector.connect(
     password="dbms user password",
 )
 ```
-8. Go to back-end directory and execute main.py (`python main.py`)  
+6. Go to back-end directory and execute main.py (`python main.py`)  
  
  The back end server is now running on port 5000.   
  To change the port the server is running on, go to the last line of `main.py` and change the port here:
