@@ -46,10 +46,9 @@ The default port for MySQL is 3306.
 
 1. Install Python 3.8.10 
 2. Install Python dependancies:  
- **Windows Users:**  
+  - **Windows Users:**  
     - Run py-dependancies.bat
-    
- **Other OS:**  
+  - **Other OS:**  
     - Install Flask 2.0.2 (`pip install flask`)
     - Install latest version of MySQL Connector/Python (`pip install mysql-connector-python`)
     - Install flask_session (`pip install flask-session`)
