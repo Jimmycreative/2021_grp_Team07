@@ -52,7 +52,7 @@ The default port for MySQL is 3306.
     - Install Flask 2.0.2 (`pip install flask`)
     - Install latest version of MySQL Connector/Python (`pip install mysql-connector-python`)
     - Install flask_session (`pip install flask-session`)
-    - Install Google OR-tool 9.2. 9972
+    - Install Google OR-tool 9.2. 9972 (`pip install --upgrade --user ortools`)
 
 3. Install all other dependancies
 4. Make sure MySQL/MariaDB server is running (See above section)
