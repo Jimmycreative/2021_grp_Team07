@@ -8,7 +8,7 @@
 - Python 3.7.3 
 - Flask 2.0.2 
 - Java 17.0.2 
-- MariaDB 10.4.14
+- MySQL 5.0.2
 
 ## Setup instructions 
 ### Database
@@ -37,6 +37,8 @@ mysql -u "username" -p "password" < grp_structure.sql
 ```
 
 The database is now successfully imported.
+If the MySQL is not on the same LAN as the back end server, please make sure you have configured port forwarding properly.
+The default port for MySQL is 3306.
 
 ### Back end server
 
@@ -46,13 +48,22 @@ The database is now successfully imported.
 4. Import flask_session (`pip install flask-session`)
 5. Import all other dependancies
 6. Make sure MySQL/MariaDB server is running (See above section)
-7. Go to back-end directory and execute main.py (`python main.py`)
+7. Configure database settings in `main.py`:
+```
+database = mysql.connector.connect(
+    host="mysql server address",
+    user="dbms username",
+    database="database name",
+    password="dbms user password",
+)
+```
+8. Go to back-end directory and execute `main.py` (`python main.py`)
  
  The back end server is now running. To change the port the server is running on, go to the last line of `main.py` and change the port here:
  ```py
  app.run(port=5000)
  ```
-
+If the back end server is not on the same LAN as the front end server, please make sure you have configured port forwarding properly.
 
 ### Front end
 
@@ -60,3 +71,6 @@ The database is now successfully imported.
 2. Install React 18.0.0
 3. Go to front-end directory and run (`npm start`) in the terminal
 3. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+
+
