@@ -3,14 +3,13 @@
 ## Environment requirements
 
 - Windows 7 or Newer
-- React 17.0.2 
 - Node.js 12.22.2
 - Python 3.8.10 
 - Flask 2.0.2 
 - Java 1.8 
 - MySQL 5.0.2
 - Google OR-tool 9.2. 9972
-- Gradle 
+- IntelliJ IDEA 2021.3
 
 ## Setup instructions 
 ### Database
@@ -54,10 +53,9 @@ The default port for MySQL is 3306.
     - Install flask_session (`pip install flask-session`)
     - Install Google OR-tool 9.2. 9972
 
-4. Install Java,,, Gradle,,,
-5. Install all other dependancies
-6. Make sure MySQL/MariaDB server is running (See above section)
-7. Configure database settings in main.py:
+3. Install all other dependancies
+5 Make sure MySQL/MariaDB server is running (See above section)
+5 Configure database settings in main.py:
 ```py
 database = mysql.connector.connect(
     host="mysql server address",
@@ -77,9 +75,15 @@ If the back end server is not on the same LAN as the front end server, please ma
 
 ### Front end
 
-1. Install Node.js 16.13.2
+1. Install Node.js 12.22.2
 2. Go to front-end directory and run (`npm install`) in the terminal
 3. In the same directory, run (`npm start`) in the terminal
 4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
+### Script language
+
+1. Install IntelliJ IDEA 2021.3
+2. Maven......
+3. ......
+4. ......
 
