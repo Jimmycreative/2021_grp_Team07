@@ -48,14 +48,11 @@ The database is now successfully imported.
 6. Make sure MySQL/MariaDB server is running (See above section)
 7. Go to back-end directory and execute main.py (`python main.py`)
  
- The back end server is now running. To change the port the server is running on, go to the last line of `main.py` and change:
+ The back end server is now running. To change the port the server is running on, go to the last line of `main.py` and change the port here:
  ```py
  app.run(port=5000)
  ```
- to
- ```py
- app.run(port=<Insert port number>)
- ```
+
 
 ### Front end
 
