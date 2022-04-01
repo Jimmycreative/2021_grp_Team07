@@ -36,9 +36,9 @@ Query OK, 1 row affected (0.00 sec)
 mysql -u "username" -p "password" < grp_structure.sql
 ```
 
-The database is now successfully imported.
-If the MySQL is not on the same LAN as the back end server, please make sure you have configured port forwarding properly.
-The default port for MySQL is 3306.
+The database is now successfully imported.  
+If the MySQL is not on the same LAN as the back end server, please make sure you have configured port forwarding properly.  
+The default port for MySQL is 3306.  
 
 ### Back end server
 
@@ -57,13 +57,13 @@ database = mysql.connector.connect(
     password="dbms user password",
 )
 ```
-8. Go to back-end directory and execute `main.py` (`python main.py`)
+8. Go to back-end directory and execute `main.py` (`python main.py`)  
  
  The back end server is now running. To change the port the server is running on, go to the last line of `main.py` and change the port here:
  ```py
  app.run(port=5000)
  ```
-If the back end server is not on the same LAN as the front end server, please make sure you have configured port forwarding properly.
+If the back end server is not on the same LAN as the front end server, please make sure you have configured port forwarding properly.  
 
 ### Front end
 
