@@ -15,13 +15,13 @@
 1. Install MariaDB (https://mariadb.org/download/).
 2. Log in as root or any user with database creation and table creation privileges:
 
-```
+```cmd
 mysql -u root -p
 ```
 
 3. Create a database:
 
-```
+```sql
     CREATE DATABASE cimpo;
 ```
 ```
@@ -32,7 +32,7 @@ Query OK, 1 row affected (0.00 sec)
 5. Place /back-end/grp_structure.sql into the current directory.
 6. Execute this in the command prompt/terminal:
 
-```
+```cmd
 mysql -u "username" -p "password" < grp_structure.sql
 ```
 
@@ -49,7 +49,7 @@ The default port for MySQL is 3306.
 5. Import all other dependancies
 6. Make sure MySQL/MariaDB server is running (See above section)
 7. Configure database settings in `main.py`:
-```
+```py
 database = mysql.connector.connect(
     host="mysql server address",
     user="dbms username",
