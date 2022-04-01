@@ -2,13 +2,15 @@
 
 ## Environment requirements
 
-- Windows 7 or Newer 
-- React 18.0.0 
-- Node.js 16.13.2
-- Python 3.7.3 
+- Windows 7 or Newer
+- React 17.0.2 
+- Node.js 12.22.2
+- Python 3.8.10 
 - Flask 2.0.2 
-- Java 17.0.2 
+- Java 1.8 
 - MySQL 5.0.2
+- Google OR-tool 9.2. 9972
+- Gradle 
 
 ## Setup instructions 
 ### Database
@@ -42,13 +44,15 @@ The default port for MySQL is 3306.
 
 ### Back end server
 
-1. Install Python 3.7.3
-2. Import Flask 2.0.2 (`pip install flask`)
-3. Import latest version of MySQL Connector/Python (`pip install mysql-connector-python`)
-4. Import flask_session (`pip install flask-session`)
-5. Import all other dependancies
-6. Make sure MySQL/MariaDB server is running (See above section)
-7. Configure database settings in main.py:
+1. Install Python 3.8.10 
+2. Install Flask 2.0.2 (`pip install flask`)
+3. Install latest version of MySQL Connector/Python (`pip install mysql-connector-python`)
+4. Install flask_session (`pip install flask-session`)
+5. Install Google OR-tool 9.2. 9972
+6. Install Java,,, Gradle,,,
+7. Install all other dependancies
+8. Make sure MySQL/MariaDB server is running (See above section)
+9. Configure database settings in main.py:
 ```py
 database = mysql.connector.connect(
     host="mysql server address",
@@ -72,6 +76,5 @@ If the back end server is not on the same LAN as the front end server, please ma
 2. Install React 18.0.0
 3. Go to front-end directory and run (`npm start`) in the terminal
 3. Open [http://localhost:3000](http://localhost:3000) in your browser.
-
 
 
