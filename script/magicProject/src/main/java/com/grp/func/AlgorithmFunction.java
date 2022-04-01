@@ -12,8 +12,10 @@ import org.ssssssss.script.parsing.Parser;
 import org.ssssssss.script.runtime.RuntimeContext;
 
 import java.util.*;
-import java.util.regex.Pattern;
 
+/**
+ * Algorithm functions for users to convert data format
+ */
 @Component
 public class AlgorithmFunction implements MagicModule {
     @Override
