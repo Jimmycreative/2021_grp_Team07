@@ -12,7 +12,7 @@
 
 ## Setup instructions 
 ### Database
-1. Install MariaDB (https://mariadb.org/download/).
+1. Install MySQL 5.0.2 or MariaDB 10.4.25 (https://mariadb.org/download/).
 2. Log in as root or any user with database creation and table creation privileges:
 
 ```cmd
@@ -37,7 +37,7 @@ mysql -u "username" -p "password" < grp_structure.sql
 ```
 
 The database is now successfully imported.  
-If the MySQL is not on the same LAN as the back end server, please make sure you have configured port forwarding properly.  
+If the MySQL server is not on the same LAN as the back end server, please make sure you have configured port forwarding properly.  
 The default port for MySQL is 3306.  
 
 ### Back end server
@@ -53,13 +53,14 @@ The default port for MySQL is 3306.
 database = mysql.connector.connect(
     host="mysql server address",
     user="dbms username",
-    database="database name",
+    database="cimpo",
     password="dbms user password",
 )
 ```
 8. Go to back-end directory and execute main.py (`python main.py`)  
  
- The back end server is now running. To change the port the server is running on, go to the last line of `main.py` and change the port here:
+ The back end server is now running on port 5000.   
+ To change the port the server is running on, go to the last line of `main.py` and change the port here:
  ```py
  app.run(port=5000)
  ```
