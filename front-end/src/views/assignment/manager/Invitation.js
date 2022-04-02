@@ -59,6 +59,7 @@ function Invatation() {
              headers: new Headers({
                 'Content-Type': 'application/json'
               }),
+              credentials: 'include',
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
             mode: 'cors', // no-cors, cors, *same-origin
             redirect: 'follow', // manual, *follow, error
@@ -73,6 +74,9 @@ function Invatation() {
                  //console.log("line 143", data)
                  if (data.code === 1) {
                      setToken(data.data);
+                 }
+                 else {
+                    alert(data.message)
                  }
             }
          )

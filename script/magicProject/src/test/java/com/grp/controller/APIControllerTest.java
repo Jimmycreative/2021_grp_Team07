@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 /**
- * Test two apis in script language
+ * Test getRes api in script language
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = {UtilApplication.class})
@@ -34,19 +34,46 @@ class APIControllerTest {
     private final String idApi="/home/getuuid";
     private final String resApi="/home/getres";
 
-    private final String normalScript="//task=[machine_id, duration]\n" +
+    private final String normalScript="decision_var start = 0\n" +
+            "decision_var end = 5\n" +
+            "//task=[machine_id, duration]\n" +
             "job1=[[0, 3], [1, 2], [2, 2]]\n" +
             "job2=[[0, 2], [2, 1], [1, 4]]\n" +
             "job3=[[1, 4], [2, 3]]\n" +
             "jobs=[job1,job2,job3]\n" +
             "\n" +
             "//optional\n" +
-            "job_names=[\"job_1\",\"job_2\", \"job_3\"]\n" +
+            "job_names=[\"job_aaa\",\"job_bbb\", \"job_ccc\"]\n" +
             "//optional\n" +
             "machine_names=[\"machine_0\",\"machine_1\", \"machine_2\"]\n" +
             "\n" +
+            "myformat=algorithm.standardize(jobs)\n" +
+            "js_jobs=myformat.jobs\n" +
+            "js_machines=myformat.machines\n" +
+            "\n" +
+            "basic {\n" +
+            "    //precedence constraint\n" +
+            "    for (job in js_jobs) {\n" +
+            "        for (index in range(0, (count(job)-2))) {\n" +
+            "            print(index)\n" +
+            "            job[index+1].start>=job[index].end\n" +
+            "        }\n" +
+            "    }\n" +
+            "\n" +
+            "    //no overlap constraint\n" +
+            "    for (machine in js_machines) {\n" +
+            "        for (index in range(0, (count(machine)-2))) {\n" +
+            "            mahine[index+1].start>=machine[index].end\n" +
+            "        }\n" +
+            "    }\n" +
+            "    \n" +
+            "}\n" +
+            "subject_to {\n" +
+            "  2*js_jobs[0][0].start<=5;\n" +
+            "  1*js_jobs[0][1].end>10;\n" +
+            "}\n" +
             "//remember to return\n" +
-            "return model.runBasic(jobs)";
+            "return model.runModel(type=1, originalData=myformat)";
     @Autowired
     private WebApplicationContext wac;
 
@@ -65,223 +92,6 @@ class APIControllerTest {
                 .andReturn().getResponse().getContentAsString();
         JSONObject jsonObject = JSONObject.parseObject(responseString);
         return jsonObject;
-    }
-
-    /**
-     * getUUID api
-     * normal input
-     * @throws Exception mvc exception
-     */
-    @Test
-    void getNormalUUID1() throws Exception {
-        JSONObject jsonObject= getTestRes(normalScript, idApi, scriptName);
-        System.out.println("result: " + jsonObject);
-        Assertions.assertEquals(1, jsonObject.get("code"));
-    }
-
-    /**
-     * getUUID api
-     * normal input without return
-     * @throws Exception mvc exception
-     */
-    @Test
-    void getNormalUUID2() throws Exception {
-        String script="//task=[machine_id, duration]\n" +
-                "job1=[[0, 3], [1, 2], [2, 2]]\n" +
-                "job2=[[0, 2], [2, 1], [1, 4]]\n" +
-                "job3=[[1, 4], [2, 3]]\n" +
-                "jobs=[job1,job2,job3]\n" +
-                "\n" +
-                "//optional\n" +
-                "job_names=[\"job_1\",\"job_2\", \"job_3\"]\n" +
-                "//optional\n" +
-                "machine_names=[\"machine_0\",\"machine_1\", \"machine_2\"]\n" +
-                "\n" +
-                "//remember to return\n" +
-                "model.runBasic(jobs)";
-        JSONObject jsonObject= getTestRes(script, idApi, scriptName);
-        System.out.println("result: " + jsonObject);
-        Assertions.assertEquals(1, jsonObject.get("code"));
-    }
-
-    /**
-     * getUUID api
-     * normal input with extra field
-     * @throws Exception mvc exception
-     */
-    @Test
-    void getNormalUUID3() throws Exception {
-        String script="//task=[machine_id, duration]\n" +
-                "job1=[[0, 3], [1, 2], [2, 2]]\n" +
-                "job2=[[0, 2, 0], [2, 1], [1, 4]]\n" +
-                "job3=[[1, 4], [2, 3]]\n" +
-                "jobs=[job1,job2,job3]\n" +
-                "//optional\n" +
-                "job_names=[\"job_1\",\"job_2\", \"job_3\"]\n" +
-                "//optional\n" +
-                "machine_names=[\"machine_0\",\"machine_1\", \"machine_2\"]\n" +
-                "//remember to return\n" +
-                "return model.runBasic(jobs)";
-        JSONObject jsonObject= getTestRes(script, idApi, scriptName);
-        Assertions.assertEquals(1, jsonObject.get("code"));
-    }
-
-    /**
-     * getUUID api
-     * input without code for generating uuid
-     * @throws Exception mvc exception
-     */
-    @Test
-    void getExceptionalUUID1() throws Exception {
-        String script="ssss";
-        JSONObject jsonObject= getTestRes(script, idApi, scriptName);
-        Assertions.assertEquals(-1, jsonObject.get("code"));
-    }
-
-    /**
-     * getUUID api
-     * wrong input for script language
-     * @throws Exception mvc exception
-     */
-    @Test
-    void getExceptionalUUID2() throws Exception {
-        String script="return";
-        JSONObject jsonObject= getTestRes(script, idApi, scriptName);
-        Assertions.assertEquals(-1, jsonObject.get("code"));
-    }
-
-    /**
-     * getUUID api
-     * error occurs when defining JSSP
-     * @throws Exception mvc exception
-     */
-    @Test
-    void getExceptionalUUID3() throws Exception {
-        String script="//task=[machine_id, duration]\n" +
-                "job1=[[0, 3], [1, 2], [2, 2]]\n" +
-                "job2=[[0, 2], [2, 1], [1, 4]]\n" +
-                "job3=[[1, 4], [2, 3]]\n" +
-                "jobs=[job1,job2,job3]\n" +
-                "return\n" +
-                "//optional\n" +
-                "job_names=[\"job_1\",\"job_2\", \"job_3\"]\n" +
-                "//optional\n" +
-                "machine_names=[\"machine_0\",\"machine_1\", \"machine_2\"]\n" +
-                "//remember to return\n" +
-                "return model.runBasic(jobs)";
-        JSONObject jsonObject= getTestRes(script, idApi, scriptName);
-        Assertions.assertEquals(-1, jsonObject.get("code"));
-    }
-
-    /**
-     * getUUID api
-     * input with wrong format, but it is detected in the algorithm part
-     * @throws Exception mvc exception
-     */
-    @Test
-    void getExceptionalUUID4() throws Exception {
-        String script="//task=[machine_id, duration]\n" +
-                "job1=[[0, 3], [1, 2], [2, 2]]\n" +
-                "job2=[[0, 2, x], [2, 1], [1, 4]]\n" +
-                "job3=[[1, 4], [2, 3]]\n" +
-                "jobs=[job1,job2,job3]\n" +
-                "//optional\n" +
-                "job_names=[\"job_1\",\"job_2\", \"job_3\"]\n" +
-                "//optional\n" +
-                "machine_names=[\"machine_0\",\"machine_1\", \"machine_2\"]\n" +
-                "//remember to return\n" +
-                "model.runBasic(jobs)";
-        JSONObject jsonObject= getTestRes(script, idApi, scriptName);
-        Assertions.assertEquals(1, jsonObject.get("code"));
-    }
-
-
-    /**
-     * getUUID api
-     * lack part of job names
-     * @throws Exception mvc exception
-     */
-    @Test
-    void getExceptionalUUID5() throws Exception {
-        String script="//task=[machine_id, duration]\n" +
-                "job1=[[0, 3], [1, 2], [2, 2]]\n" +
-                "job2=[[0, 2], [2, 1], [1, 4]]\n" +
-                "job3=[[1, 4], [2, 3]]\n" +
-                "jobs=[job1,job2,job3]\n" +
-                "//optional\n" +
-                "job_names=[\"job_1\",\"job_2\"]\n" +
-                "//optional\n" +
-                "machine_names=[\"machine_0\",\"machine_1\", \"machine_2\"]\n" +
-                "//remember to return\n" +
-                "return model.runBasic(jobs)";
-        JSONObject jsonObject= getTestRes(script, idApi, scriptName);
-        Assertions.assertEquals(-1, jsonObject.get("code"));
-    }
-
-    /**
-     * getUUID api
-     * lack machine names
-     * @throws Exception mvc exception
-     */
-    @Test
-    void getExceptionalUUID6() throws Exception {
-        String script="//task=[machine_id, duration]\n" +
-                "job1=[[0, 3], [1, 2], [2, 2]]\n" +
-                "job2=[[0, 2], [2, 1], [1, 4]]\n" +
-                "job3=[[1, 4], [2, 3]]\n" +
-                "jobs=[job1,job2,job3]\n" +
-                "//optional\n" +
-                "job_names=[\"job_1\",\"job_2\", \"job_3\"]\n" +
-                "//optional\n" +
-                "machine_names=[\"machine_0\",\"machine_1\"]\n" +
-                "//remember to return\n" +
-                "return model.runBasic(jobs)";
-        JSONObject jsonObject= getTestRes(script, idApi, scriptName);
-        Assertions.assertEquals(-1, jsonObject.get("code"));
-    }
-
-    /**
-     * getUUID api
-     * variable name is wrong
-     * @throws Exception mvc exception
-     */
-    @Test
-    void getExceptionalUUID7() throws Exception {
-        String script="//task=[machine_id, duration]\n" +
-                "job1=[[0, 3], [1, 2], [2, 2]]\n" +
-                "job2=[[0, 2], [2, 1], [1, 4]]\n" +
-                "job3=[[1, 4], [2, 3]]\n" +
-                "jobas=[job1,job2,job3]\n" +
-                "//optional\n" +
-                "job_names=[\"job_1\",\"job_2\", \"job_3\"]\n" +
-                "//optional\n" +
-                "machine_names=[\"machine_0\",\"machine_1\", \"machine_2\"]\n" +
-                "//remember to return\n" +
-                "return model.runBasic(jobs)";
-        JSONObject jsonObject= getTestRes(script, idApi, scriptName);
-        Assertions.assertEquals(-1, jsonObject.get("code"));
-    }
-
-    /**
-     * getUUID api
-     * expected duration is not defined for dynamic type
-     * @throws Exception mvc exception
-     */
-    @Test
-    void getExceptionalUUID8() throws Exception {
-        String script="//task=[machine_id, duration]\n" +
-                "job1=[[0, 3], [1, 2], [2, 2]]\n" +
-                "job2=[[0, 2], [12, 1], [1, 4]]\n" +
-                "job3=[[1, 4], [2, 3]]\n" +
-                "jobs=[job1,job2,job3]\n" +
-                "//optional\n" +
-                "job_names=[\"job_1\",\"job_2\", \"job_3\"]\n" +
-                "//optional\n" +
-                "machine_names=[\"machine_0\",\"machine_1\", \"machine_2\", \"machine_12\"]\n" +
-                "//remember to return\n" +
-                "model.runDynamic(jobs,expected_duration)";
-        JSONObject jsonObject= getTestRes(script, idApi, scriptName);
-        Assertions.assertEquals(-1, jsonObject.get("code"));
     }
 
     /**

@@ -38,13 +38,6 @@ public class APIController {
 
     private String exePath="";
 
-
-    @RequestMapping(value = "/test",method = {RequestMethod.GET, RequestMethod.POST})
-    public String test() {
-        return "res";
-    }
-
-
     /**
      * get running result for one schedule
      * @param uuid to find the schedule
@@ -121,9 +114,9 @@ public class APIController {
      */
     private void getPyPath() {
         String curPath=System.getProperty("user.dir");
-        //TODO
-        //curPath=curPath.replace("magicProject", "algorithm\\");
-        curPath=curPath.replace("magicProject", "algorithm/");
+        //TODO Path
+        curPath=curPath.replace("magicProject", "algorithm\\");
+        //curPath=curPath.replace("magicProject", "algorithm/");
         exePath=curPath;
     }
 

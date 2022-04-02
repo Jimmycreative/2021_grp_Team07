@@ -1,4 +1,6 @@
-import React,{useState, useEffect} from 'react'; 
+import React,{useState, useEffect} from 'react';
+import memoryUtils from "../registration/userInfo/memoryUtil"
+import storageUtils from "../registration/userInfo/storageUtils"
 
 import {
     Card,
@@ -8,13 +10,11 @@ import {
     Button
   } from "reactstrap";
 
-// function exists(){
-// if()
-// }
-
 
 function Profile() {
-  const [data, setData] = useState([{}]);
+  const user = storageUtils.getUser()
+  memoryUtils.user = user
+  const [data, setData] = useState(user);
   const [click,setClick] =useState(true);
   const handleClick = () => setClick(!click);
   const [userName,setUserName] =useState(''); 
@@ -39,16 +39,8 @@ function Profile() {
   
     //temporary
     useEffect(()=>{
-      fetch("https://jsonplaceholder.typicode.com/users/1")
-      .then(
-        res=>res.json()
-      ).then(
-        data=>{
-          setData(data)
-        }
-      ).catch(err=>{
-        console.log('Fetch Error',err);
-      })
+      console.log("line 42", user)
+      setData(user)
     },[]);
 
 
@@ -71,9 +63,9 @@ function Profile() {
                 <div className="author">
                   <a href="#pablo" 
                   onClick={(e) => e.preventDefault()} style={{textDecoration:"none"}}>
-                    <h4 className="title" ><span className="description" style={{fontSize:"1rem"}}>Name: </span>  {data.name} </h4> 
+                    <h4 className="title" ><span className="description" style={{fontSize:"1rem"}}>Name: </span>  {data.displayname} </h4> 
                      </a>
-                   <h5 className="title" style={{color:"black"}}><span className="description" style={{fontSize:"1rem"}}>Role:</span> Planner </h5> 
+                   <h5 className="title" style={{color:"black"}}><span className="description" style={{fontSize:"1rem"}}>Role:</span> {data.role==1?"Manager":"Planner"} </h5> 
                    {/* this will be changed to data.role or something */}
                  
                   {click && <><p style={{color:"gray",fontSize:"1.3rem"}}><span className="description" style={{fontSize:"1rem"}}>Username:</span> {change ? userName : data.username}
@@ -87,7 +79,7 @@ function Profile() {
                   <Button style={{backgroundColor:"rgb(164,108,87)",position:"relative"}} onClick={handleClick} >Cancel</Button>
                   </>}
 
-                  <p style={{color:"gray",fontSize:"1.2rem"}}><span className="description" style={{fontSize:"1rem"}}>Displayname:</span> {data.username}</p>
+                  {/* <p style={{color:"gray",fontSize:"1.2rem"}}><span className="description" style={{fontSize:"1rem"}}>Displayname:</span> {data.username}</p> */}
                   
                 </div>
               </CardBody>

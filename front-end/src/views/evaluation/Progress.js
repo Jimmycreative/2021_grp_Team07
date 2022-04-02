@@ -56,6 +56,7 @@ const getAllSchedules = () => {
         headers: new Headers({
             'Content-Type': 'application/json'
         }),
+        credentials: 'include',
         method: 'GET', // *GET, POST, PUT, DELETE, etc.
         mode: 'cors'
       })

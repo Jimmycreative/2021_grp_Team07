@@ -1,11 +1,7 @@
 # You should not import any additional modules
 # You can, however, import additional functionalities
 # from the flask and sqlite3 modules
-from distutils.cygwinccompiler import CygwinCCompiler
-from turtle import title
-from unicodedata import name
-from click.types import convert_type
-from flask import Flask, request, session, make_response
+from flask import Flask, request, session
 import mysql.connector
 from flask import jsonify
 from flask_cors import CORS
@@ -42,15 +38,14 @@ class MyEncoder(json.JSONEncoder):
 
 
 app = Flask(__name__)
-CORS(app,supports_credentials=True)
 
 
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SECRET_KEY'] = '123456'
 app.config['SESSION_PERMANENT'] = False
 app.config['SESSION_USE_SIGNER'] = True
-app.secret_key = "hello"
-
+#app.secret_key = "hello"
+CORS(app,supports_credentials=True)
 Session(app)
 
 # host="192.168.64.2",
@@ -60,6 +55,7 @@ Session(app)
 #     database="unnc_team_2021-07-p16"
 
 database = mysql.connector.connect(
+
 
 
      #host="10.6.2.51",
@@ -76,6 +72,7 @@ database = mysql.connector.connect(
     #user="root",
     #database="grp",
     #password="12345678",
+
     # auth_plugin='mysql_native_password'
     
     # host="192.168.64.2",
@@ -327,7 +324,6 @@ def getAssignedSchedules():
 get all schedules of one planner
 '''
 
-
 @app.route('/getMySchedules', methods=['GET'])
 def getMySchedules():
     res_json = {}
@@ -340,43 +336,16 @@ def getMySchedules():
         cur = database.cursor(dictionary=True)
         # TODO, get from session
 
-        #planner=session["username"]
-        planner = "fyyc"
+        planner=session["username"]
+        #planner = "fyyc"
         sql="SELECT manager, COUNT(*) AS unfinished_assignment FROM assignment a WHERE a.planner =  %s GROUP BY manager"
-        # sql = """
-        # SELECT manager, COUNT(*) AS unfinished_assignment, GROUP_CONCAT(a.aid) AS aid,
-        # GROUP_CONCAT(a.title) AS title,
-        # GROUP_CONCAT(a.description) AS description,
-        # GROUP_CONCAT(a.datecreated) AS datecreated,
-        # GROUP_CONCAT(IF(a.aid IN (SELECT s.aid from `schedule` s),1, 0)) AS `_status`
-        # FROM assignment a
-        # WHERE a.planner = %s
-        # GROUP BY manager;
-        # """
-        sql11 = """
-            SELECT manager, COUNT(*) AS unfinished_assignment
-            FROM assignment a
-            WHERE a.planner = %s
-            AND NOT a.aid IN (SELECT ss.aid from schedule ss)
-            GROUP BY manager;
-            """
-        sql12 = """
-            SELECT manager, GROUP_CONCAT(title) AS title,
-            GROUP_CONCAT(description) AS description,
-            GROUP_CONCAT(datecreated) AS datecreated
-            FROM assignment WHERE planner=%s GROUP BY manager
-        """  # %planner
         cur.execute(sql, (planner, ))
-        #
 
         for record in cur:
             record_str = json.dumps(record, cls=MyEncoder)
             record_json = json.loads(record_str)
             manager_list.append(record_json)
-            #temp_list.append(record_json)
         res_json['data']=getScheduleDetails(planner, manager_list)
-        
-        # res_json['data'] = sortPlannerList(temp_list)
 
     except Exception as e:
         res_json['code'] = -2
@@ -397,7 +366,7 @@ def getScheduleDetails(planner, managers):
     try:
         cur = database.cursor(dictionary=True)
         sql="""
-        SELECT title, description, datecreated FROM assignment WHERE planner=%s and manager=%s
+        SELECT aid, title, description, datecreated FROM assignment WHERE planner=%s and manager=%s
         """
         for manager in managers:
             this_manager_json = {}
@@ -410,7 +379,7 @@ def getScheduleDetails(planner, managers):
             this_manager_json['manager']=manager['manager']
             this_manager_json['unfinished_assignment']=manager['unfinished_assignment']
             this_manager_json['assignment']=this_manager_list
-            result.append(this_manager_list)
+            result.append(this_manager_json)
             
         cur.close()
         return result
@@ -418,50 +387,6 @@ def getScheduleDetails(planner, managers):
     except Exception as e:
         cur.close()
         return jsonify({"code": -2, "data": {}, "message": str(e)})
-        
-
-def sortPlannerList(my_list):
-    result = []
-    for my_json in my_list:
-        this_manager_json = {}
-        this_manager_list = []
-        manager = my_json['manager']
-
-        aid=my_json['aid']
-        titles = my_json['title']
-
-        # status = my_json['status']
-        description = my_json['description']
-        start = my_json['datecreated']
-
-        idlist=getAttributeList(aid)
-        title_list = getAttributeList(titles)
-        # status_list = getAttributeList(status)
-        description_list = getAttributeList(description)
-        start_list = getAttributeList(start)
-
-        for i in range(len(title_list)):
-            temp_json = {}
-            temp_json['aid']=idlist[i]
-            temp_json['title'] = title_list[i]
-
-            # temp_json['status'] = status_list[i]
-            temp_json['description'] = description_list[i]
-            temp_json['start'] = start_list[i]
-            temp_json['manager'] = manager
-            this_manager_list.append(temp_json)
-
-        this_manager_json['manager'] = manager
-        this_manager_json['unfinished_assignment'] = my_json['unfinished_assignment']
-        this_manager_json['assignment'] = this_manager_list
-        result.append(this_manager_json)
-
-    return result
-
-
-def getAttributeList(concat_str):
-    seperate_list = re.split(r'[,]s*', concat_str)
-    return seperate_list
 
 
 # definition section
@@ -628,7 +553,7 @@ def login():
         password = data['password']
         cur = database.cursor(dictionary=True)
         cur.execute(
-            "SELECT username, password, role FROM user WHERE username = %s AND password = %s AND disabled = 0;", (username, password))
+            "SELECT username, displayname, role FROM user WHERE username = %s AND password = %s AND disabled = 0;", (username, password))
         # cur.execute("SELECT uid, displayname, rank, disabled FROM user WHERE username = %s AND password = %s;", (username, password,))
         # cur.execute("SELECT uid, displayname, rank, disabled FROM user WHERE username = %s AND password = AES_ENCRYPT(%s, UNHEX(SHA2('encryption_key', )));", (username, password,))
         account = cur.fetchone()
@@ -640,13 +565,14 @@ def login():
             account_json = json.loads(account_str)
             session["username"] = account_json["username"]
             result["username"] = username
+            result["displayname"] = account_json["displayname"]
             result["role"] = account_json["role"]
             result["isLogin"] = 1
 
         else:
             # modify_info(0, "Login not successful")
             login_info["code"] = 0
-            login_info["message"] = "Login not successful"
+            login_info["message"] = "You username or password is wrong"
 
         cur.close()
     return jsonify({"code": login_info["code"], "data": result, "message": login_info["message"]})

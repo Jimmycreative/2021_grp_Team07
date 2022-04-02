@@ -11,8 +11,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SpringBootApplication
 @EnableAutoConfiguration()
 @ComponentScan({"com.grp","org.ssssssss"})
-//@EnableDiscoveryClient
-//@RefreshScope
 @EnableAsync
 @EnableTransactionManagement
 /**
