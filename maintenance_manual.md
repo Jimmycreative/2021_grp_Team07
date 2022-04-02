@@ -76,7 +76,7 @@ The default port for MySQL is 3306.
   )
   ```
   - A database is set up in the UNNC LAN. If you are on UNNC, you are advised to use:
-  ```
+  ```py
   database = mysql.connector.connect(
   host="10.6.2.51",
   user="Team202107",
