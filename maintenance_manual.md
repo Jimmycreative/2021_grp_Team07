@@ -33,7 +33,7 @@
     ```sql
     CREATE DATABASE cimpo;
     ```
-The following will be the expected output:
+    The following will be the expected output:  
     ```
     Output
     Query OK, 1 row affected (0.0012 sec)
