@@ -103,7 +103,7 @@ If the back end server is not on the same LAN as the front end server, please ma
 1. Install JDK 8
 2. Install IntelliJ IDEA Community Edition 2021.3.3
 3. Choose script\magicProject as a root directory in IntelliJ
-4. select `File | Project Structure | Project`
+4. select #### File | Project Structure | Project
 5. add database in ...
 6. run the program
 
