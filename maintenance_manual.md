@@ -15,7 +15,7 @@
 
 
 ### Database
-You can skip this step if you are running this on the UNNC LAN.
+You can skip this step if you are running this on the University of Nottingham Ningbo China School network.
 1. Download MySQL 5.0.2 or MariaDB 10.4.24 (https://mariadb.org/download/) and follow installation instructions.
 2. Add installation directory to root if necessary. (Check environmental variables)
 3. Log in as root or any user with database creation and table creation privileges:
