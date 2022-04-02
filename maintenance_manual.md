@@ -42,6 +42,15 @@ The following will be the expected output:
     ```sql
     source grp_structure.sql
     ```
+5. Exit the MySQL shell:
+    ```
+    \q
+    ```
+7. Start the MySQL service:
+    ```
+    mysqld
+    ```
+7.
 
 The database is now successfully imported.  
 If the MySQL server is not on the same LAN as the back end server, please make sure you have configured port forwarding properly.  
@@ -66,7 +75,8 @@ The default port for MySQL is 3306.
 4. Configure database settings in main.py:
 ```py
 database = mysql.connector.connect(
-    host="mysql server address",
+    host="mysql server address", # host="127.0.0.1" for localhost
+    port = 3306,
     user="dbms username",
     database="cimpo",
     password="dbms user password",
