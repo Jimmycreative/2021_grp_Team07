@@ -40,7 +40,7 @@ The following will be the expected output:
     ```
 4. Run this in the MySQL shell:
     ```sql
-    source grp.sql
+    source grp_structure.sql
     ```
 
 The database is now successfully imported.  
