@@ -67,7 +67,7 @@ The default port for MySQL is 3306.
     - Install latest version of MySQL Connector/Python (`pip install mysql-connector-python`)
     - Install flask_session (`pip install flask-session`)
     - Install Google OR-tool 9.2. 9972 (`pip install --upgrade --user ortools`)
-    - Install flask-cors (`pip install Flask-Cors`)
+    - Install flask-cors (`pip install flask-cors`)
     - Install Requests (`pip install requests`)
     - Install SQLAlchemy (`pip install SQLAlchemy`)
     
