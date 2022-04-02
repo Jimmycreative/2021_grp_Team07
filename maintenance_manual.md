@@ -66,16 +66,16 @@ The default port for MySQL is 3306.
     
 3. Make sure MySQL/MariaDB server is running (See above section)
 4. Configure database settings in main.py:
-```py
-database = mysql.connector.connect(
-    host="mysql server address", # host="127.0.0.1" for localhost
-    port=3306,
-    user="dbms username",
-    database="cimpo",
-    password="dbms user password",
-)
-```
-- A database is set up in the UNNC LAN, if you are on UNNC, you are advised to use 
+  ```py
+  database = mysql.connector.connect(
+      host="mysql server address", # host="127.0.0.1" for localhost
+      port=3306,
+      user="dbms username",
+      database="cimpo",
+      password="dbms user password",
+  )
+  ```
+  - A database is set up in the UNNC LAN. If you are on UNNC, you are advised to use:
   ```
   database = mysql.connector.connect(
   host="10.6.2.51",
