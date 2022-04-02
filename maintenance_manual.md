@@ -61,10 +61,9 @@ The default port for MySQL is 3306.
     - Install flask-cors (`pip install Flask-Cors`)
     - Install Requests (`pip install requests`)
     - Install SQLAlchemy (`pip install SQLAlchemy`)
-
-3. Install all other dependancies
-4. Make sure MySQL/MariaDB server is running (See above section)
-5. Configure database settings in main.py:
+    
+3. Make sure MySQL/MariaDB server is running (See above section)
+4. Configure database settings in main.py:
 ```py
 database = mysql.connector.connect(
     host="mysql server address",
@@ -73,7 +72,7 @@ database = mysql.connector.connect(
     password="dbms user password",
 )
 ```
-6. Go to back-end directory and execute main.py (`python main.py`)  
+5. Go to back-end directory and execute main.py (`python main.py`)  
  
  The back end server is now running on port 5000.   
  To change the port the server is running on, go to the last line of `main.py` and change the port here:
