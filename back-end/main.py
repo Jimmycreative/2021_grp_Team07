@@ -58,16 +58,16 @@ database = mysql.connector.connect(
 
 
 
-     #host="10.6.2.51",
-     #user="Team202107",
-     #database="Team202107",
-     #password="Team202107",
-    #auth_plugin='mysql_native_password'
-     host="127.0.0.1",
-     user="root",
-     database="grp",
-     password="12345678",
-     auth_plugin='mysql_native_password'
+    host="10.6.2.51",
+    user="Team202107",
+    database="Team202107",
+    password="Team202107",
+    auth_plugin='mysql_native_password'
+     #host="127.0.0.1",
+     #user="root",
+     #database="grp",
+     #password="12345678",
+     #auth_plugin='mysql_native_password'
     #host="127.0.0.1",
     #user="root",
     #database="grp",
@@ -588,23 +588,23 @@ def registration():
 
     json_data = request.json
 
-    # print(json_data)
+    print(json_data)
 
     if json_data:
         # check token in db
-        tokendata = checktoken(json_data["data"]["token"])
+        tokendata = checktoken(json_data["token"])
         if tokendata:
-            if not checkusername(json_data["data"]["username"]):
+            if not checkusername(json_data["username"]):
                 # modify the uses times
 
                 uses = int(tokendata['uses'])
 
                 modify_token(uses, tokendata['token'])
 
-                username = json_data["data"]["username"]
-                displayname = json_data["data"]["displayname"]
-                password = json_data["data"]["password"]
-                rank = tokendata['role']
+                username = json_data["username"]
+                displayname = json_data["displayname"]
+                password = json_data["password"]
+                rank = 0 #only can create planner
                 # store the user in the database
                 try:
                     cur = database.cursor()
