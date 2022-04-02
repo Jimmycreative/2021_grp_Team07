@@ -105,4 +105,4 @@ If the back end server is not on the same LAN as the front end server, please ma
 3. Choose script\magicProject as a root directory in IntelliJ
 4. Go to `File | Project Structure | Project` and select `1.8 Oracle OpenJDK version 1.8.0_321` for SDK, and select `8-Lambdas, type annotations etc,` for Language level. Next go to `Project Structure | Project` and select `8-Lambdas, type annotations etc,` for Language level.
 5. Open magicProject\src\main\resources\application-dev.yml and add your url and passward
-6. Go to magicProject\src\main\java\com.grp\UtilApplication and run the program
+6. Open magicProject\src\main\java\com.grp\UtilApplication and run the program
