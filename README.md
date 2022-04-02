@@ -13,7 +13,6 @@
 
 ## Setup instructions 
 
-
 ### Database
 You can skip this step if you are running this on the University of Nottingham Ningbo China School network.
 1. Download MySQL 5.0.2 or MariaDB 10.4.24 (https://mariadb.org/download/) and follow installation instructions.
@@ -32,14 +31,23 @@ You can skip this step if you are running this on the University of Nottingham N
   Output
   Query OK, 1 row affected (0.0012 sec)
   ```
+  
 5. Run this in the MySQL shell:
     ```sql
     source grp_structure.sql
     ```
-6. Exit the MySQL shell:
+    
+6. Create a manager account:
+  ```sql
+  INSERT INTO user (username, displayname, password, rank)
+  VALUES ("username", "displayname", "password", 1);
+  ```
+  
+8. Exit the MySQL shell:
     ```
     \q
     ```
+    
 7. Start the MySQL service:
     ```
     mysqld
