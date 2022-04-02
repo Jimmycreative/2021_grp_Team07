@@ -5,4 +5,4 @@ pip install flask-cors
 pip install mysql-connector-python
 pip install --upgrade --user ortools
 pip install requests
-pip install SQLAlchemy
+pip install sqlalchemy
