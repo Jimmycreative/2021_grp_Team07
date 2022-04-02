@@ -106,5 +106,5 @@ If the back end server is not on the same LAN as the front end server, please ma
 2. Install IntelliJ IDEA Community Edition 2021.3.3
 3. Choose script\magicProject as a root directory in IntelliJ
 4. Go to `File | Project Structure | Project` and select `1.8 Oracle OpenJDK version 1.8.0_321` for SDK, and select `8-Lambdas, type annotations etc,` for Language level. Next go to `Project Structure | Project` and select `8-Lambdas, type annotations etc,` for Language level.
-5. Open magicProject\src\main\resources\application-dev.yml and add your url and passward
-6. Open magicProject\src\main\java\com.grp\UtilApplication and run the program
+5. Open magicProject\src\main\resources\application-dev.yml and add `jdbc:mysql://127.0.0.1:3306/cimpo?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC` for url in line 16
+7. Open magicProject\src\main\java\com.grp\UtilApplication and run the program
