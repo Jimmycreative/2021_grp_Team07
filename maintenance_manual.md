@@ -12,7 +12,10 @@
 - IntelliJ IDEA Community Edition 2021.3.3
 
 ## Setup instructions 
+
+
 ### Database
+You can skip this step if you are running this on the UNNC LAN.
 1. Download MySQL 5.0.2 or MariaDB 10.4.24 (https://mariadb.org/download/) and follow installation instructions.
 2. Add installation directory to root if necessary. (Check environmental variables)
 3. Log in as root or any user with database creation and table creation privileges:
@@ -72,6 +75,15 @@ database = mysql.connector.connect(
     password="dbms user password",
 )
 ```
+- A database is set up in the UNNC LAN, if you are on UNNC, you are advised to use 
+  ```
+  database = mysql.connector.connect(
+  host="10.6.2.51",
+  user="Team202107",
+  database="Team202107",
+  password="Team202107",
+  )
+  ```
 5. Go to back-end directory and execute main.py (`python main.py`)  
  
  The back end server is now running on port 5000.   
