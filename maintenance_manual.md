@@ -8,7 +8,7 @@
 - Flask 2.0.2 
 - Google OR-tool 9.2. 9972
 - MySQL 5.0.2
-- JDK 18 
+- JDK 8 
 - IntelliJ IDEA Community Edition 2021.3.3
 
 ## Setup instructions 
@@ -100,9 +100,10 @@ If the back end server is not on the same LAN as the front end server, please ma
 
 ### Script language
 
-1. Install JDK 18
+1. Install JDK 8
 2. Install IntelliJ IDEA Community Edition 2021.3.3
-3. Maven......
-4. ......
-5. ......
+3. Choose script\magicProject as a root directory in IntelliJ
+4. select `File | Project Structure | Project`
+5. add database in ...
+6. run the program
 
