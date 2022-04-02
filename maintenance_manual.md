@@ -30,21 +30,18 @@
     ```
 5. Create a database:
 
-```sql
+    ```sql
     CREATE DATABASE cimpo;
-```
+    ```
 The following will be the expected output:
-```
-Output
-Query OK, 1 row affected (0.00 sec)
-```
-4. Press CTRL+D to exit the MariaDB shell.
-5. Place /back-end/grp_structure.sql into the current directory.
-6. Execute this in the command prompt/terminal:
-
-```cmd
-mysql -u "username" -p < grp_structure.sql
-```
+    ```
+    Output
+    Query OK, 1 row affected (0.0012 sec)
+    ```
+4. Run this in the MySQL shell:
+    ```sql
+    source grp.sql
+    ```
 
 The database is now successfully imported.  
 If the MySQL server is not on the same LAN as the back end server, please make sure you have configured port forwarding properly.  
