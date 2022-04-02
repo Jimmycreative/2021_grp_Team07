@@ -6,10 +6,10 @@
 - Node.js 12.22.2
 - Python 3.8.10 
 - Flask 2.0.2 
-- Java 1.8 
-- MySQL 5.0.2
 - Google OR-tool 9.2. 9972
-- IntelliJ IDEA 2021.3
+- MySQL 5.0.2
+- JDK 18 
+- IntelliJ IDEA Community Edition 2021.3.3
 
 ## Setup instructions 
 ### Database
@@ -100,8 +100,9 @@ If the back end server is not on the same LAN as the front end server, please ma
 
 ### Script language
 
-1. Install IntelliJ IDEA 2021.3
-2. Maven......
-3. ......
+1. Install JDK 18
+2. Install IntelliJ IDEA Community Edition 2021.3.3
+3. Maven......
 4. ......
+5. ......
 
