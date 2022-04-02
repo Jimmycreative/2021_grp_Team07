@@ -13,7 +13,7 @@
 
 ## Setup instructions 
 ### Database
-1. Install MySQL 5.0.2 or MariaDB 10.4.25 (https://mariadb.org/download/).
+1. Install MySQL 5.0.2 or MariaDB 10.4.24 (https://mariadb.org/download/).
 2. Log in as root or any user with database creation and table creation privileges:
 
 ```cmd
