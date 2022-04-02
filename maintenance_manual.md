@@ -69,7 +69,7 @@ The default port for MySQL is 3306.
     - Install Google OR-tool 9.2. 9972 (`pip install --upgrade --user ortools`)
     - Install flask-cors (`pip install flask-cors`)
     - Install Requests (`pip install requests`)
-    - Install SQLAlchemy (`pip install SQLAlchemy`)
+    - Install SQLAlchemy (`pip install sqlalchemy`)
     
 3. Make sure MySQL/MariaDB server is running (See above section)
 4. Configure database settings in main.py:
