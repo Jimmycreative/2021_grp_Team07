@@ -15,12 +15,20 @@
 ### Database
 1. Download MySQL 5.0.2 or MariaDB 10.4.24 (https://mariadb.org/download/) and follow installation instructions.
 2. Log in as root or any user with database creation and table creation privileges:
+    - MariaDB
+    ```cmd
+    mysqlsh -u root -p
+    ```
+    - MySQL
+    ```cmd
+    mysql -u root -p
+    ```
 
-```cmd
-mysql -u root -p
-```
-
-3. Create a database:
+3. Switch shell to SQL mode:
+    ```
+    \sql
+    ```
+5. Create a database:
 
 ```sql
     CREATE DATABASE cimpo;
@@ -35,7 +43,7 @@ Query OK, 1 row affected (0.00 sec)
 6. Execute this in the command prompt/terminal:
 
 ```cmd
-mysql -u "username" -p "password" < grp_structure.sql
+mysql -u "username" -p < grp_structure.sql
 ```
 
 The database is now successfully imported.  
