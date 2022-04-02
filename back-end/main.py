@@ -22,6 +22,7 @@ import re
 
 from flask_session import Session
 from sqlalchemy import null
+from sympy import E
 
 
 class MyEncoder(json.JSONEncoder):
@@ -61,16 +62,16 @@ Session(app)
 database = mysql.connector.connect(
 
 
-     host="10.6.2.51",
-     user="Team202107",
-     database="Team202107",
-     password="Team202107",
-    auth_plugin='mysql_native_password'
-    # host="127.0.0.1",
-    # user="root",
-    # database="grp",
-    # password="12345678",
-    # auth_plugin='mysql_native_password'
+     #host="10.6.2.51",
+     #user="Team202107",
+     #database="Team202107",
+     #password="Team202107",
+    #auth_plugin='mysql_native_password'
+     host="127.0.0.1",
+     user="root",
+     database="grp",
+     password="12345678",
+     auth_plugin='mysql_native_password'
     #host="127.0.0.1",
     #user="root",
     #database="grp",
@@ -335,29 +336,31 @@ def getMySchedules():
     res_json['message'] = "success"
     try:
         temp_list = []
+        manager_list=[]
         cur = database.cursor(dictionary=True)
         # TODO, get from session
 
-        planner=session["username"]
-        planner = "shawn"
-        sql = """
-        SELECT manager, COUNT(*) AS unfinished_assignment, GROUP_CONCAT(a.aid) AS aid,
-        GROUP_CONCAT(a.title) AS title,
-        GROUP_CONCAT(a.description) AS description,
-        GROUP_CONCAT(a.datecreated) AS datecreated,
-        GROUP_CONCAT(IF(a.aid IN (SELECT s.aid from `schedule` s),1, 0)) AS `_status`
-        FROM assignment a
-        WHERE a.planner = %s
-        GROUP BY manager;
-        """
-        sql1 = """
+        #planner=session["username"]
+        planner = "fyyc"
+        sql="SELECT manager, COUNT(*) AS unfinished_assignment FROM assignment a WHERE a.planner =  %s GROUP BY manager"
+        # sql = """
+        # SELECT manager, COUNT(*) AS unfinished_assignment, GROUP_CONCAT(a.aid) AS aid,
+        # GROUP_CONCAT(a.title) AS title,
+        # GROUP_CONCAT(a.description) AS description,
+        # GROUP_CONCAT(a.datecreated) AS datecreated,
+        # GROUP_CONCAT(IF(a.aid IN (SELECT s.aid from `schedule` s),1, 0)) AS `_status`
+        # FROM assignment a
+        # WHERE a.planner = %s
+        # GROUP BY manager;
+        # """
+        sql11 = """
             SELECT manager, COUNT(*) AS unfinished_assignment
             FROM assignment a
             WHERE a.planner = %s
             AND NOT a.aid IN (SELECT ss.aid from schedule ss)
             GROUP BY manager;
             """
-        sql2 = """
+        sql12 = """
             SELECT manager, GROUP_CONCAT(title) AS title,
             GROUP_CONCAT(description) AS description,
             GROUP_CONCAT(datecreated) AS datecreated
@@ -369,9 +372,11 @@ def getMySchedules():
         for record in cur:
             record_str = json.dumps(record, cls=MyEncoder)
             record_json = json.loads(record_str)
-            temp_list.append(record_json)
+            manager_list.append(record_json)
+            #temp_list.append(record_json)
+        res_json['data']=getScheduleDetails(planner, manager_list)
         
-        res_json['data'] = sortPlannerList(temp_list)
+        # res_json['data'] = sortPlannerList(temp_list)
 
     except Exception as e:
         res_json['code'] = -2
@@ -387,6 +392,33 @@ def getMySchedules():
 generate json list for messages of one planner
 '''
 
+def getScheduleDetails(planner, managers):
+    result=[]
+    try:
+        cur = database.cursor(dictionary=True)
+        sql="""
+        SELECT title, description, datecreated FROM assignment WHERE planner=%s and manager=%s
+        """
+        for manager in managers:
+            this_manager_json = {}
+            this_manager_list = []
+            cur.execute(sql, (planner, manager['manager'],))
+            for record in cur:
+                record_str = json.dumps(record, cls=MyEncoder)
+                record_json = json.loads(record_str)
+                this_manager_list.append(record_json)
+            this_manager_json['manager']=manager['manager']
+            this_manager_json['unfinished_assignment']=manager['unfinished_assignment']
+            this_manager_json['assignment']=this_manager_list
+            result.append(this_manager_list)
+            
+        cur.close()
+        return result
+            
+    except Exception as e:
+        cur.close()
+        return jsonify({"code": -2, "data": {}, "message": str(e)})
+        
 
 def sortPlannerList(my_list):
     result = []
