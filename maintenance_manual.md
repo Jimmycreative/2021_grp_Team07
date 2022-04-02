@@ -76,7 +76,7 @@ The default port for MySQL is 3306.
 ```py
 database = mysql.connector.connect(
     host="mysql server address", # host="127.0.0.1" for localhost
-    port = 3306,
+    port=3306,
     user="dbms username",
     database="cimpo",
     password="dbms user password",
