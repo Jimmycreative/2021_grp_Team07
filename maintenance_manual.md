@@ -15,29 +15,29 @@
 ### Database
 1. Download MySQL 5.0.2 or MariaDB 10.4.24 (https://mariadb.org/download/) and follow installation instructions.
 2. Log in as root or any user with database creation and table creation privileges:
-    - MariaDB
-    ```cmd
-    mysqlsh -u root -p
-    ```
-    - MySQL
-    ```cmd
-    mysql -u root -p
-    ```
+  - MariaDB
+  ```cmd
+  mysqlsh -u root -p
+  ```
+  - MySQL
+  ```cmd
+  mysql -u root -p
+  ```
 
 3. Switch shell to SQL mode:
-    ```
-    \sql
-    ```
+  ```
+  \sql
+  ```
 5. Create a database:
 
-    ```sql
-    CREATE DATABASE cimpo;
-    ```
-    The following will be the expected output:  
-    ```
-    Output
-    Query OK, 1 row affected (0.0012 sec)
-    ```
+  ```sql
+  CREATE DATABASE cimpo;
+  ```
+  The following will be the expected output:  
+  ```
+  Output
+  Query OK, 1 row affected (0.0012 sec)
+  ```
 4. Run this in the MySQL shell:
     ```sql
     source grp_structure.sql
