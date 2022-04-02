@@ -14,22 +14,13 @@
 ## Setup instructions 
 ### Database
 1. Download MySQL 5.0.2 or MariaDB 10.4.24 (https://mariadb.org/download/) and follow installation instructions.
-2. Log in as root or any user with database creation and table creation privileges:
-  - MariaDB
-  ```cmd
-  mysqlsh -u root -p
-  ```
-  - MySQL
+2. Add installation directory to root if necessary. (Check environmental variables)
+3. Log in as root or any user with database creation and table creation privileges:
   ```cmd
   mysql -u root -p
   ```
 
-3. Switch shell to SQL mode:
-  ```
-  \sql
-  ```
-5. Create a database:
-
+4. Create a database:
   ```sql
   CREATE DATABASE cimpo;
   ```
@@ -38,11 +29,11 @@
   Output
   Query OK, 1 row affected (0.0012 sec)
   ```
-4. Run this in the MySQL shell:
+5. Run this in the MySQL shell:
     ```sql
     source grp_structure.sql
     ```
-5. Exit the MySQL shell:
+6. Exit the MySQL shell:
     ```
     \q
     ```
@@ -50,9 +41,8 @@
     ```
     mysqld
     ```
-7.
 
-The database is now successfully imported.  
+The database is now successfully imported and launched.  
 If the MySQL server is not on the same LAN as the back end server, please make sure you have configured port forwarding properly.  
 The default port for MySQL is 3306.  
 
