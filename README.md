@@ -6,7 +6,6 @@
 - Node.js 12.22.2
 - Python 3.8.10 
 - Flask 2.0.2 
-- Google OR-tool 9.2. 9972
 - MySQL 5.0.2
 - JDK 8 
 - IntelliJ IDEA Community Edition 2021.3.3
@@ -65,12 +64,13 @@ The default port for MySQL is 3306.
     - Run py-dependancies.bat
   - **Other OS:**  
     - Install Flask 2.0.2 (`pip install flask`)
-    - Install latest version of MySQL Connector/Python (`pip install mysql-connector-python`)
     - Install flask_session (`pip install flask-session`)
-    - Install Google OR-tool 9.2. 9972 (`pip install --upgrade --user ortools`)
     - Install flask-cors (`pip install flask-cors`)
+    - Install Google OR-tool 9.2. 9972 (`pip install --upgrade --user ortools`)
+    - Install MySQL Connector/Python (`pip install mysql-connector-python`)
     - Install Requests (`pip install requests`)
     - Install SQLAlchemy (`pip install sqlalchemy`)
+    - Install sympy (`pip instal sympy`)
     
 3. Make sure MySQL/MariaDB server is running (See above section)
 4. Configure database settings in main.py:
