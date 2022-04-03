@@ -155,8 +155,8 @@ function LoginSignup() {
     const insertData2= ()=>{
         var mydata={
             token:token,
-            username:username,
-            displayname:displayname,
+            username:capitalToSmall(username),
+            displayname:displaynameout(),
             password:password
         }
         console.log(mydata)
@@ -215,10 +215,20 @@ function LoginSignup() {
     }
 
 
+    const capitalToSmall = () => {
+        return (username.toLowerCase());
+    }
+
+    const displaynameout = () => {
+        if (displayname != '' && displayname != null)
+            return displayname.replace(/\s+(?=\s)/g, '').trim();
+        else 
+            return username;
+    }
 
     const usernameValidation = () => {
 
-        setUsername(username.toLowerCase());
+        capitalToSmall();
 
         const usernameRegex = /^[A-Za-z][\w]{2,14}[A-Za-z0-9]$/;
         if (username.trim() === "") {
