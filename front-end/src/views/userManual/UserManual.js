@@ -11,10 +11,12 @@ import {
   } from "reactstrap";
 import 'react-tabs/style/react-tabs.css';
 import './userManual.css';
-import Code1 from 'assets/img/Code1.png';
-import Code2 from 'assets/img/Code2.png';
-import Code3 from 'assets/img/Code3.png';
-import Code4 from 'assets/img/Code4.png';
+import basic from 'assets/img/basic.png';
+import dynamic from 'assets/img/dynamic.png';
+import flexible from 'assets/img/flexible.png';
+import multi from 'assets/img/multi.png';
+import basicConstraint from 'assets/img/basic_update2.png';
+import subject from 'assets/img/subject.png';
 
 function UserManual() {
    
@@ -101,7 +103,7 @@ function UserManual() {
                 <li>use <em>model.runModel(type=1, originalData=js)</em></li> <br/>
                 
                 See code snippet below👇:<br/>
-                <img className='CodeImg' alt='CodeImg' align="center" src={Code1} style={{width:"310", height:"360px" }}/> 
+                <img className='CodeImg' alt='CodeImg' align="center" src={basic} style={{width:"350", height:"380px" }}/> 
                 </p>
 
                 </div>
@@ -120,7 +122,7 @@ function UserManual() {
                 <li>machine names (optional): the order and length should be same as the index of the machine defined in job data. Use <em>machine_names</em> as keyword.</li>
                 <li>choose <em>model.runBasic()</em></li> <br/>
                 See code snippet below👇:<br/>
-                <img className='CodeImg' alt='CodeImg' align="center" src={Code2} style={{width:"310", height:"360px" }}/> 
+                <img className='CodeImg' alt='CodeImg' align="center" src={dynamic} style={{width:"350", height:"380px" }}/> 
                 </p>
 
                 </div>
@@ -137,7 +139,7 @@ function UserManual() {
                 <li>machine names (optional): the order and length should be same as the index of the machine defined in job data. Use <em>machine_names</em> as keyword.</li>
                 <li>choose <em>model.Flexible()</em></li> <br/>
                 See code snippet below👇:<br/>
-                <img className='CodeImg' alt='CodeImg' align="center" src={Code3} style={{width:"310", height:"360px" }}/> 
+                <img className='CodeImg' alt='CodeImg' align="center" src={flexible} style={{width:"250", height:"300px" }}/> 
                 </p>
 
                 </div>
@@ -154,11 +156,45 @@ function UserManual() {
                 <li>machine names (optional): the order and length should be same as the index of the machine defined in job data. Use <em>machine_names</em>as keyword.</li>
                 <li>choose <em>model.runMulti()</em></li> <br/>
                 See code snippet below👇:<br/>
-                <img className='CodeImg' alt='CodeImg' align="center" src={Code4} style={{width:"310", height:"360px" }}/> 
+                <img className='CodeImg' alt='CodeImg' align="center" src={multi} style={{width:"250", height:"250px" }}/> 
+                </p>
+
+                </div>
+                <div>
+                <h5>Basic Constraint</h5>
+                <p>Basic constraints can be divided into precedence constraint, no-overlap constraint, and priority constraint.</p><br/>
+               
+                <p>
+                For precedence constraint, users should define<br/>
+                <li>This makes sure that each should be done followed by an order.</li>
+                <li>The start time of the next task in the same job should be greater than or equal to the end time of the current task.</li><br/>
+                For no-overlap constraint, users should define<br/>
+                <li>One machine can only run one task in the same period.</li>
+                <li>The end time of the next task working on one machine should be greater than the start time of the task running on the same machine.</li><br/>
+                For priority constraint, users should define<br/>
+                <li>All tasks for one job are assigned to the same priority. Hence, it indicates that the current task on one machine should have a higher priority than the next task on the same machine even if they belong to different jobs</li>
+                <li>The priority of the next task working on one machine should be larger than the priority of the task running on the same machine.</li><br/>
+                
+
+                See code snippet below👇:<br/>
+                <img className='CodeImg' alt='CodeImg' align="center" src={basicConstraint} style={{width:"350", height:"400px" }}/> 
                 </p>
 
                 </div>
 
+                <div>
+                <h5>Customized Constraint</h5>
+                <p> 
+                Only some simple linear equations are supported. As shown in below, there are two linear constraints the user wants to add. Take line 3 as an example, this line means that the user wants the start time of task 0 of job 0 to be less than 5 hours. It should be noted that even if the coefficient is 1 for the constraint, it should be explicitly stated in the code. Also, users can freely add different coefficients if they want.
+                </p><br/>
+               
+                <p>
+                
+                See code snippet below👇:<br/>
+                <img className='CodeImg' alt='CodeImg' align="center" src={subject} style={{width:"100", height:"100px" }}/> 
+                </p>
+
+                </div>
                 </TabPanel>
 
                 <TabPanel className="thirdContent">
@@ -186,8 +222,21 @@ function UserManual() {
                         <td>machine_names=["machine_0","machine_1", "machine_2"]</td>
                     </tr>
                     <tr>
-                        <td></td>
+                        <td>algorithm.standardize()</td>
+                        <td>To standardize the input jobs. <br/>
+                            This function converts the input jobs into json format<br/>
+                            After the conversion, users can access the jobs and machines <br/>
+                            in json format as shown in the example.<br/>
+                            The only parameter for standardize function is an array for all the input jobs. 
+                        </td>
+                        <td>
+                            jobs=[job1,job2,job3]<br/>
+                            myformat=algorithm.standardize(jobs)<br/>
+                            js_jobs=myformat.jobs<br/>
+                            js_machines=myformat.machines<br/>
+                        </td>
                     </tr>
+                   
                     <tr>
                         <td>model.runModel()</td>
                         <td>To run the model. There are two parameters: <i>index</i> and <i>originalData</i>.<br/>
@@ -202,6 +251,24 @@ function UserManual() {
                         <td>return model.runModel(index=1, originalData=jsData)<br/>
                             return model.runModel(index=3, originalData=null)
                         </td>
+                    </tr>
+                    <tr>
+                        <td>basic{'{ }'}</td>
+                        <td>To define the basic constraints only for basic type and dynamic type. <br/>
+                            For basic type, users can define precedence constraint and no-overlap constraint. <br/>
+                            For dynamic type, users can define precedence constraint, no-overlap constraint, and priority constraint.<br/>
+                            Also, users are allowed to define without these constraints but with the runModel function to specify which type is running.<br/> 
+                        </td>
+                        <td>For more details, please check the second page(Definition Types).</td>
+                    </tr>
+                    <tr>
+                        <td>subject_to{'{ }'}</td>
+                        <td>To define the customized constraints in linear way. It is only allowed for basic type and dynamic type. <br/>
+                            Users are allowed to set the start time and end time constraint for a specific task in a specific job.<br/>
+                            For example, the user wants the start time of task 0 of job 0 to be less or equal to 5 hours.<br/>
+                            For example, the user wants the end time of task 0 of job 1 to be greater than 10 hours.<br/> 
+                        </td>
+                        <td>For more details, please check the second page(Definition Types).</td>
                     </tr>
                 </tbody>
 

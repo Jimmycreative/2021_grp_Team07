@@ -6,14 +6,16 @@ import { useHistory } from 'react-router-dom';
 import { domain } from "../../global"
 import memoryUtils from "./userInfo/memoryUtil"
 import storageUtils from "./userInfo/storageUtils"
+import { set } from "store";
 // import Registration from "./RegTemp";
 // import Login from "./LogTemp";
 
 function LoginSignup() {
-    let [click,setClick] =useState(false);
+    const [click,setClick] =useState(false);
     const handleLogin = () => {
         setUsername('')
         setPassword('')
+        setIsRegister(false)
         setClick(true)
     };
     const handleReg = () => {
@@ -61,6 +63,7 @@ function LoginSignup() {
     const [tokenError, setTokenError] = useState('');
 
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [isRegister,setIsRegister] = useState(false)
     const [isLogin, setIsLogin] = useState(false);
 
     const submitRegister = e => {
@@ -75,13 +78,19 @@ function LoginSignup() {
         }
 
         if (isValid) {
-            setIsSubmitted(true);
+            //setIsSubmitted(true);
             insertData2()
-        } else {
-            setIsSubmitted(false);
-        }
+        } 
+        setDisplayname("")
+        setPassword("")
+        setUsername("")
+        setToken("")
+        setPassword2("")
+        //else {
+        //    setIsSubmitted(false);
+        //}
 
-        return isSubmitted;
+        return isRegister;
     };
 
     const insertData= (body)=>{
@@ -143,9 +152,16 @@ function LoginSignup() {
         console.log(error)
         })
     }
-    const insertData2= (body)=>{
+    const insertData2= ()=>{
+        var mydata={
+            token:token,
+            username:capitalToSmall(username),
+            displayname:displaynameout(),
+            password:password
+        }
+        console.log(mydata)
         fetch(domain+"/registration", {
-          body: JSON.stringify(body),
+          body: JSON.stringify(mydata),
           cache: 'no-cache',
           headers: new Headers({
               'Content-Type': 'application/json'
@@ -158,19 +174,20 @@ function LoginSignup() {
         })
       .then(response=>{
         if(response.ok){
+            console.log("jiji")
           return response.json()
           }
         }
         
       ).then(
         data=>{
-          if(data["code"]===1){
+          if(data["code"]==1){
             console.log(data)
-            
+            setIsRegister(true)
             history.push("/login")
             
           }
-          
+          alert(data.message)
         }
       )
     }
@@ -198,10 +215,20 @@ function LoginSignup() {
     }
 
 
+    const capitalToSmall = () => {
+        return (username.toLowerCase());
+    }
+
+    const displaynameout = () => {
+        if (displayname != '' && displayname != null)
+            return displayname.replace(/\s+(?=\s)/g, '').trim();
+        else 
+            return username;
+    }
 
     const usernameValidation = () => {
 
-        setUsername(username.toLowerCase());
+        capitalToSmall();
 
         const usernameRegex = /^[A-Za-z][\w]{2,14}[A-Za-z0-9]$/;
         if (username.trim() === "") {
@@ -316,11 +343,10 @@ function LoginSignup() {
                     <div className="registration">
                         <br />
                         <br />
-                        {isSubmitted?
+                        {isRegister?
                             <div style={{ textAlign: "center" }} className="complete">
                                 <h1>Complete registration!</h1>
-                                <div>Username is {username}</div>
-                                <div>Displayname is {displayname}</div>
+                                
                             </div>
                             :
                             <div className="registration-form" style={{ textAlign: "center" }}>
