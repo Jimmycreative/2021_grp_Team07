@@ -17,8 +17,6 @@ import re
 
 
 from flask_session import Session
-from sqlalchemy import null
-from sympy import E
 
 
 class MyEncoder(json.JSONEncoder):
@@ -63,10 +61,10 @@ database = mysql.connector.connect(
     database="Team202107",
     password="Team202107",
     auth_plugin='mysql_native_password'
-     #host="127.0.0.1",
-     #user="root",
-     #database="grp",
-     #password="12345678",
+    #  host="127.0.0.1",
+    #  user="root",
+    #  database="grp",
+    #  password="",
      #auth_plugin='mysql_native_password'
     #host="127.0.0.1",
     #user="root",
@@ -508,7 +506,10 @@ def save_schedule():
             # uid = "123"
             script = data["script"]
             timelength = data["timelength"]
-            result = data["result"]
+            
+            tempresult = data["result"]
+            result="".join('%s' %id for id in tempresult)
+
             status = data["status"]
             errlog = data["errlog"]
             description = data["description"]
@@ -533,6 +534,14 @@ def save_schedule():
             database.rollback()
             print(str(e))
             return jsonify({"code": -2, "data": {}, "message": str(e)})
+
+def myConvert(myJsonList):
+    for item in myJsonList:
+        item['end']=str(item['end'])
+        item['progress']=str(item['progress'])
+        item['start']=str(item['start'])
+
+
 
 
 @app.route('/login', methods=['GET', 'POST'])
