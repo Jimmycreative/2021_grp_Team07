@@ -109,10 +109,21 @@ useEffect(() => {
       if(response.ok){
         return response.json()
       }
-      else{
-        console.log("Error fetching")
-      }
-    })
+      
+    }).then(
+      data=>{
+          
+          if(data.code===1){
+              
+              setModal(false)
+              alert(data.message)
+          }
+          else{
+            alert(data.message)
+          }
+    
+  } )
+  
    
   }
 

@@ -492,7 +492,7 @@ class DefForm extends React.Component {
             //name:this.state.scheduleName,
             script:this.state.code,
             timelength: this.state.timelength,
-            result:this.state.result,
+            result:this.state.result_gantt,
             //0 for new, 1 for compelete, -1 for err
             status:this.state.result_gantt==null?-1:1,
             errlog:"",

@@ -100,7 +100,7 @@ function UserManual() {
                 <li>job data: including tasks for each job, machine id and duration for each task. Tasks within one job are constrained by their precedence. </li>
                 <li>job names (optional): the order and length should be same as the definition of job data. Use <em>job_names</em> as keyword.</li>
                 <li>machine names (optional): the order and length should be same as the index of the machine defined in job data. Use <em>machine_names</em> as keyword.</li>
-                <li>use <em>model.runModel(type=1, originalData=js)</em></li> <br/>
+                <li>use <em>model.runModel(type=1, originalData=myformat)</em></li> <br/>
                 
                 See code snippet below👇:<br/>
                 <img className='CodeImg' alt='CodeImg' align="center" src={basic} style={{width:"350", height:"380px" }}/> 
@@ -120,7 +120,7 @@ function UserManual() {
                 <li>expected duration: the order and length should be same as the definition of job data.</li>
                 <li>job names (optional): the order and length should be same as the definition of job data. Use<em>job_names</em> as keyword.</li>
                 <li>machine names (optional): the order and length should be same as the index of the machine defined in job data. Use <em>machine_names</em> as keyword.</li>
-                <li>choose <em>model.runBasic()</em></li> <br/>
+                <li>choose <em>model.runModel(type=2, originalData=myformat)</em></li> <br/>
                 See code snippet below👇:<br/>
                 <img className='CodeImg' alt='CodeImg' align="center" src={dynamic} style={{width:"350", height:"380px" }}/> 
                 </p>
@@ -128,7 +128,7 @@ function UserManual() {
                 </div>
 
                 <div>
-                <h5>Fixible Type</h5>
+                <h5>Flexible Type</h5>
                 <p>Flexible type allows you to choose one of identical machines for one task.<br/> <br/>
                 While different machines in same category might have different performances.</p><br/>
                
@@ -137,7 +137,7 @@ function UserManual() {
                 <li>job data: including tasks for each job, machine id and duration for each task. Tasks within one job are constrained by their precedence.</li>
                 <li>job names (optional): the order and length should be same as the definition of job data. Use <em>job_names</em> as keyword.</li>
                 <li>machine names (optional): the order and length should be same as the index of the machine defined in job data. Use <em>machine_names</em> as keyword.</li>
-                <li>choose <em>model.Flexible()</em></li> <br/>
+                <li>choose <em>model.runModel(type=3,originalData=null)</em></li> <br/>
                 See code snippet below👇:<br/>
                 <img className='CodeImg' alt='CodeImg' align="center" src={flexible} style={{width:"250", height:"300px" }}/> 
                 </p>
@@ -154,7 +154,7 @@ function UserManual() {
                 <li>job data: including tasks for each job, machine id and duration for each task. Tasks within one job are constrained by their precedence. </li>
                 <li>job names (optional): the order and length should be same as the definition of job data. Use <em>job_names</em> as keyword.</li>
                 <li>machine names (optional): the order and length should be same as the index of the machine defined in job data. Use <em>machine_names</em>as keyword.</li>
-                <li>choose <em>model.runMulti()</em></li> <br/>
+                <li>choose <em>model.runModel(type=4,originalData=null)</em></li> <br/>
                 See code snippet below👇:<br/>
                 <img className='CodeImg' alt='CodeImg' align="center" src={multi} style={{width:"250", height:"250px" }}/> 
                 </p>
