@@ -206,9 +206,9 @@ class MySchedule extends Component {
                                     }).slice(currentPage * this.pageSize, (currentPage + 1) * this.pageSize)
                                     .map((m)=>(
                                         <tr>
-                                            <td>{m.scheduleid}</td>
+                                            <td>{"Schedule "+m.scheduleid}</td>
                                             <td>{m.startdate==null?'':new Date(m.startdate).toLocaleDateString()}</td>
-                                            <td>{m.status}</td>
+                                            <td>{m.status==1?"Complete":"Error"}</td>
                                             <td>{
                                                     m.startdate==null?'':this.getScheduleTime(m.startdate,m.timelength).toLocaleDateString()
                                                 }</td>
