@@ -13,12 +13,6 @@ spring:
       datasource:
         mysql:
           driver-class-name: com.mysql.cj.jdbc.Driver
-<<<<<<< HEAD
-          url: jdbc:mysql://127.0.0.1:3306/grp?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
-          username: root
-          #password:
-          password: 12345678
-=======
           url: jdbc:mysql://10.6.2.51/Team202107?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
           username: Team202107
           password: Team202107
@@ -26,5 +20,4 @@ spring:
           #url: jdbc:mysql://127.0.0.1:3306/grp?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
           #username: root
           #password:
->>>>>>> 4aa371ad10fb94b0b4fa5e32a07ed8c37f703105
 
