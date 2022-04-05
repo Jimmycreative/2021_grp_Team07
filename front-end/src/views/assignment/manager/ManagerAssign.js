@@ -69,7 +69,6 @@ useEffect(() => {
        mode: 'cors'
      })
      .then(response => {
-       console.log("jimmy")
        if(response.ok) {
          return response.json();
        }
@@ -200,6 +199,7 @@ const getAssignedSchedules = () => {
                   <thead className="text-primary" >
                     <tr>
                       <th>Username</th>
+                      <th>Name</th>
                       <th>Send</th>
                     </tr>
                   </thead>
@@ -222,6 +222,7 @@ const getAssignedSchedules = () => {
                     }).map((val)=>(
                         <tr>
                             <td>{val.username}</td>
+                            <td>{val.displayname}</td>
                             <td> <Button className="my-btn"
                       color="success"
                       size="sm"

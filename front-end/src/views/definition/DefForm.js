@@ -313,7 +313,7 @@ class DefForm extends React.Component {
       
         
         this.setState({ code:code });
-        console.log(this.state.code);
+        console.log("line 316",this.state.code);
       }
     
       handleRun = event=> {
@@ -352,6 +352,7 @@ class DefForm extends React.Component {
                 else {
                     if (data.code==20) {
                         this.setState({result:data.data})
+                        this.setState({uuid:""})
                         this.setState({flag: 1})
                     }
                     else {
@@ -457,6 +458,7 @@ class DefForm extends React.Component {
                 else if (data.code==-1) {
                     this.setState({uuid: ""})
                     this.setState({flag: 0})
+                    this.setState({code: ""})
                     alert(data.message)
                 }
                 console.log(this.state.timelength)
