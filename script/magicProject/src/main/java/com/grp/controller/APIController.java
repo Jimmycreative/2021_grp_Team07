@@ -115,7 +115,9 @@ public class APIController {
     private void getPyPath() {
         String curPath=System.getProperty("user.dir");
         //TODO Path
+        //For Windows
         curPath=curPath.replace("magicProject", "algorithm\\");
+        //For Mac
         //curPath=curPath.replace("magicProject", "algorithm/");
         exePath=curPath;
     }
