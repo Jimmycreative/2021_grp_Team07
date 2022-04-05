@@ -1,8 +1,9 @@
-# Maintenance Manual
+# Installation Guide
 
 ## Environment requirements
 
-- Windows 7 or Newer
+- Windows 10 and MacOS
+- Google Chrome and FireFox
 - Node.js 12.22.2
 - Python 3.8.10 
 - Flask 2.0.2 
@@ -99,7 +100,8 @@ The default port for MySQL is 3306.
  ```py
  app.run(port=5000)
  ```
-If the back end server is not on the same LAN as the front end server, please make sure you have configured port forwarding properly.  
+If the back end server is not on the same LAN as the front end server, it is possible that there will be cross-origin problems.  
+In this case, users should deploy Nginx to handle the problem.
 
 ### Front end
 
@@ -114,10 +116,50 @@ If the back end server is not on the same LAN as the front end server, please ma
 2. Install IntelliJ IDEA Community Edition 2021.3.3
 3. Choose **script\magicProject** as the root directory in IntelliJ
 4. Go to `File > Project Structure > Project` and select `1.8 Oracle OpenJDK version 1.8.0_321` for SDK, and select `8-Lambdas, type annotations etc,` for Language level. Next go to `Project Structure > Project` and select `8-Lambdas, type annotations etc,` for Language level.
-5. Open **magicProject\src\main\resources\application-dev.yml** and add the following for url:
+5. Open **magicProject\src\main\resources\application-dev.yml** and add the following for url **if you are using the local server instead of the CS Linux server**:
 ```
 jdbc:mysql://127.0.0.1:3306/cimpo?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
 ```
-9. Open **magicProject\src\main\java\com.grp\UtilApplication** and run the program
+6. There will be path problems. (If users are using windows servers, please directly go to step 7. )  
+
+* APIController.java Line 117  
+```java
+//TODO Path
+//For Windows
+curPath=curPath.replace("magicProject", "algorithm\\");
+//For Mac
+//curPath=curPath.replace("magicProject", "algorithm/");
+```
+
+* ModelService.java Line 219  
+```java
+//TODO Path
+//For Windows
+curPath=curPath.replace("magicProject", "algorithm\\");
+serviceVariable.setPath(curPath+"pymodel\\");
+//For Mac
+// curPath = curPath.replace("magicProject", "algorithm/");
+// serviceVariable.setPath(curPath + "pymodel/");
+```
+
+* ModelService.java Line 391  
+```java
+//For Windows
+String pyFile="python "+serviceVariable.getExePath()+serviceVariable.getUuid()+".py";
+Process proc = Runtime.getRuntime().exec(pyFile);
+//For Mac
+// String pyFile=serviceVariable.getExePath()+serviceVariable.getUuid()+".py";
+// String[] cmd = {"Your Python Path",pyFile};
+// Process proc = Runtime.getRuntime().exec(cmd);
+```
+
+For these three parts, please follow the instructions of the comment.  
+For Mac servers, please comment out the first part and uncomment the second part.  
+Specifically for (3), users need to use the Python path on their computers to replace **Your Python Path** in this line:
+```
+String[] cmd = {"Your Python Path",pyFile};
+```
+
+7. Open **magicProject\src\main\java\com.grp\UtilApplication** and run the program
 
 
