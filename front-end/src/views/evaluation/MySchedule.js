@@ -89,11 +89,14 @@ class MySchedule extends Component {
     
     getScheduleTime(startDate, timeLength) {
         console.log(startDate)
-        var date=new Date(startDate);
-        date.setDate(date.getDate()+timeLength);
-        var strDate = date.toLocaleDateString()
-        console.log("line 95", strDate)
-        return date
+        if (startDate!=undefined) {
+            var date=new Date(startDate);
+            date.setDate(date.getDate()+timeLength);
+            var strDate = date.toLocaleDateString()
+            console.log("line 95", strDate)
+            return date
+        }
+        return ''
     }
     
       //invoke /getAllSchedules
@@ -119,17 +122,24 @@ class MySchedule extends Component {
                this.setState({
                    tableData:data.data.result
                 })
-                console.log("line 114",this.state.tableData)
+                console.log("line 114",this.state.tableData.length)
                 
            }
            
            else {
+               if (data.code==2) {
+                this.setState({
+                    tableData:[]
+                 })
+               }
                console.log("linw 110")
                this.setState({
                    dataErr:true,
                    errMsg:data.message
                })
-               this.refs.notify.notificationAlert(this.options);
+               alert(data.message)
+               
+               //this.refs.notify.notificationAlert(this.options);
            }
            
          })
@@ -173,7 +183,7 @@ class MySchedule extends Component {
                         <Table rowKey={'scheduleid'}>
                             <thead className="text-primary">
                                 <tr>
-                                    <th>Schedule</th>
+                                    <th>Schedule ID</th>
                                     <th>Create Time</th>
                                     <th>Status</th>
                                     <th>End Time</th>
@@ -196,19 +206,19 @@ class MySchedule extends Component {
                                     }).slice(currentPage * this.pageSize, (currentPage + 1) * this.pageSize)
                                     .map((m)=>(
                                         <tr>
-                                            <td>{m.name}</td>
-                                            <td>{new Date(m.startdate).toLocaleDateString()}</td>
+                                            <td>{m.scheduleid}</td>
+                                            <td>{m.startdate==null?'':new Date(m.startdate).toLocaleDateString()}</td>
                                             <td>{m.status}</td>
                                             <td>{
-                                                    this.getScheduleTime(m.startdate,m.timelength).toLocaleDateString()
+                                                    m.startdate==null?'':this.getScheduleTime(m.startdate,m.timelength).toLocaleDateString()
                                                 }</td>
                                             <td>
-                                                <Button
+                                                {this.state.tableData.length>0?<Button
                                                     className="table-btn"
                                                     onClick={()=>this.toggle(m)}
                                                 >
                                                     Gantt Chart
-                                                </Button>
+                                                </Button>:<div></div>}
                                                 {/* show Gantt Chart */}
                                                 <Modal
                                                     isOpen={this.state.showGantt}

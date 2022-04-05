@@ -17,8 +17,6 @@ import re
 
 
 from flask_session import Session
-from sqlalchemy import null
-from sympy import E
 
 
 class MyEncoder(json.JSONEncoder):
@@ -63,10 +61,10 @@ database = mysql.connector.connect(
     database="Team202107",
     password="Team202107",
     auth_plugin='mysql_native_password'
-     #host="127.0.0.1",
-     #user="root",
-     #database="grp",
-     #password="12345678",
+    #  host="127.0.0.1",
+    #  user="root",
+    #  database="grp",
+    #  password="",
      #auth_plugin='mysql_native_password'
     #host="127.0.0.1",
     #user="root",
@@ -338,7 +336,12 @@ def getMySchedules():
 
         planner=session["username"]
         #planner = "fyyc"
-        sql="SELECT manager, COUNT(*) AS unfinished_assignment FROM assignment a WHERE a.planner =  %s GROUP BY manager"
+        sql="""
+        SELECT manager, count(*) AS unfinished_assignment
+        FROM assignment
+        WHERE aid NOT IN (SELECT aid FROM `schedule`) AND planner=%s GROUP BY manager
+        HAVING unfinished_assignment <>0;
+        """
         cur.execute(sql, (planner, ))
 
         for record in cur:
@@ -366,7 +369,7 @@ def getScheduleDetails(planner, managers):
     try:
         cur = database.cursor(dictionary=True)
         sql="""
-        SELECT aid, title, description, datecreated FROM assignment WHERE planner=%s and manager=%s
+        SELECT aid, title, description, datecreated FROM assignment WHERE aid NOT IN (SELECT aid FROM `schedule`) AND planner=%s AND manager=%s
         """
         for manager in managers:
             this_manager_json = {}
@@ -457,14 +460,21 @@ def getAllSchedule():
     cur = database.cursor(dictionary=True)
     # TODO exclude script
     try:
-        cur.execute("SELECT * FROM schedule ORDER BY startdate DESC")
+        sql="""
+        SELECT s.scheduleid, s.description, s.script, s.result, s.timelength, s.status, s.errlog, s.startdate FROM assignment a, `schedule` s WHERE (a.manager =%s OR a.planner = %s) AND s.aid = a.aid
+        """
+        myName=session.get("username")
+        print(myName)
+        cur.execute(sql, (myName,myName))
         for schedule in cur:
             res_str = json.dumps(schedule, cls=MyEncoder)
             # res_str=res_str.replace("'", '"')
             # res_str=res_str.replace("\\", '')
 
             res_json = json.loads(res_str)
-            modify_result = eval(res_json["result"].replace("false", "False"))
+            print(res_json["result"])
+            modify_result = eval(res_json["result"])
+            
             res_json["result"] = modify_result
             # print(res_json["result"])
             print("--------------------------")
@@ -490,7 +500,7 @@ def getAllSchedule():
         # print(my_json)
         return my_json
     else:
-        return jsonify({"code": -1, "data": {}, "message": "No schedules!"})
+        return jsonify({"code": 2, "data": {}, "message": "No schedules!"})
 
 
 @app.route('/saveSchedule', methods=['POST'])
@@ -508,7 +518,11 @@ def save_schedule():
             # uid = "123"
             script = data["script"]
             timelength = data["timelength"]
-            result = data["result"]
+            
+            tempresult = data["result"]
+            result=",".join('%s' %id for id in tempresult)
+            result="["+result+"]"
+
             status = data["status"]
             errlog = data["errlog"]
             description = data["description"]
@@ -533,6 +547,14 @@ def save_schedule():
             database.rollback()
             print(str(e))
             return jsonify({"code": -2, "data": {}, "message": str(e)})
+
+def myConvert(myJsonList):
+    for item in myJsonList:
+        item['end']=str(item['end'])
+        item['progress']=str(item['progress'])
+        item['start']=str(item['start'])
+
+
 
 
 @app.route('/login', methods=['GET', 'POST'])

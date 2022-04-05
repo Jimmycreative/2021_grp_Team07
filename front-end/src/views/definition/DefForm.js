@@ -162,6 +162,7 @@ class DefForm extends React.Component {
             result:"",
             
             result_gantt:"", // result for gantt chart 
+            originalRes:"",
             code: jobType[0],
             jobIndex: 0,
             
@@ -417,7 +418,7 @@ class DefForm extends React.Component {
         var mydata={
             uuid:this.state.uuid
         }
-        console.log(mydata)
+        console.log("420",mydata)
         fetch(domain+"/getres", {
             body: JSON.stringify(mydata),
             cache: 'no-cache',
@@ -434,21 +435,21 @@ class DefForm extends React.Component {
                   return response.json()
                 }
             }).then(
-            data=>{ 
-                console.log("line 143", data)
+            data=>{
                 if(data.code===1){
-                    console.log(data.data)
+                    console.log("line 440",data.data.result)
                     console.log(this.state.showGantt)
-                    console.log(data.data.mid_msg)
+                    
                     this.setState(()=>{ return{
                         result: data.data.mid_msg,
                         timelength: data.data.time_length,
-                        result_gantt: data.data.result,
+                        result_gantt: JSON.parse(JSON.stringify(data.data.result)),
+                        originalRes: JSON.parse(JSON.stringify(data.data.result)),
                         showGantt: true,
                         flag: 0
 
                     }} ,() => {
-                        console.log(this.state.timelength)
+                        console.log()
                       }
                     );
                 }
@@ -468,7 +469,7 @@ class DefForm extends React.Component {
     
       updateSolution(event) {
         // event.preventDefault();
-        console.log(this.state.task);
+        //console.log(this.state.task);
         const field = event.target.name;
         const { task } = this.state;
         task[field] = event.target.value;
@@ -483,6 +484,7 @@ class DefForm extends React.Component {
 
     //invoke /saveSchedule
     saveSchedule = () => {
+        console.log("line 487", this.state.originalRes)
         
         this.setState({
             showGantt: !this.state.showGantt
@@ -492,7 +494,11 @@ class DefForm extends React.Component {
             //name:this.state.scheduleName,
             script:this.state.code,
             timelength: this.state.timelength,
+<<<<<<< HEAD
             result:this.state.result_gantt,
+=======
+            result:this.state.originalRes,
+>>>>>>> 679608d989306d061b651e44f068e473e3792ab2
             //0 for new, 1 for compelete, -1 for err
             status:this.state.result_gantt==null?-1:1,
             errlog:"",

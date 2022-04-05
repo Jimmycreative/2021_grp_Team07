@@ -24,8 +24,12 @@ import PerfectScrollbar from "perfect-scrollbar";
 import SubMenu from "./SubMenu";
 
 import logo from "logo.svg";
+import memoryUtils from "../../views/registration/userInfo/memoryUtil"
+import storageUtils from "../../views/registration/userInfo/storageUtils"
 
 var ps;
+const user = storageUtils.getUser()
+memoryUtils.user = user
 
 function Sidebar(props) {
   const sidebar = React.useRef();
@@ -70,7 +74,7 @@ function Sidebar(props) {
         </a>
         
         <Link to='/admin/profile' className="simple-text logo-normal">
-          User Name
+          {user.displayname} 
         </Link>
       </div>
       <div className="sidebar-wrapper" ref={sidebar}>
