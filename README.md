@@ -1,5 +1,8 @@
 # Installation Guide
 
+## Declaration
+Third party library Magic-API is used for this project, and the underlying logic has been modified.
+
 ## Environment requirements
 
 - Windows 10 and MacOS
