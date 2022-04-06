@@ -461,7 +461,10 @@ def getAllSchedule():
     # TODO exclude script
     try:
         sql="""
-        SELECT s.scheduleid, s.description, s.script, s.result, s.timelength, s.status, s.errlog, s.startdate FROM assignment a, `schedule` s WHERE (a.manager =%s OR a.planner = %s) AND s.aid = a.aid
+        SELECT s.scheduleid, s.description, s.script, s.`result`, s.timelength, s.status, s.errlog, s.startdate, u.username, u.displayname
+        FROM assignment a, `user` u, `schedule` s
+        WHERE s.aid = a.aid
+        AND ((a.manager = %s AND u.username = a.planner) OR (a.planner = %s AND u.username = a.manager));
         """
         myName=session.get("username")
         print(myName)

@@ -14,7 +14,13 @@ import GanttDay from "views/gantt/day/GanttDay";
 import sample_data from '../../variables/data/saved_data.json';
 import "./mySchedule.css"
 import { domain } from "../../global"
+import memoryUtils from "../registration/userInfo/memoryUtil"
+import storageUtils from "../registration/userInfo/storageUtils"
 
+
+
+const user = storageUtils.getUser()
+memoryUtils.user = user
 class MySchedule extends Component {
     constructor(props) {
         super(props);
@@ -122,7 +128,7 @@ class MySchedule extends Component {
                this.setState({
                    tableData:data.data.result
                 })
-                console.log("line 114",this.state.tableData.length)
+                console.log("line 114",this.state.tableData)
                 
            }
            
@@ -184,8 +190,9 @@ class MySchedule extends Component {
                             <thead className="text-primary">
                                 <tr>
                                     <th>Schedule ID</th>
+                                    <th>{user.role==1?"Planner Username":"Manager Username"}</th>
+                                    <th>{user.role==1?"Planner Name":"Manager Name"}</th>
                                     <th>Create Time</th>
-                                    <th>Status</th>
                                     <th>End Time</th>
                                     <th>Gantt Chart</th>
                                 </tr>
@@ -207,8 +214,9 @@ class MySchedule extends Component {
                                     .map((m)=>(
                                         <tr>
                                             <td>{"Schedule "+m.scheduleid}</td>
+                                            <td>{m.username}</td>
+                                            <td>{m.displayname}</td>
                                             <td>{m.startdate==null?'':new Date(m.startdate).toLocaleDateString()}</td>
-                                            <td>{m.status==1?"Complete":"Error"}</td>
                                             <td>{
                                                     m.startdate==null?'':this.getScheduleTime(m.startdate,m.timelength).toLocaleDateString()
                                                 }</td>
