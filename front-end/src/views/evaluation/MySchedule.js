@@ -177,14 +177,14 @@ class MySchedule extends Component {
                     <NotificationAlert ref="notify" zIndex={9999} onClick={() => console.log("something is wrong")} />
                     <React.Fragment>
                         <h2 class = "text-center">My Schedules</h2>
-                        <input
+                        {/* <input
                             type = "text"
                             placeholder='Search'
                             className='form-control'
                             style={{marginTop:60,marginBottom:40,marginLeft:40,width:"90%"}}
                             onChange={(e) => {
                                 this.setSearchSchedule(e.target.value)
-                        }}/>
+                        }}/> */}
                         
                         <Table rowKey={'scheduleid'}>
                             <thead className="text-primary">
@@ -213,7 +213,7 @@ class MySchedule extends Component {
                                     }).slice(currentPage * this.pageSize, (currentPage + 1) * this.pageSize)
                                     .map((m)=>(
                                         <tr>
-                                            <td>{"Schedule "+m.scheduleid}</td>
+                                            <td>{"Schedule "+m.aid}</td>
                                             <td>{m.username}</td>
                                             <td>{m.displayname}</td>
                                             <td>{m.startdate==null?'':new Date(m.startdate).toLocaleDateString()}</td>
