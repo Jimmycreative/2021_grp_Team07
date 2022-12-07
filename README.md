@@ -3,7 +3,7 @@
 ## Declaration
 Third party library Magic-API is used for this project, and the underlying logic has been modified.
 
-## Environment requirements
+## Environment requirement settings
 
 - Windows 10 and MacOS
 - Google Chrome and FireFox
